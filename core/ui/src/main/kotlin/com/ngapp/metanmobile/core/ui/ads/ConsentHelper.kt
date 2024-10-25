@@ -78,7 +78,7 @@ class ConsentHelper {
 
         val ci = UserMessagingPlatform.getConsentInformation(context)
         ci.requestConsentInfoUpdate(context, params, {
-            if (showingForm) return@requestConsentInfoUpdate
+            if (isPrivacyOptionsRequired() && showingForm) return@requestConsentInfoUpdate
             showingForm = true
             UserMessagingPlatform.loadAndShowConsentFormIfRequired(context) { error ->
                 showingForm = false

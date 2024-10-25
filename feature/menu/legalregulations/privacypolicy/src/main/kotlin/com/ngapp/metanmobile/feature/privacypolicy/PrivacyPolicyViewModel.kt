@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.feature.privacypolicy
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
@@ -29,6 +28,7 @@ import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyUiState.Su
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -39,7 +39,13 @@ class PrivacyPolicyViewModel @Inject constructor(
     private val consentHelper: ConsentHelper,
 ) : ViewModel() {
 
-    val isPrivacyOptionsRequired = mutableStateOf(consentHelper.isPrivacyOptionsRequired())
+    val isPrivacyOptionsRequired: StateFlow<Boolean> = flow {
+        emit(consentHelper.isPrivacyOptionsRequired())
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileSubscribed(5_000),
+        initialValue = false
+    )
 
     val uiState: StateFlow<PrivacyPolicyUiState> = userDataRepository.userData
         .map { userData -> Success(languageConfig = userData.languageConfig) }
@@ -55,5 +61,9 @@ class PrivacyPolicyViewModel @Inject constructor(
         }
     }
 
-    private fun onUpdateConsent() = consentHelper.updateConsent()
+    private fun onUpdateConsent() {
+        if (isPrivacyOptionsRequired.value) {
+            consentHelper.updateConsent()
+        }
+    }
 }
