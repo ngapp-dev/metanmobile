@@ -1,0 +1,5 @@
+{
+  "id": 1,
+  "dateCreated": "Tue, 12 Oct 2021 10:15:45 +0300",
+  "content": "&lt;div class=&quot;header-phone&quot;&gt;\n\t Контакты для справок\n\t&lt;p&gt;\n &lt;a href=&quot;tel:+375293231222&quot; style=&quot;text-decoration:none; color: #000000&quot;&gt;+375 29 323-12-22&lt;/a&gt;\n\t&lt;/p&gt;\n\t&lt;p&gt;\n &lt;a href=&quot;mailto:ecogas_client@btg.by&quot; style=&quot;color: #1ba2dc&quot;&gt;ecogas_client@btg.by&lt;/a&gt;\n\t&lt;/p&gt;\n&lt;/div&gt;\n&lt;div class=&quot;header-worktime&quot;&gt;\n\t&lt;p&gt;\n\t\t пн.-чт. 8:00 - 17:00\n\t&lt;/p&gt;\n\t&lt;p&gt;\n\t\t пт. 8:00 - 15:45\n\t&lt;/p&gt;\n\t&lt;p&gt;\n\t\t перерыв 12:00 - 12:45\n\t&lt;/p&gt;\n&lt;/div&gt;\n &lt;br&gt;"
+}

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+    <string name="core_ui_app_name" translatable="false">Metan Mobile</string>
+    <string name="core_ui_update_download_successful">Download successful. Restarting app in 5 seconds</string>
+    <string name="core_ui_update_download_failed">Update flow failed! Result code: %1$d</string>
+    <!-- Test -->
+    <string name="core_ui_navigate_up" translatable="false">Navigate up</string>
+    <!-- Button -->
+    <string name="core_ui_button_retry">Retry</string>
+    <string name="core_ui_button_apply">Apply</string>
+    <string name="core_ui_button_cancel">Cancel</string>
+    <string name="core_ui_button_name">Name</string>
+    <string name="core_ui_button_date">Date</string>
+    <string name="core_ui_button_descending">Descending</string>
+    <string name="core_ui_button_ascending">Ascending</string>
+    <string name="core_ui_button_distance">Distance</string>
+    <string name="core_ui_button_calculate">Calculate</string>
+    <string name="core_ui_button_calculate_again">Calculate again</string>
+    <string name="core_ui_button_show_more">Show more</string>
+    <string name="core_ui_button_show_less">Show less</string>
+    <string name="core_ui_button_google_service_update">Update</string>
+    <string name="core_ui_button_permission_request">Request permission</string>
+    <string name="core_ui_button_show_all">Show All</string>
+    <string name="core_ui_button_career_apply">Apply</string>
+
+    <!-- Title -->
+    <string name="core_ui_title_filter_stations">Filter stations</string>
+    <string name="core_ui_title_filter_and_sort">Filter and sort stations</string>
+    <string name="core_ui_title_related_news">Related news</string>
+    <string name="core_ui_title_latest_news">Latest news</string>
+    <string name="core_ui_title_calculate_milage">Mileage</string>
+    <string name="core_ui_title_calculate_payback">Payback</string>
+    <string name="core_ui_title_calculate_profit">Calculate the profit</string>
+    <string name="core_ui_title_workplace">Place:</string>
+    <string name="core_ui_title_experience">Experience:</string>
+    <string name="core_ui_title_description">Description:</string>
+    <string name="core_ui_title_requirements">Requirements:</string>
+    <string name="core_ui_title_responsibilities">Responsibilities:</string>
+    <!-- Text -->
+    <string name="core_ui_text_items_display">Select items to display:</string>
+    <string name="core_ui_text_agnks">CNG</string>
+    <string name="core_ui_text_clfs">CLFS</string>
+    <string name="core_ui_text_sort_by">Sort by:</string>
+    <string name="core_ui_text_nearest_station">Nearest station</string>
+    <string name="core_ui_text_value_byn">%s BYN</string>
+    <string name="core_ui_text_cng_price">CNG price</string>
+    <string name="core_ui_text_for_one_meter">For 1 sq. m</string>
+    <string name="core_ui_text_value_km">%s KM</string>
+    <string name="core_ui_text_station_phones">Phones</string>
+    <string name="core_ui_text_station_payments">Payments</string>
+    <string name="core_ui_text_station_address">Address</string>
+    <string name="core_ui_text_station_hours">Hours</string>
+    <string name="core_ui_text_current_station">Current station</string>
+    <string name="core_ui_text_select_application">Select application</string>
+    <string name="core_ui_text_car_personal">Personal</string>
+    <string name="core_ui_text_car_van">Truck</string>
+    <string name="core_ui_text_car_truck">Lorry</string>
+    <string name="core_ui_text_or">OR</string>
+    <string name="core_ui_text_values_error">Please check the entered values</string>
+    <string name="core_ui_text_payback_calc_note">1L of benzine is equivalent in consumption of 1 m3 of natural gas</string>
+    <string name="core_ui_text_enter_refill_amount">Enter the planned refill amount, BYN</string>
+    <string name="core_ui_text_choose_car_type">Choose car type</string>
+    <string name="core_ui_text_fuel_price_by_vehicle">Fuel price used by vehicle, BYN</string>
+    <string name="core_ui_text_additional_costs">Additional costs for installation of CNG equipment or difference in price with a basic vehicle model, BYN</string>
+    <string name="core_ui_text_estimated_vehicle_milage">Estimated vehicle mileage per year, km</string>
+    <string name="core_ui_text_vehicle_consumption">Vehicle linear fuel consumption, l/100km</string>
+    <string name="core_ui_text_car_milage_amount">Car mileage in the amount of %s BYN</string>
+    <string name="core_ui_text_cng">CNG</string>
+    <string name="core_ui_text_dt">Diesel</string>
+    <string name="core_ui_text_ai95">RON 95</string>
+    <string name="core_ui_text_ai92">RON 92</string>
+    <string name="core_ui_text_lpg">LPG</string>
+    <string name="core_ui_text_on_cng">on CNG</string>
+    <string name="core_ui_text_on_dt">on diesel</string>
+    <string name="core_ui_text_on_ai95">on RON 95 gasoline</string>
+    <string name="core_ui_text_on_ai92">on RON 92 gasoline</string>
+    <string name="core_ui_text_on_lpg">on LPG</string>
+    <string name="core_ui_text_value_month1">%s month</string>
+    <string name="core_ui_text_value_month2_4">%s month</string>
+    <string name="core_ui_text_value_month">%s month</string>
+    <string name="core_ui_text_advertisement">Ads</string>
+    <string name="core_ui_text_faq">FAQ</string>
+    <string name="core_ui_text_recent_offers">Recent offers</string>
+    <string name="core_ui_text_google_service_unavailable">Google services unavailable</string>
+    <string name="core_ui_text_permission_denied">Permission was denied</string>
+    <string name="core_ui_text_share_via">&#160;- Share via&#160;</string>
+    <string name="core_ui_text_no_experience">Not required</string>
+    <string name="core_ui_text_place_any">Any</string>
+    <!-- Description -->
+    <string name="core_ui_description_radio_button_img" translatable="false">Chosen: %s</string>
+    <string name="core_ui_description_like_icon" translatable="false">Like: %s</string>
+    <string name="core_ui_description_dislike_icon" translatable="false">Dislike: %s</string>
+    <string name="core_ui_description_detail_item_img" translatable="false">Detail item image</string>
+    <string name="core_ui_description_location_off_img" translatable="false">Location is off</string>
+    <string name="core_ui_description_news_list_img" translatable="false">News list img</string>
+    <string name="core_ui_description_station_list_img" translatable="false">News list img</string>
+    <string name="core_ui_description_settings_arrow_icon" translatable="false">Settings Arrow Icon</string>
+    <!-- Errors -->
+    <string name="core_ui_the_request_timed_out">The request timed out</string>
+    <string name="core_ui_no_internet">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>
+    <string name="core_ui_server_error">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>
+    <string name="core_ui_unknown_error">An unknown error occurred</string>
+    <string name="core_ui_error_disk_full">Failed to save the item because your device\'s disk is full</string>
+    <string name="core_ui_error_loading_page">Loading page error</string>
+    <string name="core_ui_error_page_not_avaliable">Page not available</string>
+    <string name="core_ui_error_not_connected">⚠️ You aren’t connected to the internet</string>
+    <!-- Placeholder -->
+    <string name="core_ui_placeholder_number">Enter value</string>
+    <!-- Ads -->
+    <string name="core_ui_loading_ad">Loading ad…</string>
+    <string name="core_ui_change_consent">You can change your consent preferences for personalized ads at any time by clicking&#160;</string>
+    <string name="core_ui_here">here</string>
+</resources>

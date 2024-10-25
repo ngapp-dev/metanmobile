@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+    <string name="feature_onboarding_button_get_start">Пачаць</string>
+    <string name="feature_onboarding_title_news">Навіны</string>
+    <string name="feature_onboarding_title_stations">Газанапаўняльныя станцыі</string>
+    <string name="feature_onboarding_title_favorites">Выбранае</string>
+    <string name="feature_onboarding_description_news">Вы можаце атрымаць доступ да зместу і спісу навін.</string>
+    <string name="feature_onboarding_description_stations">Вы можаце знайсці бліжэйшую газанапаўняльную станцыю, а таксама атрымаць доступ да іх спісу і навінам па тэме.</string>
+    <string name="feature_onboarding_description_favorites">Вы можаце стварыць свой спіс Выбраных станцый, каб не забыць і хутка да іх вяртацца.</string>
+</resources>

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option java_package = "com.ngapp.metanmobile.core.datastore";
+option java_multiple_files = true;
+
+enum SortingOrderProto {
+  ASC = 0;
+  DESC = 1;
+}
+
+enum NewsSortingTypeProto {
+  DATE = 0;
+  NAME = 1;
+}
+
+enum StationsSortingTypeProto {
+  DISTANCE = 0;
+  STATION_NAME = 1;
+}
+
+enum StationTypeProto {
+  CLFS = 0;
+  CNG = 1;
+  SERVICE = 2;
+}
+
+message NewsSortingConfigProto {
+  NewsSortingTypeProto sort_type_config = 1;
+  SortingOrderProto sort_order_config = 2;
+}
+
+message StationSortingConfigProto {
+  StationsSortingTypeProto sort_type_config = 1;
+  SortingOrderProto sort_order_config = 2;
+  repeated StationTypeProto active_station_types_config = 3;
+}

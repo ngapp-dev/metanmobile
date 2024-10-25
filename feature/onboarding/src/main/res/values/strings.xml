@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+    <string name="feature_onboarding_description_next_icon" translatable="false">Onboarding next icon</string>
+    <string name="feature_onboarding_description_back_icon" translatable="false">Onboarding back icon</string>
+    <string name="feature_onboarding_description_page_img" translatable="false">Onboarding page img</string>
+    <string name="feature_onboarding_button_get_start">Get Started</string>
+    <string name="feature_onboarding_title_news">News</string>
+    <string name="feature_onboarding_title_stations">Stations</string>
+    <string name="feature_onboarding_title_favorites">Favorites</string>
+    <string name="feature_onboarding_description_news">You can access the content and news list.</string>
+    <string name="feature_onboarding_description_stations">You can find the nearest gas filling station, as well as access their list and related news.</string>
+    <string name="feature_onboarding_description_favorites">You can create your own list of Favorite stations so that you don\'t forget and return to them quickly.</string>
+</resources>

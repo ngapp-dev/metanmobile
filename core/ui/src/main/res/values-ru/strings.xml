@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+    <string name="core_ui_update_download_successful">Обновление загружено. Приложение перезапустится через 5 секунд</string>
+    <string name="core_ui_update_download_failed">Обновление не удалось! Код ошибки: %1$d</string>
+    <!-- Button -->
+    <string name="core_ui_button_retry">Повторить</string>
+    <string name="core_ui_button_apply">Применить</string>
+    <string name="core_ui_button_cancel">Отмена</string>
+    <string name="core_ui_button_name">Имени</string>
+    <string name="core_ui_button_date">Дате</string>
+    <string name="core_ui_button_descending">По убыванию</string>
+    <string name="core_ui_button_ascending">По возрастанию</string>
+    <string name="core_ui_button_distance">Дистанции</string>
+    <string name="core_ui_button_calculate">Рассчитать</string>
+    <string name="core_ui_button_calculate_again">Рассчитать снова</string>
+    <string name="core_ui_button_show_less">Показать меньше</string>
+    <string name="core_ui_button_show_more">Показать больше</string>
+    <string name="core_ui_button_google_service_update">Обновить</string>
+    <string name="core_ui_button_permission_request">Запросить разрешение</string>
+    <string name="core_ui_button_show_all">Показать все</string>
+    <string name="core_ui_button_career_apply">Откликнуться</string>
+    <!-- Title -->
+    <string name="core_ui_title_filter_stations">Фильтр станций</string>
+    <string name="core_ui_title_filter_and_sort">Фильтрация и сортировка</string>
+    <string name="core_ui_title_related_news">Новости по теме</string>
+    <string name="core_ui_title_latest_news">Последние новости</string>
+    <string name="core_ui_title_calculate_milage">Пробег</string>
+    <string name="core_ui_title_calculate_payback">Окупаемость</string>
+    <string name="core_ui_title_calculate_profit">Рассчитайте выгоду</string>
+    <string name="core_ui_title_workplace">Место:</string>
+    <string name="core_ui_title_experience">Опыт:</string>
+    <string name="core_ui_title_description">Описание:</string>
+    <string name="core_ui_title_requirements">Требования к кандидату:</string>
+    <string name="core_ui_title_responsibilities">Обязанности:</string>
+    <!-- Text -->
+    <string name="core_ui_text_items_display">Выберите элементы для отображения:</string>
+    <string name="core_ui_text_agnks">АГНКС</string>
+    <string name="core_ui_text_clfs">БЗП</string>
+    <string name="core_ui_text_sort_by">Сортировать по:</string>
+    <string name="core_ui_text_nearest_station">Ближайшая станция</string>
+    <string name="core_ui_text_value_byn">%s бел.руб.</string>
+    <string name="core_ui_text_cng_price">Цена метана</string>
+    <string name="core_ui_text_for_one_meter">За 1 куб. метр</string>
+    <string name="core_ui_text_value_km">%s км</string>
+    <string name="core_ui_text_station_phones">Телефоны</string>
+    <string name="core_ui_text_station_payments">Методы оплаты</string>
+    <string name="core_ui_text_station_address">Адрес</string>
+    <string name="core_ui_text_station_hours">Время работы</string>
+    <string name="core_ui_text_current_station">Текущая станция</string>
+    <string name="core_ui_text_select_application">Выберите приложение</string>
+    <string name="core_ui_text_car_personal">Легковой</string>
+    <string name="core_ui_text_car_van">Микроавтобус</string>
+    <string name="core_ui_text_car_truck">Грузовой</string>
+    <string name="core_ui_text_or">ИЛИ</string>
+    <string name="core_ui_text_values_error">Пожалуйста, проверьте введенные значения</string>
+    <string name="core_ui_text_payback_calc_note">1 л бензина эквивалентен по потреблению 1 м3 природного газа.</string>
+    <string name="core_ui_text_enter_refill_amount">Введите планируемую сумму для заправки,  бел. руб.</string>
+    <string name="core_ui_text_choose_car_type">Выберите тип автомобиля</string>
+    <string name="core_ui_text_fuel_price_by_vehicle">Цена топлива, используемая базовой моделью автомобиля, бел. руб.</string>
+    <string name="core_ui_text_additional_costs">Дополнительные затраты на монтаж ГБО или разница в цене с базовой моделью автомобиля, бел. руб.</string>
+    <string name="core_ui_text_estimated_vehicle_milage">Предполагаемый пробег в год, км</string>
+    <string name="core_ui_text_vehicle_consumption">Линейный расход автомобиля, л/100км</string>
+    <string name="core_ui_text_car_milage_amount">Пробег автомобиля на сумму %s бел. руб.</string>
+    <string name="core_ui_text_cng">Метан</string>
+    <string name="core_ui_text_dt">Дизель</string>
+    <string name="core_ui_text_ai95">АИ-95</string>
+    <string name="core_ui_text_ai92">АИ-92</string>
+    <string name="core_ui_text_lpg">Пропан</string>
+    <string name="core_ui_text_on_cng">на метане</string>
+    <string name="core_ui_text_on_dt">на дизтопливе</string>
+    <string name="core_ui_text_on_ai95">на бензине АИ-95</string>
+    <string name="core_ui_text_on_ai92">на бензине АИ-92</string>
+    <string name="core_ui_text_on_lpg">на пропане</string>
+    <string name="core_ui_text_value_month">%s месяцев</string>
+    <string name="core_ui_text_value_month1">%s месяц</string>
+    <string name="core_ui_text_value_month2_4">%s месяца</string>
+    <string name="core_ui_text_advertisement">Реклама</string>
+    <string name="core_ui_text_faq">Часто задаваемые вопросы</string>
+    <string name="core_ui_text_recent_offers">Недавние вакансии</string>
+    <string name="core_ui_text_google_service_unavailable">Сервисы Google недоступны</string>
+    <string name="core_ui_text_permission_denied">Разрешение было отклонено</string>
+    <string name="core_ui_text_share_via">&#160;- Падзяліцца через&#160;</string>
+    <string name="core_ui_text_no_experience">Не требуется</string>
+    <string name="core_ui_text_place_any">Любое</string>
+    <!-- Errors -->
+    <string name="core_ui_the_request_timed_out">Время запроса истекло</string>
+    <string name="core_ui_no_internet">Упс! Похоже, у вас медленное или отсутствует подключение к Интернету. Пожалуйста, проверьте сетевое соединение и повторите попытку</string>
+    <string name="core_ui_server_error">Упс! Похоже, у вас медленное или отсутствует подключение к Интернету. Пожалуйста, проверьте сетевое соединение и повторите попытку</string>
+    <string name="core_ui_unknown_error">Произошла неизвестная ошибка</string>
+    <string name="core_ui_error_disk_full">Не удалось сохранить объект, поскольку диск вашего устройства заполнен.</string>
+    <string name="core_ui_error_loading_page">Ошибка загрузки страницы</string>
+    <string name="core_ui_error_page_not_avaliable">Страница не доступна</string>
+    <string name="core_ui_error_not_connected">⚠️ Нет подключения к интернету</string>
+    !-- Placeholder -->
+    <string name="core_ui_placeholder_number">Введите значение</string>
+    <!-- Ads -->
+    <string name="core_ui_loading_ad">Загрузка рекламы…</string>
+    <string name="core_ui_change_consent">Вы можете изменить свои настройки согласия на персонализированную рекламу в любое время, нажав&#160;</string>
+    <string name="core_ui_here">здесь</string>
+</resources>

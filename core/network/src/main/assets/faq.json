@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "code": "FAQ001",
+    "isPinned": 1,
+    "title": "How to use the app?",
+    "dateCreated": "Fri, 25 Mar 2022 16:42:27 +0300",
+    "content": "To use the app, simply download it from the store, register with your email, and start exploring features."
+  },
+  {
+    "id": "2",
+    "code": "FAQ002",
+    "isPinned": 0,
+    "title": "What services are available?",
+    "dateCreated": "Fri, 18 Feb 2022 11:20:15 +0300",
+    "content": "We offer a variety of services including gas price tracking, station locators, and route optimization."
+  },
+  {
+    "id": "3",
+    "code": "FAQ003",
+    "isPinned": 1,
+    "title": "How can I contact support?",
+    "dateCreated": "Wed, 12 Jan 2022 09:30:05 +0300",
+    "content": "You can contact support via the 'Help' section in the app or by sending an email to support@metan.by."
+  },
+  {
+    "id": "4",
+    "code": "FAQ004",
+    "isPinned": 0,
+    "title": "What payment methods are accepted?",
+    "dateCreated": "Mon, 05 Jul 2021 14:55:50 +0300",
+    "content": "We accept all major credit cards, PayPal, and mobile payment systems like Google Pay and Apple Pay."
+  },
+  {
+    "id": "5",
+    "code": "FAQ005",
+    "isPinned": 0,
+    "title": "Can I track my fuel consumption?",
+    "dateCreated": "Sat, 20 Nov 2021 18:22:10 +0300",
+    "content": "Yes, the app allows you to track your fuel consumption and generate detailed reports."
+  }
+]
