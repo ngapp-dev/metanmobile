@@ -34,7 +34,7 @@
 
     <application
         android:name="com.ngapp.metanmobile.MetanMobileApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_round"

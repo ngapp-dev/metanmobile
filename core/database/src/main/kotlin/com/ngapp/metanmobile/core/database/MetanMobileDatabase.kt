@@ -50,7 +50,7 @@ import com.ngapp.metanmobile.core.database.util.ListStringConverter
         PriceResourceEntity::class,
         LocationResourceEntity::class,
     ],
-    version = 6,
+    version = 8,
     exportSchema = false,
 )
 @TypeConverters(

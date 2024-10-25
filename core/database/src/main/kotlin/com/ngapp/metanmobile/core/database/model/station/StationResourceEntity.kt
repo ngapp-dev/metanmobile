@@ -40,7 +40,6 @@ data class StationResourceEntity(
     val payment: String,
     val latitude: String,
     val longitude: String,
-    @ColumnInfo(name = "distance_between") val distanceBetween: Double = 0.0,
     @ColumnInfo(name = "busy_on_monday") val busyOnMonday: String,
     @ColumnInfo(name = "busy_on_tuesday") val busyOnTuesday: String,
     @ColumnInfo(name = "busy_on_wednesday") val busyOnWednesday: String,

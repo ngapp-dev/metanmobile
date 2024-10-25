@@ -29,8 +29,8 @@ data class LocationResource(
         fun init() = LocationResource(
             id = 1,
             time = System.now().toEpochMilliseconds(),
-            latitude = 0.0,
-            longitude = 0.0
+            latitude = 53.90309661691656,
+            longitude = 27.55363993274304,
         )
     }
 }

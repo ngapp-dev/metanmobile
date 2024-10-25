@@ -67,6 +67,8 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.ui.LocalTimeZone
 import com.ngapp.metanmobile.core.ui.util.PermissionsManager
+import com.ngapp.metanmobile.feature.home.navigation.HomeScreenNavigation
+import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
 import com.ngapp.metanmobile.ui.MMApp
 import com.ngapp.metanmobile.ui.rememberMMAppState
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,6 +78,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.seconds
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
@@ -157,6 +160,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val darkTheme = shouldUseDarkTheme(uiState)
+            val startDestination = getStartDestination(uiState)
             UpdateUserConfig(uiState, onReviewShown = { viewModel::setReviewShown })
 
             // Update the edge to edge configuration to match the theme
@@ -191,7 +195,10 @@ class MainActivity : ComponentActivity() {
             ) {
                 MMTheme(darkTheme = darkTheme) {
                     PermissionsManager {
-                        MMApp(appState)
+                        MMApp(
+                            appState = appState,
+                            startDestination = startDestination,
+                        )
                     }
                 }
             }
@@ -272,6 +279,20 @@ private fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean =
             DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
             DarkThemeConfig.LIGHT -> false
             DarkThemeConfig.DARK -> true
+        }
+    }
+
+/**
+ * Returns `true` if dark theme should be used, as a function of the [uiState] and the
+ * current system context.
+ */
+@Composable
+private fun getStartDestination(uiState: MainActivityUiState): KClass<*> =
+    when (uiState) {
+        Loading -> HomeScreenNavigation::class
+        is Success -> when (uiState.userData.shouldHideOnboarding) {
+            true -> HomeScreenNavigation::class
+            else -> OnboardingScreenNavigation::class
         }
     }
 

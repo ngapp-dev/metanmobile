@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -58,9 +61,15 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun onObserveConsent() {
-        consentHelper.obtainConsentAndShow()
         viewModelScope.launch {
-            consentHelper.canShowAds.collect { canShow ->
+            userDataRepository.userData.collectLatest { userData ->
+                if (userData.shouldHideOnboarding) {
+                    consentHelper.obtainConsentAndShow()
+                }
+            }
+        }
+        viewModelScope.launch {
+            consentHelper.canShowAds.collectLatest { canShow ->
                 _consentState.value = _consentState.value.copy(canShowAds = canShow)
             }
         }

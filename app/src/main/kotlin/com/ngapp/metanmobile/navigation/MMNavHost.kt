@@ -53,6 +53,7 @@ import com.ngapp.metanmobile.feature.stations.list.navigation.stationsScreen
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.navigateToTermsAndConditions
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.termsAndConditionsScreen
 import com.ngapp.metanmobile.ui.MMAppState
+import kotlin.reflect.KClass
 
 /**
  * Top-level navigation graph. Navigation is organized as explained at
@@ -66,11 +67,12 @@ fun MMNavHost(
     appState: MMAppState,
     onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
+    startDestination: KClass<*>,
 ) {
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = OnboardingScreenNavigation::class,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
         onboardingScreen(onSkipOnboarding = appState::navigateFromOnboardingToHomeScreen)
