@@ -66,6 +66,7 @@ import com.ngapp.metanmobile.core.designsystem.component.MetanMobileGradientBack
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.LocalGradientColors
 import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
+import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
 import com.ngapp.metanmobile.navigation.MMNavHost
 import kotlin.reflect.KClass
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
@@ -73,6 +74,7 @@ import com.ngapp.metanmobile.core.ui.R as CoreUiR
 @Composable
 fun MMApp(
     appState: MMAppState,
+    startDestination: KClass<*>,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
     viewModel: MainActivityViewModel = hiltViewModel(),
@@ -95,6 +97,7 @@ fun MMApp(
 
             MMApp(
                 appState = appState,
+                startDestination = startDestination,
                 snackbarHostState = snackbarHostState,
                 consentState = consentState,
                 windowAdaptiveInfo = windowAdaptiveInfo,
@@ -106,6 +109,7 @@ fun MMApp(
 @Composable
 internal fun MMApp(
     appState: MMAppState,
+    startDestination: KClass<*>,
     snackbarHostState: SnackbarHostState,
     consentState: ConsentState,
     modifier: Modifier = Modifier,
@@ -151,10 +155,10 @@ internal fun MMApp(
                 }
             }
         ) {
-            DestinationScaffold(appState, snackbarHostState, modifier)
+            DestinationScaffold(appState, startDestination, snackbarHostState, modifier)
         }
     } else {
-        DestinationScaffold(appState, snackbarHostState, modifier)
+        DestinationScaffold(appState, startDestination, snackbarHostState, modifier)
     }
 }
 
@@ -162,6 +166,7 @@ internal fun MMApp(
 @Composable
 private fun DestinationScaffold(
     appState: MMAppState,
+    startDestination: KClass<*>,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
@@ -193,6 +198,7 @@ private fun DestinationScaffold(
                             duration = Short,
                         ) == ActionPerformed
                     },
+                    startDestination = startDestination,
                 )
             }
         }

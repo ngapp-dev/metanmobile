@@ -56,7 +56,6 @@ interface StationResourceDao {
                 END)
             ORDER BY 
             CASE
-                WHEN :sortingType = 'DISTANCE' THEN distance_between 
                 WHEN :sortingType = 'STATION_NAME' THEN title 
                 ELSE NULL 
             END
@@ -93,7 +92,6 @@ interface StationResourceDao {
                 END)
             ORDER BY 
             CASE
-                WHEN :sortingType = 'DISTANCE' THEN distance_between 
                 WHEN :sortingType = 'STATION_NAME' THEN title 
                 ELSE NULL 
             END

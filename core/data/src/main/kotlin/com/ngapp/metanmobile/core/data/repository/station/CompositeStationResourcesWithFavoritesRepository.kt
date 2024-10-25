@@ -19,18 +19,18 @@ package com.ngapp.metanmobile.core.data.repository.station
 
 import com.ngapp.metanmobile.core.common.util.distanceInKm
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
-import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
-import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepository
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
+import com.ngapp.metanmobile.core.model.location.LocationResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.model.station.mapToUserStationResources
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 /**
@@ -57,17 +57,24 @@ class CompositeStationResourcesWithFavoritesRepository @Inject constructor(
                 SortingOrder.ASC -> stationsRepository.getStationResourcesAsc(updatedQuery)
                 SortingOrder.DESC -> stationsRepository.getStationResourcesDesc(updatedQuery)
             }
-            stationResourcesFlow.combine(locationsRepository.getLocationResource()) { stationResources, location ->
-                val userStationResources = stationResources.mapToUserStationResources(userData)
-                userStationResources.map {
-                    val distanceBetween = distanceInKm(
-                        location.latitude,
-                        location.longitude,
-                        it.latitude.toDouble(),
-                        it.longitude.toDouble(),
-                    )
-                    it.copy(distanceBetween = distanceBetween)
-                }
+
+            stationResourcesFlow.flatMapLatest { stationResources ->
+                locationsRepository.getLocationResource()
+                    .onStart { emit(LocationResource.init()) }
+                    .filterNotNull()
+                    .map { location ->
+                        val userStationResources =
+                            stationResources.mapToUserStationResources(userData)
+                        userStationResources.map { userStation ->
+                            val distanceBetween = distanceInKm(
+                                location.latitude,
+                                location.longitude,
+                                userStation.latitude.toDouble(),
+                                userStation.longitude.toDouble(),
+                            )
+                            userStation.copy(distanceBetween = distanceBetween)
+                        }
+                    }
             }
         }
     }

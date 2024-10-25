@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.network
 
-import android.util.Log
 import com.ngapp.metanmobile.core.network.BuildConfig
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.di.NetworkModule
@@ -59,7 +58,8 @@ class MetanMobileParser @Inject constructor(
     override suspend fun getStations(isRefreshing: Boolean): List<NetworkStationResource> {
         val currentParser = if (isRefreshing) parserNoCache else parser
         val channel = currentParser.getChannel(urlStations)
-        return channel.articles.map { it.asNetworkStationResource() }
+        val response = channel.articles
+        return response.map { it.asNetworkStationResource() }
     }
 
     override suspend fun getStation(
