@@ -79,7 +79,7 @@ internal fun PrivacyPolicyRoute(
     viewModel: PrivacyPolicyViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val isPrivacyOptionsRequired by viewModel.isPrivacyOptionsRequired
+    val isPrivacyOptionsRequired by viewModel.isPrivacyOptionsRequired.collectAsStateWithLifecycle()
 
     PrivacyPolicyScreen(
         modifier = modifier,

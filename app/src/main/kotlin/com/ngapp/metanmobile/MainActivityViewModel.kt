@@ -58,10 +58,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun onObserveConsent() {
-        val isPrivacyOptionsRequired = consentHelper.isPrivacyOptionsRequired()
-        if (isPrivacyOptionsRequired) {
-            consentHelper.obtainConsentAndShow()
-        }
+        consentHelper.obtainConsentAndShow()
         viewModelScope.launch {
             consentHelper.canShowAds.collect { canShow ->
                 _consentState.value = _consentState.value.copy(canShowAds = canShow)
