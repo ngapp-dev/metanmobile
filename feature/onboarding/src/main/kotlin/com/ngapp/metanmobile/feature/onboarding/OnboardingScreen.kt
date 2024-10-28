@@ -41,6 +41,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +63,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.designsystem.component.MMButton
 import com.ngapp.metanmobile.core.designsystem.component.MMOnboardingTopAppBar
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
@@ -114,14 +117,12 @@ private fun OnboardingScreen(
         modifier = modifier,
         shouldShowNavigationButton = pagerState.currentPage > 0,
         onBackClick = {
-            if (pagerState.currentPage + 1 > 1) scope.launch {
-                pagerState.scrollToPage(pagerState.currentPage - 1)
+            if (pagerState.currentPage > 0) {
+                scope.launch { pagerState.scrollToPage(pagerState.currentPage - 1) }
             }
         },
         onSkipClick = {
-            if (pagerState.currentPage + 1 < pages.size) scope.launch {
-                pagerState.scrollToPage(pages.size - 1)
-            }
+            scope.launch { pagerState.scrollToPage(pages.lastIndex) }
         }
     ) { padding ->
         Column(
@@ -132,14 +133,14 @@ private fun OnboardingScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
-                    .fillMaxHeight(0.9f)
+                    .weight(1f)
                     .fillMaxWidth()
             ) { page ->
                 PagerScreen(onBoardingPage = pages[page])
             }
             BottomSection(size = pages.size, index = pagerState.currentPage) {
-                if (pagerState.currentPage + 1 < pages.size) scope.launch {
-                    pagerState.scrollToPage(pagerState.currentPage + 1)
+                if (pagerState.currentPage < pages.lastIndex) {
+                    scope.launch { pagerState.scrollToPage(pagerState.currentPage + 1) }
                 } else {
                     onAction(OnboardingAction.DismissOnboarding)
                 }
@@ -155,27 +156,26 @@ private fun BottomSection(
     index: Int,
     onButtonClick: () -> Unit,
 ) {
-    Box(
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.align(Alignment.CenterStart)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             repeat(size) { Indicator(isSelected = it == index) }
         }
 
-        FloatingActionButton(
+        Button(
             onClick = onButtonClick,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .shadow(0.dp),
-            containerColor = Blue,
-            contentColor = White,
+            colors = ButtonDefaults.buttonColors(containerColor = Blue, contentColor = White),
             shape = MMShapes.large,
+            modifier = Modifier.height(56.dp)
         ) {
             AnimatedVisibility(visible = index != 2) {
                 Icon(
@@ -201,7 +201,8 @@ private fun BottomSection(
 private fun Indicator(isSelected: Boolean) {
     val width = animateDpAsState(
         targetValue = if (isSelected) 25.dp else 10.dp,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy), label = ""
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = stringResource(R.string.feature_onboarding_description_pager_indicator)
     )
     Box(
         modifier = Modifier
@@ -216,27 +217,36 @@ private fun Indicator(isSelected: Boolean) {
 private fun PagerScreen(onBoardingPage: OnBoardingPage) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 50.dp, vertical = 16.dp)
     ) {
+        Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = onBoardingPage.image),
             contentDescription = stringResource(R.string.feature_onboarding_description_page_img),
-            modifier = Modifier.padding(start = 50.dp, end = 50.dp)
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .weight(4f)
         )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = onBoardingPage.title),
             style = MMTypography.displayMedium,
             textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(id = onBoardingPage.description),
             style = MMTypography.headlineMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(2f)
         )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 

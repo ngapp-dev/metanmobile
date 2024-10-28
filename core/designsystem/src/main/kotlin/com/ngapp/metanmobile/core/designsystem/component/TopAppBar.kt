@@ -315,10 +315,7 @@ fun MMOnboardingTopAppBar(
             }
         },
         actions = {
-            TextButton(
-                onClick = onSkipActionClick,
-                contentPadding = PaddingValues(0.dp)
-            ) {
+            TextButton(onClick = onSkipActionClick) {
                 Text(
                     text = stringResource(R.string.core_designsystem_onboarding_button_skip),
                     color = MMColors.toolbarIconColor,

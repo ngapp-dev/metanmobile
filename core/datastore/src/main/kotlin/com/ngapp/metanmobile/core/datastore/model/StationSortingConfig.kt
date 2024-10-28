@@ -33,7 +33,7 @@ fun StationSortingConfigProto.toModel() = StationSortingConfig(
 fun StationsSortingTypeProto.toModel(): StationSortingType {
     return when (this) {
         StationsSortingTypeProto.UNRECOGNIZED -> StationSortingType.STATION_NAME
-        StationsSortingTypeProto.DISTANCE -> StationSortingType.DISTANCE
+        StationsSortingTypeProto.DISTANCE -> StationSortingType.STATION_NAME
         StationsSortingTypeProto.STATION_NAME -> StationSortingType.STATION_NAME
     }
 }
@@ -49,7 +49,7 @@ fun StationTypeProto.toModel(): StationType {
 
 fun StationSortingType.toProto(): StationsSortingTypeProto {
     return when (this) {
-        StationSortingType.DISTANCE -> StationsSortingTypeProto.DISTANCE
+//        StationSortingType.DISTANCE -> StationsSortingTypeProto.DISTANCE
         StationSortingType.STATION_NAME -> StationsSortingTypeProto.STATION_NAME
     }
 }
