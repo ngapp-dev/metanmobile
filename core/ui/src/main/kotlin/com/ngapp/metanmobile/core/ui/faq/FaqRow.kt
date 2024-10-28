@@ -99,12 +99,13 @@ fun FaqRow(
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically(),
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp),
+            ) {
                 HtmlText(
                     text = faqItem.content.orEmpty(),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 8.dp),
                     onLinkClick = { uriHandler.openUri(it) },
                     style = MMTypography.titleMedium,
                 )
