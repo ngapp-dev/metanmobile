@@ -132,6 +132,7 @@ fun rememberReorderableLazyRowState(
  * @param scroller The [Scroller] that will be used to scroll the list. Use [rememberScroller](com.ngapp.metanmobile.core.designsystem.component.reorderable.ScrollerKt.rememberScroller) to create a [Scroller].
  * @param onMove The function that is called when an item is moved. Make sure this function returns only after the items are moved. This suspend function is invoked with the `rememberReorderableLazyListState` scope, allowing for async processing, if desired. Note that the scope used here is the one provided by the composition where `rememberReorderableLazyListState` is called, for long running work that needs to outlast `rememberReorderableLazyListState` being in the composition you should use a scope that fits the lifecycle needed.
  */
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun rememberReorderableLazyListState(
     lazyListState: LazyListState,

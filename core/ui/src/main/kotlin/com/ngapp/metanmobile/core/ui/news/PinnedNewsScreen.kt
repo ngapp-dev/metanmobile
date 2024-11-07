@@ -46,7 +46,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.GreenPale
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
-import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.ui.util.dateFormatted
 
