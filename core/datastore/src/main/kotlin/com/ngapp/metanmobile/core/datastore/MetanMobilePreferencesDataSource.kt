@@ -19,16 +19,13 @@ package com.ngapp.metanmobile.core.datastore
 
 import android.util.Log
 import androidx.datastore.core.DataStore
+import com.ngapp.metanmobile.core.datastore.model.asHomeContentItem
 import com.ngapp.metanmobile.core.datastore.model.toModel
 import com.ngapp.metanmobile.core.datastore.model.toProto
-import com.ngapp.metanmobile.core.model.station.StationType
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
-import com.ngapp.metanmobile.core.model.userdata.NewsSortingType
-import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
-import com.ngapp.metanmobile.core.model.userdata.StationSortingType
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -67,6 +64,7 @@ class MetanMobilePreferencesDataSource @Inject constructor(
                 stationSortingConfig = it.stationSortingConfig.toModel(),
                 isReviewShown = it.isReviewShown,
                 totalUsageTime = it.totalUsageTime,
+                homeReorderableList = it.homeReorderableList.map(String::asHomeContentItem),
             )
         }
 
@@ -168,6 +166,15 @@ class MetanMobilePreferencesDataSource @Inject constructor(
     suspend fun setReviewShown(isReviewShown: Boolean) {
         userPreferences.updateData {
             it.copy { this.isReviewShown = isReviewShown }
+        }
+    }
+
+    suspend fun setHomeReorderableList(homeReorderableList: List<String>) {
+        userPreferences.updateData {
+            it.copy {
+                this.homeReorderable.clear()
+                this.homeReorderable.addAll(homeReorderableList)
+            }
         }
     }
 }

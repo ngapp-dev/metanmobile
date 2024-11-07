@@ -30,5 +30,6 @@ message UserPreferences {
   int64 total_usage_time = 12;
   bool is_review_shown = 13;
 
-  // NEXT AVAILABLE ID: 14
+  repeated string home_reorderable = 14;
+  // NEXT AVAILABLE ID: 15
 }

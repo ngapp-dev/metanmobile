@@ -68,7 +68,6 @@ fun PinnedNewsScreen(
             state = pagerState,
             verticalAlignment = Alignment.Top
         ) { position ->
-
             PagerScreen(
                 pinnedNews = pages[position],
                 onDetailClick = onDetailClick

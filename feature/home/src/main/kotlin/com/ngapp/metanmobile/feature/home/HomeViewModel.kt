@@ -28,10 +28,11 @@ import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepositor
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationResourceQuery
 import com.ngapp.metanmobile.core.data.repository.station.StationResourcesWithFavoritesRepository
+import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.core.model.career.CareerResource
 import com.ngapp.metanmobile.core.model.faq.FaqResource
-import com.ngapp.metanmobile.core.model.news.NewsResource
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.model.price.PriceResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
@@ -41,8 +42,10 @@ import com.ngapp.metanmobile.feature.home.state.HomeUiState.Loading
 import com.ngapp.metanmobile.feature.home.state.HomeUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -57,6 +60,7 @@ class HomeViewModel @Inject constructor(
     faqRepository: FaqRepository,
     careersRepository: CareersRepository,
     private val locationsRepository: LocationsRepository,
+    private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
     val uiState: StateFlow<HomeUiState> = homeUiState(
@@ -79,14 +83,46 @@ class HomeViewModel @Inject constructor(
             initialValue = false,
         )
 
+    private var _isEditing = MutableStateFlow(false)
+    val isEditing = _isEditing.asStateFlow()
+
+    private val _reorderableList = MutableStateFlow<List<HomeContentItem>>(emptyList())
+    val reorderableList: StateFlow<List<HomeContentItem>> = _reorderableList.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            userDataRepository.userData.collect { userData ->
+                _reorderableList.value = userData.homeReorderableList
+            }
+        }
+    }
+
     fun triggerAction(action: HomeAction) {
         when (action) {
             is HomeAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
+            is HomeAction.EditUi -> onEditUi()
+            is HomeAction.SaveUi -> onSaveUi()
+            is HomeAction.ReorderList -> onReorderList(action.newOrder)
         }
     }
 
     private fun onUpdateLocation(hasPermission: Boolean) = viewModelScope.launch {
         locationsRepository.updateLocation(hasPermission)
+    }
+
+    private fun onEditUi() {
+        _isEditing.value = true
+    }
+
+    private fun onSaveUi() {
+        _isEditing.value = false
+        viewModelScope.launch {
+            userDataRepository.setHomeReorderableList(reorderableList.value)
+        }
+    }
+
+    private fun onReorderList(newOrder: List<HomeContentItem>) {
+        _reorderableList.value = newOrder
     }
 }
 

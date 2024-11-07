@@ -22,6 +22,10 @@ import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.MainActivityUiState.Loading
 import com.ngapp.metanmobile.MainActivityUiState.Success
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.CAREER
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.CALCULATORS
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.FAQ
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,8 +35,6 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -58,6 +60,7 @@ class MainActivityViewModel @Inject constructor(
     init {
         onObserveConsent()
         onTrackUsageTime()
+        onInitUserData()
     }
 
     private fun onObserveConsent() {
@@ -92,6 +95,17 @@ class MainActivityViewModel @Inject constructor(
     fun setReviewShown() = viewModelScope.launch {
         userDataRepository.setReviewShown(true)
     }
+
+    private fun onInitUserData() = viewModelScope.launch {
+        userDataRepository.userData.collectLatest { userData ->
+            if (userData.homeReorderableList.isEmpty()) {
+                userDataRepository.setHomeReorderableList(
+                    listOf(USER_LOCATION, CALCULATORS, FAQ, CAREER)
+                )
+            }
+        }
+    }
+
 }
 
 sealed interface MainActivityUiState {

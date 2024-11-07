@@ -39,6 +39,7 @@
     <string name="core_designsystem_description_search_icon" translatable="false">Toolbar search icon</string>
     <string name="core_designsystem_description_support_icon" translatable="false">Toolbar support icon</string>
     <string name="core_designsystem_description_cabinet_icon" translatable="false">Toolbar cabinet icon</string>
+    <string name="core_designsystem_description_edit_icon" translatable="false">Toolbar edit icon</string>
     <string name="core_designsystem_description_menu_icon" translatable="false">Toolbar menu icon</string>
     <string name="core_designsystem_description_nav_icon" translatable="false">Toolbar nav icon</string>
     <string name="core_designsystem_description_clear_search_icon" translatable="false">Clear search</string>

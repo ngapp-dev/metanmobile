@@ -36,6 +36,7 @@
     <string name="core_ui_button_permission_request">Запрасіць дазвол</string>
     <string name="core_ui_button_show_all">Паказаць усе</string>
     <string name="core_ui_button_career_apply">Адгукнуцца</string>
+    <string name="core_ui_button_save_changes">Захаваць змяненні</string>
     <!-- Title -->
     <string name="core_ui_title_filter_stations">Фільтр станцый</string>
     <string name="core_ui_title_filter_and_sort">Фільтраванне і сартаванне</string>

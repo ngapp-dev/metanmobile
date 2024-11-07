@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.core.data.repository.user
 
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
@@ -75,4 +76,9 @@ interface UserDataRepository {
      * Sets whether the review has been shown.
      */
     suspend fun setReviewShown(shown: Boolean)
+
+    /**
+     * Sets order of home reorderable list.
+     */
+    suspend fun setHomeReorderableList(homeReorderableList: List<HomeContentItem>)
 }

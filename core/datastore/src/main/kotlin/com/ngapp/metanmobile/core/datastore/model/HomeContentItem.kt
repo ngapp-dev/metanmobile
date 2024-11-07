@@ -15,22 +15,16 @@
  *
  */
 
-package com.ngapp.metanmobile.core.model.userdata
+package com.ngapp.metanmobile.core.datastore.model
 
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 
-/**
- * Class summarizing user interest data
- */
-data class UserData(
-    val favoriteStationResources: Set<String>,
-    val viewedNewsResources: Set<String>,
-    val languageConfig: LanguageConfig,
-    val darkThemeConfig: DarkThemeConfig,
-    val shouldHideOnboarding: Boolean,
-    val newsSortingConfig: NewsSortingConfig,
-    val stationSortingConfig: StationSortingConfig,
-    val totalUsageTime: Long,
-    val isReviewShown: Boolean,
-    val homeReorderableList: List<HomeContentItem>,
-)
+fun String.asHomeContentItem(): HomeContentItem {
+    return when (this) {
+        "USER_LOCATION" -> HomeContentItem.USER_LOCATION
+        "CALCULATORS" -> HomeContentItem.CALCULATORS
+        "FAQ" -> HomeContentItem.FAQ
+        "CAREER" -> HomeContentItem.CAREER
+        else -> throw IllegalArgumentException("Unknown HomeContentItem: $this")
+    }
+}

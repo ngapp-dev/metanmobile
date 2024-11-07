@@ -23,6 +23,7 @@ import com.ngapp.metanmobile.core.data.repository.logLanguageConfigChanged
 import com.ngapp.metanmobile.core.data.repository.logOnboardingStateChanged
 import com.ngapp.metanmobile.core.data.repository.logStationResourceFavoriteToggled
 import com.ngapp.metanmobile.core.datastore.MetanMobilePreferencesDataSource
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
@@ -78,5 +79,9 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
     override suspend fun setReviewShown(shown: Boolean) {
         preferencesDataSource.setReviewShown(shown)
+    }
+
+    override suspend fun setHomeReorderableList(homeReorderableList: List<HomeContentItem>) {
+        preferencesDataSource.setHomeReorderableList(homeReorderableList.map { it.name })
     }
 }

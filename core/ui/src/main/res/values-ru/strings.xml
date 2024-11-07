@@ -35,6 +35,7 @@
     <string name="core_ui_button_permission_request">Запросить разрешение</string>
     <string name="core_ui_button_show_all">Показать все</string>
     <string name="core_ui_button_career_apply">Откликнуться</string>
+    <string name="core_ui_button_save_changes">Сохранить изменения</string>
     <!-- Title -->
     <string name="core_ui_title_filter_stations">Фильтр станций</string>
     <string name="core_ui_title_filter_and_sort">Фильтрация и сортировка</string>
