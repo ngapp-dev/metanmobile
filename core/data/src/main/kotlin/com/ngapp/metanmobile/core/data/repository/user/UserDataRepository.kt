@@ -85,5 +85,5 @@ interface UserDataRepository {
     /**
      * Sets last news of home page expanded.
      */
-    suspend fun setHomeExpandedLastNews(isExpanded: Boolean)
+    suspend fun setHomeLastNewsExpanded(isExpanded: Boolean)
 }

@@ -85,7 +85,7 @@ class OfflineFirstUserDataRepository @Inject constructor(
         preferencesDataSource.setHomeReorderableList(homeReorderableList.map { it.name })
     }
 
-    override suspend fun setHomeExpandedLastNews(isExpanded: Boolean) {
+    override suspend fun setHomeLastNewsExpanded(isExpanded: Boolean) {
         preferencesDataSource.setHomeExpandedLastNews(isExpanded)
     }
 }

@@ -31,6 +31,6 @@ message UserPreferences {
   bool is_review_shown = 13;
 
   repeated string home_reorderable = 14;
-  bool is_last_news_expanded = 15;
+  bool is_home_last_news_expanded = 15;
   // NEXT AVAILABLE ID: 16
 }

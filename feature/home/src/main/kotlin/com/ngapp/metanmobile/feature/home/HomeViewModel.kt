@@ -123,7 +123,7 @@ class HomeViewModel @Inject constructor(
         _isEditing.value = false
         viewModelScope.launch {
             userDataRepository.setHomeReorderableList(reorderableList.value)
-            userDataRepository.setHomeExpandedLastNews(isLastNewsExpanded.value)
+            userDataRepository.setHomeLastNewsExpanded(isLastNewsExpanded.value)
         }
     }
 

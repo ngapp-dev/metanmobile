@@ -102,6 +102,7 @@ class MainActivityViewModel @Inject constructor(
                 userDataRepository.setHomeReorderableList(
                     listOf(USER_LOCATION, CALCULATORS, FAQ, CAREER)
                 )
+                userDataRepository.setHomeLastNewsExpanded(true)
             }
         }
     }
