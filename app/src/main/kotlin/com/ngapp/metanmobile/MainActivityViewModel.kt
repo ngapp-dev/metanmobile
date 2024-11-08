@@ -99,10 +99,14 @@ class MainActivityViewModel @Inject constructor(
     private fun onInitUserData() = viewModelScope.launch {
         userDataRepository.userData.collectLatest { userData ->
             if (userData.homeReorderableList.isEmpty()) {
-                userDataRepository.setHomeReorderableList(
-                    listOf(USER_LOCATION, CALCULATORS, FAQ, CAREER)
-                )
-                userDataRepository.setHomeLastNewsExpanded(true)
+                viewModelScope.launch {
+                    userDataRepository.setHomeLastNewsExpanded(true)
+                }
+                viewModelScope.launch {
+                    userDataRepository.setHomeReorderableList(
+                        listOf(USER_LOCATION, CALCULATORS, FAQ, CAREER)
+                    )
+                }
             }
         }
     }

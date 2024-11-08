@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -88,13 +89,15 @@ class HomeViewModel @Inject constructor(
 
     private val _reorderableList = MutableStateFlow<List<HomeContentItem>>(emptyList())
     val reorderableList: StateFlow<List<HomeContentItem>> = _reorderableList.asStateFlow()
+    private val _backupReorderableList = MutableStateFlow<List<HomeContentItem>?>(null)
 
     private val _isLastNewsExpanded = MutableStateFlow(true)
     val isLastNewsExpanded: StateFlow<Boolean> = _isLastNewsExpanded.asStateFlow()
+    private val _backupIsLastNewsExpanded = MutableStateFlow<Boolean?>(null)
 
     init {
         viewModelScope.launch {
-            userDataRepository.userData.collect { userData ->
+            userDataRepository.userData.collectLatest { userData ->
                 _reorderableList.value = userData.homeReorderableList
                 _isLastNewsExpanded.value = userData.homeLastNewsExpanded
             }
@@ -104,7 +107,7 @@ class HomeViewModel @Inject constructor(
     fun triggerAction(action: HomeAction) {
         when (action) {
             is HomeAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
-            is HomeAction.EditUi -> onEditUi()
+            is HomeAction.EditUi -> onEditUi(action.isEditing)
             is HomeAction.SaveUi -> onSaveUi()
             is HomeAction.ReorderList -> onReorderList(action.newOrder)
             is HomeAction.ExpandLastNews -> onExpandLastNews(action.expand)
@@ -115,14 +118,30 @@ class HomeViewModel @Inject constructor(
         locationsRepository.updateLocation(hasPermission)
     }
 
-    private fun onEditUi() {
-        _isEditing.value = true
+    private fun onEditUi(isEditing: Boolean) {
+        if (isEditing) {
+            _backupReorderableList.value = reorderableList.value
+            _backupIsLastNewsExpanded.value = isLastNewsExpanded.value
+            _isEditing.value = true
+        } else {
+            _isEditing.value = false
+            _backupReorderableList.value?.let {
+                _reorderableList.value = it
+            }
+            _backupReorderableList.value = null
+            _backupIsLastNewsExpanded.value?.let {
+                _isLastNewsExpanded.value = it
+            }
+            _backupIsLastNewsExpanded.value = null
+        }
     }
 
     private fun onSaveUi() {
         _isEditing.value = false
         viewModelScope.launch {
             userDataRepository.setHomeReorderableList(reorderableList.value)
+        }
+        viewModelScope.launch {
             userDataRepository.setHomeLastNewsExpanded(isLastNewsExpanded.value)
         }
     }

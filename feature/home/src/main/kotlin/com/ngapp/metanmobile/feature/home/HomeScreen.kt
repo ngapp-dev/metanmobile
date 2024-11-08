@@ -193,7 +193,7 @@ private fun HomeHeader(
         topBar = {
             MMHomeTopAppBar(
                 onUserClicked = onCabinetClick,
-                onEditClicked = { onAction(HomeAction.EditUi) },
+                onEditClicked = { onAction(HomeAction.EditUi(!isEditingUi)) },
                 onMenuClicked = onSettingsClick
             )
         },
