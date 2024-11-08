@@ -77,11 +77,15 @@ class OfflineFirstUserDataRepository @Inject constructor(
         preferencesDataSource.updateTotalUsageTime(usageTime)
     }
 
-    override suspend fun setReviewShown(shown: Boolean) {
-        preferencesDataSource.setReviewShown(shown)
+    override suspend fun setReviewShown(isShown: Boolean) {
+        preferencesDataSource.setReviewShown(isShown)
     }
 
     override suspend fun setHomeReorderableList(homeReorderableList: List<HomeContentItem>) {
         preferencesDataSource.setHomeReorderableList(homeReorderableList.map { it.name })
+    }
+
+    override suspend fun setHomeExpandedLastNews(isExpanded: Boolean) {
+        preferencesDataSource.setHomeExpandedLastNews(isExpanded)
     }
 }

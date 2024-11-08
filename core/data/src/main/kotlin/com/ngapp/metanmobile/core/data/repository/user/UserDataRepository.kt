@@ -75,10 +75,15 @@ interface UserDataRepository {
     /**
      * Sets whether the review has been shown.
      */
-    suspend fun setReviewShown(shown: Boolean)
+    suspend fun setReviewShown(isShown: Boolean)
 
     /**
      * Sets order of home reorderable list.
      */
     suspend fun setHomeReorderableList(homeReorderableList: List<HomeContentItem>)
+
+    /**
+     * Sets last news of home page expanded.
+     */
+    suspend fun setHomeExpandedLastNews(isExpanded: Boolean)
 }

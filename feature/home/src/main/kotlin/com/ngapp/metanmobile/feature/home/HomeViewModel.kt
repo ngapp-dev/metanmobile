@@ -89,10 +89,14 @@ class HomeViewModel @Inject constructor(
     private val _reorderableList = MutableStateFlow<List<HomeContentItem>>(emptyList())
     val reorderableList: StateFlow<List<HomeContentItem>> = _reorderableList.asStateFlow()
 
+    private val _isLastNewsExpanded = MutableStateFlow(true)
+    val isLastNewsExpanded: StateFlow<Boolean> = _isLastNewsExpanded.asStateFlow()
+
     init {
         viewModelScope.launch {
             userDataRepository.userData.collect { userData ->
                 _reorderableList.value = userData.homeReorderableList
+                _isLastNewsExpanded.value = userData.homeLastNewsExpanded
             }
         }
     }
@@ -103,6 +107,7 @@ class HomeViewModel @Inject constructor(
             is HomeAction.EditUi -> onEditUi()
             is HomeAction.SaveUi -> onSaveUi()
             is HomeAction.ReorderList -> onReorderList(action.newOrder)
+            is HomeAction.ExpandLastNews -> onExpandLastNews(action.expand)
         }
     }
 
@@ -118,11 +123,16 @@ class HomeViewModel @Inject constructor(
         _isEditing.value = false
         viewModelScope.launch {
             userDataRepository.setHomeReorderableList(reorderableList.value)
+            userDataRepository.setHomeExpandedLastNews(isLastNewsExpanded.value)
         }
     }
 
     private fun onReorderList(newOrder: List<HomeContentItem>) {
         _reorderableList.value = newOrder
+    }
+
+    private fun onExpandLastNews(expand: Boolean) {
+        _isLastNewsExpanded.value = expand
     }
 }
 

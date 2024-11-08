@@ -65,7 +65,7 @@ class FakeUserDataRepository @Inject constructor(
         preferencesDataSource.updateTotalUsageTime(usageTime)
     }
 
-    override suspend fun setReviewShown(shown: Boolean) {
-        preferencesDataSource.setReviewShown(shown)
+    override suspend fun setReviewShown(isShown: Boolean) {
+        preferencesDataSource.setReviewShown(isShown)
     }
 }

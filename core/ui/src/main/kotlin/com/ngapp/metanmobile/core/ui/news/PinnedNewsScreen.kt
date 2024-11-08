@@ -61,6 +61,7 @@ fun PinnedNewsScreen(
             .fillMaxWidth()
             .height(110.dp)
             .background(color = MMColors.cardBackgroundColor)
+            .padding(bottom = 8.dp)
     ) {
         HorizontalPager(
             modifier = Modifier.weight(10f),

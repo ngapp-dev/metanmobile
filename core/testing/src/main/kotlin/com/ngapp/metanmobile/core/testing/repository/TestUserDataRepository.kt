@@ -115,9 +115,9 @@ class TestUserDataRepository : UserDataRepository {
         }
     }
 
-    override suspend fun setReviewShown(shown: Boolean) {
+    override suspend fun setReviewShown(isShown: Boolean) {
         currentUserData.let { current ->
-            _userData.tryEmit(current.copy(isReviewShown = shown))
+            _userData.tryEmit(current.copy(isReviewShown = isShown))
         }
     }
 

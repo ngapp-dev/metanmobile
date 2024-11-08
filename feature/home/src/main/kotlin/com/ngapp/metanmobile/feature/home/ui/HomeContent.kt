@@ -44,10 +44,12 @@ import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.model.price.PriceResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
+import com.ngapp.metanmobile.feature.home.state.HomeAction
 
 @Composable
 internal fun HomeContent(
     isEditingUi: Boolean,
+    isLastNewsExpended: Boolean,
     reorderableList: List<HomeContentItem>,
     pinnedNewsList: List<UserNewsResource>,
     lastNewsList: List<UserNewsResource>,
@@ -60,7 +62,7 @@ internal fun HomeContent(
     onSeeAllFaqClick: () -> Unit,
     onSeeAllCareersClick: () -> Unit,
     onStationDetailClick: (String) -> Unit,
-    onReorderList: (List<HomeContentItem>) -> Unit,
+    onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -71,7 +73,7 @@ internal fun HomeContent(
             val toIndex: Int = indexOfFirst { it == to.key }
             add(toIndex, removeAt(fromIndex))
         }
-        onReorderList(temporaryList)
+        onAction(HomeAction.ReorderList(temporaryList))
         haptic.performHapticFeedback(ReorderHapticFeedbackType.MOVE)
     }
 
@@ -82,11 +84,13 @@ internal fun HomeContent(
     ) {
         item("contentHeader") {
             HomeHeaderView(
-                idEditing = isEditingUi,
+                isEditingUi = isEditingUi,
+                isLastNewsExpended = isLastNewsExpended,
                 lastNewsItems = lastNewsList,
                 pinnedNews = pinnedNewsList,
                 onShowAllNewsClick = onShowAllNewsClick,
                 onNewsDetailClick = onNewsDetailClick,
+                onExpandLastNewsClick = { onAction(HomeAction.ExpandLastNews(it)) },
             )
         }
         items(reorderableList, key = { it }) { item ->

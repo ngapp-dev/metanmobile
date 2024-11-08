@@ -79,24 +79,24 @@ internal fun HomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val reorderableList by viewModel.reorderableList.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
-    val isEditing by viewModel.isEditing.collectAsStateWithLifecycle()
+    val isEditingUi by viewModel.isEditing.collectAsStateWithLifecycle()
+    val isLastNewsExpended by viewModel.isLastNewsExpanded.collectAsStateWithLifecycle()
 
     HomeScreen(
         modifier = modifier,
         uiState = uiState,
         reorderableList = reorderableList,
         isSyncing = isSyncing,
-        isEditing = isEditing,
+        isEditingUi = isEditingUi,
+        isLastNewsExpended = isLastNewsExpended,
         onNewsClick = onNewsClick,
         onNewsDetailClick = onNewsDetailClick,
         onStationDetailClick = onStationDetailClick,
         onFaqListClick = onFaqListClick,
         onCareersClick = onCareersClick,
         onCabinetClick = onCabinetClick,
-        onEditUiClick = { viewModel.triggerAction(HomeAction.EditUi) },
         onSettingsClick = onSettingsClick,
-        onReorderList = { viewModel.triggerAction(HomeAction.ReorderList(it)) },
-        onSaveUiClick = { viewModel.triggerAction(HomeAction.SaveUi) }
+        onAction = viewModel::triggerAction
     )
 }
 
@@ -106,17 +106,16 @@ private fun HomeScreen(
     uiState: HomeUiState,
     reorderableList: List<HomeContentItem>,
     isSyncing: Boolean,
-    isEditing: Boolean,
+    isEditingUi: Boolean,
+    isLastNewsExpended: Boolean,
     onNewsClick: () -> Unit,
     onNewsDetailClick: (String) -> Unit,
     onStationDetailClick: (String) -> Unit,
     onFaqListClick: () -> Unit,
     onCareersClick: () -> Unit,
     onCabinetClick: () -> Unit,
-    onEditUiClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onReorderList: (List<HomeContentItem>) -> Unit,
-    onSaveUiClick: () -> Unit,
+    onAction: (HomeAction) -> Unit,
 ) {
     val isLoading = uiState is HomeUiState.Loading
 
@@ -124,11 +123,10 @@ private fun HomeScreen(
 
     HomeHeader(
         modifier = modifier,
-        isEditing = isEditing,
+        isEditingUi = isEditingUi,
         onCabinetClick = onCabinetClick,
-        onEditUiClick = onEditUiClick,
         onSettingsClick = onSettingsClick,
-        onSaveUiClick = onSaveUiClick
+        onAction = onAction,
     ) { padding ->
         Box(
             modifier = modifier
@@ -139,7 +137,8 @@ private fun HomeScreen(
                 HomeUiState.Loading -> Unit
                 is HomeUiState.Success -> {
                     HomeContent(
-                        isEditingUi = isEditing,
+                        isEditingUi = isEditingUi,
+                        isLastNewsExpended = isLastNewsExpended,
                         reorderableList = reorderableList,
                         pinnedNewsList = uiState.pinnedNewsList,
                         lastNewsList = uiState.lastNewsList,
@@ -152,7 +151,7 @@ private fun HomeScreen(
                         onSeeAllCareersClick = onCareersClick,
                         onNewsDetailClick = onNewsDetailClick,
                         onStationDetailClick = onStationDetailClick,
-                        onReorderList = onReorderList
+                        onAction = onAction,
                     )
                 }
             }
@@ -181,11 +180,10 @@ private fun HomeScreen(
 @Composable
 private fun HomeHeader(
     modifier: Modifier,
-    isEditing: Boolean,
+    isEditingUi: Boolean,
     onCabinetClick: () -> Unit,
-    onEditUiClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onSaveUiClick: () -> Unit,
+    onAction: (HomeAction) -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -195,18 +193,18 @@ private fun HomeHeader(
         topBar = {
             MMHomeTopAppBar(
                 onUserClicked = onCabinetClick,
-                onEditClicked = onEditUiClick,
+                onEditClicked = { onAction(HomeAction.EditUi) },
                 onMenuClicked = onSettingsClick
             )
         },
         floatingActionButton = {
             AnimatedVisibility(
-                visible = isEditing,
+                visible = isEditingUi,
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
             ) {
                 FloatingActionButton(
-                    onClick = onSaveUiClick,
+                    onClick = { onAction(HomeAction.SaveUi) },
                     containerColor = Green,
                     elevation = FloatingActionButtonDefaults.elevation(8.dp),
                     shape = CircleShape,

@@ -33,4 +33,5 @@ data class UserData(
     val totalUsageTime: Long,
     val isReviewShown: Boolean,
     val homeReorderableList: List<HomeContentItem>,
+    val homeLastNewsExpanded: Boolean,
 )
