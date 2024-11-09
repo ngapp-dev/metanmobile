@@ -32,5 +32,6 @@ sealed interface HomeUiState {
         val pinnedFaqList: List<FaqResource>,
         val career: CareerResource?,
     ) : HomeUiState
+
     data object Loading : HomeUiState
 }

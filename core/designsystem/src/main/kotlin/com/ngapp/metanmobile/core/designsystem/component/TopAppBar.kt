@@ -26,7 +26,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -98,14 +97,11 @@ fun MMToolbarWithNavIcon(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = MMIcons.ArrowBackFilled,
-                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    tint = MMColors.toolbarIconColor,
-                )
-            }
-
+            MMToolbarAction(
+                icon = MMIcons.ArrowBackFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                onClick = onNavigationClick
+            )
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(MMColors.secondary),
         modifier = Modifier.fillMaxWidth(),
@@ -132,8 +128,16 @@ fun MMFilterSearchButtonsTopAppBar(
                 )
         },
         actions = {
-            SearchAction(onSearchActionClick = onSearchActionClick)
-            FilterAction(onFilterActionClick = onFilterActionClick)
+            MMToolbarAction(
+                icon = MMIcons.Search,
+                contentDescription = stringResource(R.string.core_designsystem_description_search_icon),
+                onClick = onSearchActionClick
+            )
+            MMToolbarAction(
+                icon = MMIcons.FilterListOutlined,
+                contentDescription = stringResource(R.string.core_designsystem_description_filter_icon),
+                onClick = onFilterActionClick
+            )
         },
         colors = colors,
         modifier = modifier
@@ -163,17 +167,17 @@ fun MMNavShareButtonsTopAppBar(
                 )
         },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = MMIcons.ArrowBackFilled,
-                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    tint = MMColors.toolbarIconColor,
-                )
-            }
+            MMToolbarAction(
+                icon = MMIcons.ArrowBackFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                onClick = onNavigationClick
+            )
         },
         actions = {
-            ShareAction(
-                onShareActionClick = onShareActionClick
+            MMToolbarAction(
+                icon = MMIcons.ShareFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_share_icon),
+                onClick = onShareActionClick
             )
         },
         colors = colors,
@@ -186,6 +190,7 @@ fun MMNavShareButtonsTopAppBar(
 @Composable
 fun MMHomeTopAppBar(
     onUserClicked: () -> Unit,
+    onEditClicked: () -> Unit,
     onMenuClicked: () -> Unit,
 ) {
     TopAppBar(
@@ -213,8 +218,21 @@ fun MMHomeTopAppBar(
             }
         },
         actions = {
-            UserAction(onUserClicked = onUserClicked)
-            MenuAction(onMenuClicked = onMenuClicked)
+            MMToolbarAction(
+                icon = MMIcons.PersonFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_cabinet_icon),
+                onClick = onUserClicked
+            )
+            MMToolbarAction(
+                icon = MMIcons.EditFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_edit_icon),
+                onClick = onEditClicked
+            )
+            MMToolbarAction(
+                icon = MMIcons.MenuFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_menu_icon),
+                onClick = onMenuClicked
+            )
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(MMColors.secondary),
         modifier = Modifier.fillMaxWidth(),
@@ -242,13 +260,11 @@ fun MMCabinetTopAppBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = MMIcons.ArrowBackFilled,
-                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    tint = MMColors.toolbarIconColor,
-                )
-            }
+            MMToolbarAction(
+                icon = MMIcons.ArrowBackFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                onClick = onNavigationClick
+            )
         },
         actions = {
             CabinetMoreAction(
@@ -281,15 +297,19 @@ fun MMMenuTopAppBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = MMIcons.ArrowBackFilled,
-                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    tint = MMColors.toolbarIconColor,
-                )
-            }
+            MMToolbarAction(
+                icon = MMIcons.ArrowBackFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                onClick = onNavigationClick
+            )
         },
-        actions = { SupportAction(onSupportClick = onSupportClick) },
+        actions = {
+            MMToolbarAction(
+                icon = MMIcons.PhoneFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_support_icon),
+                onClick = onSupportClick
+            )
+        },
         colors = TopAppBarDefaults.mediumTopAppBarColors(MMColors.secondary),
         modifier = Modifier.fillMaxWidth(),
     )
@@ -305,20 +325,15 @@ fun MMOnboardingTopAppBar(
         title = {},
         navigationIcon = {
             if (shouldShowNavigationButton) {
-                IconButton(onClick = onNavigationClick) {
-                    Icon(
-                        imageVector = MMIcons.ArrowBackFilled,
-                        contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                        tint = MMColors.toolbarIconColor,
-                    )
-                }
+                MMToolbarAction(
+                    icon = MMIcons.ArrowBackFilled,
+                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                    onClick = onNavigationClick
+                )
             }
         },
         actions = {
-            TextButton(
-                onClick = onSkipActionClick,
-                contentPadding = PaddingValues(0.dp)
-            ) {
+            TextButton(onClick = onSkipActionClick) {
                 Text(
                     text = stringResource(R.string.core_designsystem_onboarding_button_skip),
                     color = MMColors.toolbarIconColor,
@@ -357,13 +372,11 @@ fun MMFilterSearchFieldTopAppBar(
                 )
         },
         navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(
-                    imageVector = MMIcons.ArrowBackFilled,
-                    contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    tint = MMColors.toolbarIconColor,
-                )
-            }
+            MMToolbarAction(
+                icon = MMIcons.ArrowBackFilled,
+                contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
+                onClick = onNavigationClick
+            )
         },
         actions = {
             SearchField(
@@ -376,7 +389,11 @@ fun MMFilterSearchFieldTopAppBar(
                 onDoneClick = onDoneClick,
                 onClearClick = onClearClick
             )
-            FilterAction(onFilterActionClick = onFilterActionClick)
+            MMToolbarAction(
+                icon = MMIcons.FilterListOutlined,
+                contentDescription = stringResource(R.string.core_designsystem_description_filter_icon),
+                onClick = onFilterActionClick
+            )
         },
         colors = colors,
         modifier = modifier
@@ -428,13 +445,19 @@ private fun SearchField(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                IconButton(onClick = onClearClick) {
-                    Icon(
-                        imageVector = MMIcons.Close,
-                        contentDescription = stringResource(R.string.core_designsystem_description_clear_search_icon),
-                        tint = MMColors.toolbarIconColor
-                    )
-                }
+                MMToolbarAction(
+                    icon = MMIcons.Close,
+                    contentDescription = stringResource(R.string.core_designsystem_description_clear_search_icon),
+                    tint = MMColors.toolbarIconColor,
+                    onClick = onClearClick
+                )
+//                IconButton(onClick = onClearClick) {
+//                    Icon(
+//                        imageVector = MMIcons.Close,
+//                        contentDescription = stringResource(R.string.core_designsystem_description_clear_search_icon),
+//                        tint = MMColors.toolbarIconColor
+//                    )
+//                }
             }
         },
         maxLines = 1,
@@ -446,84 +469,6 @@ private fun SearchField(
             keyboardController?.hide()
         }),
     )
-}
-
-@Composable
-private fun SearchAction(
-    onSearchActionClick: () -> Unit,
-) {
-    IconButton(onClick = onSearchActionClick) {
-        Icon(
-            imageVector = MMIcons.Search,
-            contentDescription = stringResource(R.string.core_designsystem_description_search_icon),
-            tint = MMColors.toolbarIconColor,
-        )
-    }
-}
-
-@Composable
-private fun FilterAction(
-    onFilterActionClick: () -> Unit,
-) {
-    IconButton(onClick = onFilterActionClick) {
-        Icon(
-            imageVector = MMIcons.FilterListOutlined,
-            contentDescription = stringResource(R.string.core_designsystem_description_filter_icon),
-            tint = MMColors.toolbarIconColor,
-        )
-    }
-}
-
-@Composable
-private fun ShareAction(
-    onShareActionClick: () -> Unit,
-) {
-    IconButton(onClick = onShareActionClick) {
-        Icon(
-            imageVector = MMIcons.ShareFilled,
-            contentDescription = stringResource(R.string.core_designsystem_description_share_icon),
-            tint = MMColors.toolbarIconColor,
-        )
-    }
-}
-
-@Composable
-private fun SupportAction(
-    onSupportClick: () -> Unit,
-) {
-    IconButton(onClick = onSupportClick) {
-        Icon(
-            imageVector = MMIcons.PhoneFilled,
-            contentDescription = stringResource(R.string.core_designsystem_description_support_icon),
-            tint = MMColors.toolbarIconColor,
-        )
-    }
-}
-
-@Composable
-private fun UserAction(
-    onUserClicked: () -> Unit,
-) {
-    IconButton(onClick = onUserClicked) {
-        Icon(
-            imageVector = MMIcons.PersonFilled,
-            contentDescription = stringResource(R.string.core_designsystem_description_cabinet_icon),
-            tint = MMColors.toolbarIconColor
-        )
-    }
-}
-
-@Composable
-private fun MenuAction(
-    onMenuClicked: () -> Unit,
-) {
-    IconButton(onClick = onMenuClicked) {
-        Icon(
-            imageVector = MMIcons.MenuFilled,
-            contentDescription = stringResource(R.string.core_designsystem_description_menu_icon),
-            tint = MMColors.toolbarIconColor
-        )
-    }
 }
 
 @Composable
@@ -568,6 +513,22 @@ private fun CabinetMoreAction(
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun MMToolbarAction(
+    icon: ImageVector,
+    contentDescription: String,
+    tint: Color = MMColors.toolbarIconColor,
+    onClick: () -> Unit,
+) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = tint,
+        )
     }
 }
 

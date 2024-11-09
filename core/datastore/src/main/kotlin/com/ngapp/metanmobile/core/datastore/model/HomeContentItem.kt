@@ -15,14 +15,16 @@
  *
  */
 
-package com.ngapp.metanmobile.feature.home.state
+package com.ngapp.metanmobile.core.datastore.model
 
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 
-sealed interface HomeAction {
-    data class UpdateLocation(val hasPermissions: Boolean) : HomeAction
-    data class EditUi(val isEditing: Boolean) : HomeAction
-    data class ReorderList(val newOrder: List<HomeContentItem>) : HomeAction
-    data object SaveUi : HomeAction
-    data class ExpandLastNews(val expand: Boolean) : HomeAction
+fun String.asHomeContentItem(): HomeContentItem {
+    return when (this) {
+        "USER_LOCATION" -> HomeContentItem.USER_LOCATION
+        "CALCULATORS" -> HomeContentItem.CALCULATORS
+        "FAQ" -> HomeContentItem.FAQ
+        "CAREER" -> HomeContentItem.CAREER
+        else -> throw IllegalArgumentException("Unknown HomeContentItem: $this")
+    }
 }

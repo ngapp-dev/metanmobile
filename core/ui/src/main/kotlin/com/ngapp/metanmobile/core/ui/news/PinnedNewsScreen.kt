@@ -46,7 +46,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.GreenPale
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
-import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.ui.util.dateFormatted
 
@@ -62,13 +61,13 @@ fun PinnedNewsScreen(
             .fillMaxWidth()
             .height(110.dp)
             .background(color = MMColors.cardBackgroundColor)
+            .padding(bottom = 8.dp)
     ) {
         HorizontalPager(
             modifier = Modifier.weight(10f),
             state = pagerState,
             verticalAlignment = Alignment.Top
         ) { position ->
-
             PagerScreen(
                 pinnedNews = pages[position],
                 onDetailClick = onDetailClick

@@ -28,25 +28,34 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMHomeTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.theme.Green
+import com.ngapp.metanmobile.core.designsystem.theme.White
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
-import com.ngapp.metanmobile.core.ui.util.PermissionsManager
 import com.ngapp.metanmobile.feature.home.state.HomeAction
 import com.ngapp.metanmobile.feature.home.state.HomeUiState
 import com.ngapp.metanmobile.feature.home.ui.HomeContent
+import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 @Composable
 internal fun HomeRoute(
@@ -68,11 +77,18 @@ internal fun HomeRoute(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val reorderableList by viewModel.reorderableList.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val isEditingUi by viewModel.isEditing.collectAsStateWithLifecycle()
+    val isLastNewsExpended by viewModel.isLastNewsExpanded.collectAsStateWithLifecycle()
+
     HomeScreen(
         modifier = modifier,
         uiState = uiState,
+        reorderableList = reorderableList,
         isSyncing = isSyncing,
+        isEditingUi = isEditingUi,
+        isLastNewsExpended = isLastNewsExpended,
         onNewsClick = onNewsClick,
         onNewsDetailClick = onNewsDetailClick,
         onStationDetailClick = onStationDetailClick,
@@ -80,6 +96,7 @@ internal fun HomeRoute(
         onCareersClick = onCareersClick,
         onCabinetClick = onCabinetClick,
         onSettingsClick = onSettingsClick,
+        onAction = viewModel::triggerAction
     )
 }
 
@@ -87,7 +104,10 @@ internal fun HomeRoute(
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
+    reorderableList: List<HomeContentItem>,
     isSyncing: Boolean,
+    isEditingUi: Boolean,
+    isLastNewsExpended: Boolean,
     onNewsClick: () -> Unit,
     onNewsDetailClick: (String) -> Unit,
     onStationDetailClick: (String) -> Unit,
@@ -95,6 +115,7 @@ private fun HomeScreen(
     onCareersClick: () -> Unit,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onAction: (HomeAction) -> Unit,
 ) {
     val isLoading = uiState is HomeUiState.Loading
 
@@ -102,8 +123,10 @@ private fun HomeScreen(
 
     HomeHeader(
         modifier = modifier,
+        isEditingUi = isEditingUi,
         onCabinetClick = onCabinetClick,
         onSettingsClick = onSettingsClick,
+        onAction = onAction,
     ) { padding ->
         Box(
             modifier = modifier
@@ -114,6 +137,9 @@ private fun HomeScreen(
                 HomeUiState.Loading -> Unit
                 is HomeUiState.Success -> {
                     HomeContent(
+                        isEditingUi = isEditingUi,
+                        isLastNewsExpended = isLastNewsExpended,
+                        reorderableList = reorderableList,
                         pinnedNewsList = uiState.pinnedNewsList,
                         lastNewsList = uiState.lastNewsList,
                         nearestStation = uiState.nearestStation,
@@ -125,6 +151,7 @@ private fun HomeScreen(
                         onSeeAllCareersClick = onCareersClick,
                         onNewsDetailClick = onNewsDetailClick,
                         onStationDetailClick = onStationDetailClick,
+                        onAction = onAction,
                     )
                 }
             }
@@ -153,8 +180,10 @@ private fun HomeScreen(
 @Composable
 private fun HomeHeader(
     modifier: Modifier,
+    isEditingUi: Boolean,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onAction: (HomeAction) -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -164,9 +193,32 @@ private fun HomeHeader(
         topBar = {
             MMHomeTopAppBar(
                 onUserClicked = onCabinetClick,
+                onEditClicked = { onAction(HomeAction.EditUi(!isEditingUi)) },
                 onMenuClicked = onSettingsClick
             )
         },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = isEditingUi,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            ) {
+                FloatingActionButton(
+                    onClick = { onAction(HomeAction.SaveUi) },
+                    containerColor = Green,
+                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                    shape = CircleShape,
+                ) {
+                    Text(
+                        text = stringResource(CoreUiR.string.core_ui_button_save_changes),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = White,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
         content = pageContent
     )
 }

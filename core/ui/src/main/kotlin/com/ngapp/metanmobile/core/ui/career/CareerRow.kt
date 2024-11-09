@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -86,7 +85,7 @@ fun CareerRow(
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(Modifier.height(16.dp))
-            Row(modifier = Modifier.padding(top = 8.dp)) {
+            Column(modifier = Modifier.padding(top = 8.dp)) {
                 CareerWidgetIconWithText(
                     subtitleResId = R.string.core_ui_title_workplace,
                     text = career.place.ifEmpty { stringResource(R.string.core_ui_text_place_any) },
@@ -98,7 +97,7 @@ fun CareerRow(
                         )
                     }
                 )
-                Spacer(Modifier.width(16.dp))
+                Spacer(Modifier.height(8.dp))
                 CareerWidgetIconWithText(
                     subtitleResId = R.string.core_ui_title_experience,
                     text = career.exp.ifEmpty { stringResource(R.string.core_ui_text_no_experience) },

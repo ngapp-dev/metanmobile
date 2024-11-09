@@ -38,7 +38,7 @@
     <string name="core_ui_button_permission_request">Request permission</string>
     <string name="core_ui_button_show_all">Show All</string>
     <string name="core_ui_button_career_apply">Apply</string>
-
+    <string name="core_ui_button_save_changes">Save changes</string>
     <!-- Title -->
     <string name="core_ui_title_filter_stations">Filter stations</string>
     <string name="core_ui_title_filter_and_sort">Filter and sort stations</string>
@@ -111,6 +111,7 @@
     <string name="core_ui_description_news_list_img" translatable="false">News list img</string>
     <string name="core_ui_description_station_list_img" translatable="false">News list img</string>
     <string name="core_ui_description_settings_arrow_icon" translatable="false">Settings Arrow Icon</string>
+    <string name="core_ui_description_reorder_drag_handle_icon" translatable="false">Reorder drag handle Icon</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">The request timed out</string>
     <string name="core_ui_no_internet">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>

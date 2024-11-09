@@ -229,7 +229,7 @@ private fun SortTypesRadioGroup(
 @Composable
 private fun getSortingTypeText(sortingType: StationSortingType): String {
     return when (sortingType) {
-        StationSortingType.DISTANCE -> stringResource(R.string.core_ui_button_distance)
+//        StationSortingType.DISTANCE -> stringResource(R.string.core_ui_button_distance)
         StationSortingType.STATION_NAME -> stringResource(R.string.core_ui_button_name)
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
@@ -37,7 +38,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.BusinessCenter
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -47,6 +47,7 @@ import androidx.compose.material.icons.outlined.LocationDisabled
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ngapp.metanmobile.core.designsystem.R
 
@@ -73,6 +74,7 @@ object MMIcons {
     val PersonFilled = Icons.Filled.Person
     val ShareFilled = Icons.Filled.Share
     val ArrowBackFilled = Icons.AutoMirrored.Filled.ArrowBack
+    val EditFilled = Icons.Filled.Edit
 
     val LocationOff = Icons.Default.LocationOff
     val LocationDisabled = Icons.Outlined.LocationDisabled
@@ -87,6 +89,7 @@ object MMIcons {
     val KeyboardArrowRight = Icons.AutoMirrored.Filled.KeyboardArrowRight
     val Exp = Icons.Outlined.BusinessCenter
     val Email = Icons.Filled.Email
+    val DragHandle = Icons.Rounded.DragHandle
 
     // Painter
     val LogoFullSolid = R.drawable.core_designsystem_logo_full_solid

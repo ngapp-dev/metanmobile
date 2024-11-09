@@ -17,6 +17,8 @@
 
 package com.ngapp.metanmobile.core.model.userdata
 
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
+
 /**
  * Class summarizing user interest data
  */
@@ -30,4 +32,6 @@ data class UserData(
     val stationSortingConfig: StationSortingConfig,
     val totalUsageTime: Long,
     val isReviewShown: Boolean,
+    val homeReorderableList: List<HomeContentItem>,
+    val homeLastNewsExpanded: Boolean,
 )
