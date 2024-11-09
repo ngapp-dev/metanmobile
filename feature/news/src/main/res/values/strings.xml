@@ -24,8 +24,6 @@
     <string name="feature_news_title_all_news">All news</string>
     <!-- Text -->
     <string name="feature_news_text_new">New</string>
-    <!-- Description -->
-    <string name="feature_news_description_news_list_img" translatable="false">News list img</string>
     <!-- Placeholder -->
     <string name="feature_news_placeholder_search_news">Search news</string>
 </resources>

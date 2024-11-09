@@ -21,7 +21,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Upsert
 import com.ngapp.metanmobile.core.database.model.githubuser.GithubUserResourceEntity
 import kotlinx.coroutines.flow.Flow

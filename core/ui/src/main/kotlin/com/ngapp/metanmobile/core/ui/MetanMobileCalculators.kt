@@ -106,7 +106,7 @@ fun MetanMobileCalculators(
                     },
                     text = {
                         Text(
-                            text = stringResource(id = titleResId),
+                            text = stringResource(titleResId),
                             style = MMTypography.displaySmall,
                             color = tabNameColor,
                         )
@@ -227,18 +227,18 @@ private fun CalculatorMileageEnterValueView(onCalculate: (Triple<String, String,
             text = stringResource(R.string.core_ui_text_choose_car_type),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MMTypography.displaySmall
+            style = MMTypography.displaySmall,
         )
 
         CarTypesRadioGroup(
             items = carTypes,
             selected = selected.first,
-            setSelected = setSelected
+            setSelected = setSelected,
         )
 
         Text(
             text = stringResource(R.string.core_ui_text_enter_refill_amount),
-            style = MMTypography.displaySmall
+            style = MMTypography.displaySmall,
         )
         OutlinedTextField(
             modifier = Modifier
@@ -369,7 +369,7 @@ private fun CalculatorPaybackEnterValueView(
         Text(
             text = stringResource(R.string.core_ui_text_estimated_vehicle_milage),
             overflow = TextOverflow.Ellipsis,
-            style = MMTypography.displaySmall
+            style = MMTypography.displaySmall,
         )
         OutlinedTextField(
             modifier = Modifier
@@ -399,7 +399,7 @@ private fun CalculatorPaybackEnterValueView(
         Text(
             text = stringResource(R.string.core_ui_text_vehicle_consumption),
             overflow = TextOverflow.Ellipsis,
-            style = MMTypography.displaySmall
+            style = MMTypography.displaySmall,
         )
         OutlinedTextField(
             modifier = Modifier
@@ -478,7 +478,7 @@ private fun CalculatorMileageResultView(
         Text(
             text = stringResource(R.string.core_ui_text_car_milage_amount, inputAmount),
             overflow = TextOverflow.Ellipsis,
-            style = MMTypography.displaySmall
+            style = MMTypography.displaySmall,
         )
         SimpleHorizontalBarChartView(
             data = getCalculatorMileageResult(context, carTypes, selectedCarType, inputAmount),
@@ -487,7 +487,7 @@ private fun CalculatorMileageResultView(
             topEndRadius = 12.dp,
             bottomEndRadius = 12.dp,
             bottomStartRadius = 12.dp,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
         )
         ButtonWithIcon(
             icon = MMIcons.Calculate,
@@ -497,7 +497,7 @@ private fun CalculatorMileageResultView(
             fontColor = White,
             borderStrokeColor = Blue,
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
-            onClick = { onCalculateAgain(!it) }
+            onClick = { onCalculateAgain(!it) },
         )
     }
 }
@@ -513,7 +513,7 @@ private fun getCalculatorMileageResult(
         Pair(context.getString(R.string.core_ui_text_dt), 2.46),
         Pair(context.getString(R.string.core_ui_text_ai95), 2.46),
         Pair(context.getString(R.string.core_ui_text_ai92), 2.36),
-        Pair(context.getString(R.string.core_ui_text_lpg), 1.32)
+        Pair(context.getString(R.string.core_ui_text_lpg), 1.32),
     )
     val fuelRates = when (selectedCarType) {
         carTypes[0] -> listOf(
@@ -608,7 +608,7 @@ private fun getCalculatorMileageResult(
             id = index,
             active = element.first == context.getString(R.string.core_ui_text_cng),
             title = element.third,
-            value = formula.toFloat()
+            value = formula.toFloat(),
         )
     }
 }

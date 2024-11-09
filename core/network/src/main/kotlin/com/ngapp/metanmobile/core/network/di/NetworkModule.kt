@@ -18,13 +18,14 @@
 package com.ngapp.metanmobile.core.network.di
 
 import android.content.Context
+import android.os.Build
 import androidx.tracing.trace
 import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.util.DebugLogger
 import com.ngapp.metanmobile.core.network.BuildConfig
 import com.ngapp.metanmobile.core.network.demo.DemoAssetManager
-import com.prof.rssparser.Parser
+import com.prof18.rssparser.RssParserBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,35 +35,21 @@ import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import javax.inject.Qualifier
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import javax.inject.Singleton
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
 
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class RssParser
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class RssParserNoCache
-
-    @RssParser
     @Provides
     @Singleton
-    fun providesParser(@ApplicationContext application: Context) = Parser.Builder()
-        .context(application)
-        .cacheExpirationMillis(24L * 60L * 60L * 1000L)
-        .build()
-
-    @RssParserNoCache
-    @Provides
-    @Singleton
-    fun providesParserNoCache(@ApplicationContext application: Context) = Parser.Builder()
-        .context(application)
-        .build()
+    fun providesParser() = RssParserBuilder(
+        callFactory = okHttpCallFactory()
+    ).build()
 
     @Provides
     @Singleton
@@ -79,15 +66,26 @@ internal object NetworkModule {
     @Provides
     @Singleton
     fun okHttpCallFactory(): Call.Factory = trace("MetanMobileOkHttpClient") {
-        OkHttpClient.Builder()
+        val clientBuilder = OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
                     if (BuildConfig.DEBUG) {
                         setLevel(HttpLoggingInterceptor.Level.BODY)
                     }
-                },
+                }
             )
-            .build()
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
+            val sslContext = SSLContext.getInstance("TLS")
+            val trustAllCertificates = object : X509TrustManager {
+                override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+                override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+                override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
+            }
+            sslContext.init(null, arrayOf(trustAllCertificates), SecureRandom())
+            clientBuilder.sslSocketFactory(sslContext.socketFactory, trustAllCertificates)
+        }
+
+        clientBuilder.build()
     }
 
     /**

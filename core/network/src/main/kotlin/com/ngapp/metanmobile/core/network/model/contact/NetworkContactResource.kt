@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.contact
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkContactResource(
     val id: Int,
@@ -25,7 +25,7 @@ data class NetworkContactResource(
     val content: String = "",
 )
 
-fun Article.asNetworkContactResource() = NetworkContactResource(
+fun RssItem.asNetworkContactResource() = NetworkContactResource(
     id = categories[ContactCategoryValues.CATEGORY_ID].toInt(),
     dateCreated = pubDate ?: "",
     content = content ?: "",

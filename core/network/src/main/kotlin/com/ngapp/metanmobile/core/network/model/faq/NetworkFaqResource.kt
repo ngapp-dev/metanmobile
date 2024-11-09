@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.faq
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkFaqResource(
     val id: String,
@@ -28,7 +28,7 @@ data class NetworkFaqResource(
     val content: String = "",
 )
 
-fun Article.asNetworkFaqResource() = NetworkFaqResource(
+fun RssItem.asNetworkFaqResource() = NetworkFaqResource(
     id = categories[FaqCategoryValues.CATEGORY_ID],
     code = categories[FaqCategoryValues.CATEGORY_CODE],
     isPinned = if (categories[FaqCategoryValues.CATEGORY_PINNED] == "pinned") 1 else 0,

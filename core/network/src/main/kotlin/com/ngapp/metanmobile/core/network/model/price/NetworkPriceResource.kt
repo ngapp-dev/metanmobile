@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.price
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkPriceResource(
     val id: Int,
@@ -26,7 +26,7 @@ data class NetworkPriceResource(
     val content: String = "",
 )
 
-fun Article.asNetworkPriceResource() = NetworkPriceResource(
+fun RssItem.asNetworkPriceResource() = NetworkPriceResource(
     id = categories[PriceCategoryValues.CATEGORY_ID].toInt(),
     title = title ?: "",
     dateCreated = pubDate ?: "",

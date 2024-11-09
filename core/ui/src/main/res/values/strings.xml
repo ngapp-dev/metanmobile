@@ -19,8 +19,6 @@
     <string name="core_ui_app_name" translatable="false">Metan Mobile</string>
     <string name="core_ui_update_download_successful">Download successful. Restarting app in 5 seconds</string>
     <string name="core_ui_update_download_failed">Update flow failed! Result code: %1$d</string>
-    <!-- Test -->
-    <string name="core_ui_navigate_up" translatable="false">Navigate up</string>
     <!-- Button -->
     <string name="core_ui_button_retry">Retry</string>
     <string name="core_ui_button_apply">Apply</string>
@@ -29,7 +27,6 @@
     <string name="core_ui_button_date">Date</string>
     <string name="core_ui_button_descending">Descending</string>
     <string name="core_ui_button_ascending">Ascending</string>
-    <string name="core_ui_button_distance">Distance</string>
     <string name="core_ui_button_calculate">Calculate</string>
     <string name="core_ui_button_calculate_again">Calculate again</string>
     <string name="core_ui_button_show_more">Show more</string>
@@ -40,7 +37,6 @@
     <string name="core_ui_button_career_apply">Apply</string>
     <string name="core_ui_button_save_changes">Save changes</string>
     <!-- Title -->
-    <string name="core_ui_title_filter_stations">Filter stations</string>
     <string name="core_ui_title_filter_and_sort">Filter and sort stations</string>
     <string name="core_ui_title_related_news">Related news</string>
     <string name="core_ui_title_latest_news">Latest news</string>
@@ -66,7 +62,6 @@
     <string name="core_ui_text_station_payments">Payments</string>
     <string name="core_ui_text_station_address">Address</string>
     <string name="core_ui_text_station_hours">Hours</string>
-    <string name="core_ui_text_current_station">Current station</string>
     <string name="core_ui_text_select_application">Select application</string>
     <string name="core_ui_text_car_personal">Personal</string>
     <string name="core_ui_text_car_van">Truck</string>
@@ -94,7 +89,6 @@
     <string name="core_ui_text_value_month1">%s month</string>
     <string name="core_ui_text_value_month2_4">%s month</string>
     <string name="core_ui_text_value_month">%s month</string>
-    <string name="core_ui_text_advertisement">Ads</string>
     <string name="core_ui_text_faq">FAQ</string>
     <string name="core_ui_text_recent_offers">Recent offers</string>
     <string name="core_ui_text_google_service_unavailable">Google services unavailable</string>
@@ -106,7 +100,6 @@
     <string name="core_ui_description_radio_button_img" translatable="false">Chosen: %s</string>
     <string name="core_ui_description_like_icon" translatable="false">Like: %s</string>
     <string name="core_ui_description_dislike_icon" translatable="false">Dislike: %s</string>
-    <string name="core_ui_description_detail_item_img" translatable="false">Detail item image</string>
     <string name="core_ui_description_location_off_img" translatable="false">Location is off</string>
     <string name="core_ui_description_news_list_img" translatable="false">News list img</string>
     <string name="core_ui_description_station_list_img" translatable="false">News list img</string>
@@ -124,7 +117,6 @@
     <!-- Placeholder -->
     <string name="core_ui_placeholder_number">Enter value</string>
     <!-- Ads -->
-    <string name="core_ui_loading_ad">Loading ad…</string>
     <string name="core_ui_change_consent">You can change your consent preferences for personalized ads at any time by clicking&#160;</string>
     <string name="core_ui_here">here</string>
 </resources>

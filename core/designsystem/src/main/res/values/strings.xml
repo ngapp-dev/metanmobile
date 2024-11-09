@@ -16,19 +16,11 @@
   -->
 
 <resources>
-    <!-- Preferences -->
-    <string name="core_designsystem_pref_theme_light_value" translatable="false">light</string>
-    <string name="core_designsystem_pref_theme_dark_value" translatable="false">dark</string>
-    <string name="core_designsystem_pref_theme_system_value" translatable="false">system</string>
-    <string name="core_designsystem_pref_theme_default_value" translatable="false">@string/core_designsystem_pref_theme_system_value</string>
-
-
     <!-- BottomBar -->
     <string name="core_designsystem_bottom_menu_home">Home</string>
     <string name="core_designsystem_bottom_menu_stations">Stations</string>
     <string name="core_designsystem_bottom_menu_news">News</string>
     <string name="core_designsystem_bottom_menu_favorites">Favorites</string>
-
     <!-- Button -->
     <string name="core_designsystem_button_open_in_browser">Open in browser</string>
     <string name="core_designsystem_button_how_to_get_access">How to get access?</string>

@@ -46,41 +46,40 @@ class DemoMetanMobileParser @Inject constructor(
     private val assets: DemoAssetManager = JvmUnitTestDemoAssetManager,
 ) : MetanMobileParserDataSource {
 
-    override suspend fun getStations(isRefreshing: Boolean): List<NetworkStationResource> =
+    override suspend fun getStations(): List<NetworkStationResource> =
         withContext(ioDispatcher) {
             assets.open(STATIONS_ASSET).use(networkJson::decodeFromStream)
         }
 
-    override suspend fun getStation(
-        stationCode: String, isRefreshing: Boolean,
-    ): NetworkStationResource? = withContext(ioDispatcher) {
-        assets.open(STATIONS_ASSET).use { stream ->
-            val stations = networkJson.decodeFromStream<List<NetworkStationResource>>(stream)
-            stations.find { it.code == stationCode }
+    override suspend fun getStation(stationCode: String): NetworkStationResource? =
+        withContext(ioDispatcher) {
+            assets.open(STATIONS_ASSET).use { stream ->
+                val stations = networkJson.decodeFromStream<List<NetworkStationResource>>(stream)
+                stations.find { it.code == stationCode }
+            }
         }
-    }
 
-    override suspend fun getFuelPrices(isRefreshing: Boolean): List<NetworkPriceResource> =
+    override suspend fun getFuelPrices(): List<NetworkPriceResource> =
         withContext(ioDispatcher) {
             assets.open(PRICES_ASSET).use(networkJson::decodeFromStream)
         }
 
-    override suspend fun getFaqList(isRefreshing: Boolean): List<NetworkFaqResource> =
+    override suspend fun getFaqList(): List<NetworkFaqResource> =
         withContext(ioDispatcher) {
             assets.open(FAQ_ASSET).use(networkJson::decodeFromStream)
         }
 
-    override suspend fun getContacts(isRefreshing: Boolean): List<NetworkContactResource> =
+    override suspend fun getContacts(): List<NetworkContactResource> =
         withContext(ioDispatcher) {
             assets.open(CONTACTS_ASSET).use(networkJson::decodeFromStream)
         }
 
-    override suspend fun getNewsList(isRefreshing: Boolean): List<NetworkNewsResource> =
+    override suspend fun getNewsList(): List<NetworkNewsResource> =
         withContext(ioDispatcher) {
             assets.open(NEWS_ASSET).use(networkJson::decodeFromStream)
         }
 
-    override suspend fun getNews(newsId: String, isRefreshing: Boolean): NetworkNewsResource? =
+    override suspend fun getNews(newsId: String): NetworkNewsResource? =
         withContext(ioDispatcher) {
             assets.open(NEWS_ASSET).use { stream ->
                 val stations = networkJson.decodeFromStream<List<NetworkNewsResource>>(stream)
@@ -88,7 +87,7 @@ class DemoMetanMobileParser @Inject constructor(
             }
         }
 
-    override suspend fun getCareerList(isRefreshing: Boolean): List<NetworkCareerResource> =
+    override suspend fun getCareerList(): List<NetworkCareerResource> =
         withContext(ioDispatcher) {
             assets.open(CAREERS_ASSET).use(networkJson::decodeFromStream)
         }

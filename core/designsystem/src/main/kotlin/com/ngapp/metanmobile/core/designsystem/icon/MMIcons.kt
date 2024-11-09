@@ -93,7 +93,7 @@ object MMIcons {
 
     // Painter
     val LogoFullSolid = R.drawable.core_designsystem_logo_full_solid
-    val LogoFullSolidPng = R.drawable.core_designsystem_logo_full_solid
+    val LogoFullSolidPng = R.drawable.core_designsystem_logo_full_solid_png
     val Personal = R.drawable.core_designsystem_personal
     val Truck = R.drawable.core_designsystem_truck
     val Van = R.drawable.core_designsystem_van

@@ -37,7 +37,7 @@ class OfflineFirstPricesRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getFuelPrices(true) },
+            dataFetcher = { parser.getFuelPrices() },
             dataWriter = {
                 val newData = it.map(NetworkPriceResource::asEntity)
                 priceResourceDao.upsertPriceResources(newData)

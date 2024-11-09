@@ -38,7 +38,7 @@ class OfflineFirstContactsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getContacts(true) },
+            dataFetcher = { parser.getContacts() },
             dataWriter = {
                 val newData = it.map(NetworkContactResource::asEntity)
                 contactResourceDao.upsertContactResources(newData)

@@ -32,7 +32,7 @@ import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import com.ngapp.metanmobile.core.network.model.price.asNetworkPriceResource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import com.ngapp.metanmobile.core.network.model.station.asNetworkStationResource
-import com.prof.rssparser.Parser
+import com.prof18.rssparser.RssParser
 import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,8 +44,7 @@ private const val METAN_MOBILE_BASE_URL = BuildConfig.METAN_MOBILE_BASE_URL
  */
 @Singleton
 class MetanMobileParser @Inject constructor(
-    @NetworkModule.RssParser private val parser: Parser,
-    @NetworkModule.RssParserNoCache private val parserNoCache: Parser,
+    private val parser: RssParser,
 ) : MetanMobileParserDataSource {
 
     private val urlCareer: String = "${METAN_MOBILE_BASE_URL}career/rss/"
@@ -55,62 +54,51 @@ class MetanMobileParser @Inject constructor(
     private val urlPrices: String = "${METAN_MOBILE_BASE_URL}calculations/rss/"
     private val urlStations: String = "${METAN_MOBILE_BASE_URL}ecogas-map/rss/"
 
-    override suspend fun getStations(isRefreshing: Boolean): List<NetworkStationResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlStations)
-        val response = channel.articles
+    override suspend fun getStations(): List<NetworkStationResource> {
+        val channel = parser.getRssChannel(urlStations)
+        val response = channel.items
         return response.map { it.asNetworkStationResource() }
     }
 
-    override suspend fun getStation(
-        stationCode: String,
-        isRefreshing: Boolean,
-    ): NetworkStationResource? {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlStations)
-        val response = channel.articles
+    override suspend fun getStation(stationCode: String): NetworkStationResource? {
+        val channel = parser.getRssChannel(urlStations)
+        val response = channel.items
         return response.map { it.asNetworkStationResource() }.find { it.code == stationCode }
     }
 
-    override suspend fun getFuelPrices(isRefreshing: Boolean): List<NetworkPriceResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlPrices)
-        val response = channel.articles
+    override suspend fun getFuelPrices(): List<NetworkPriceResource> {
+        val channel = parser.getRssChannel(urlPrices)
+        val response = channel.items
         return response.map { it.asNetworkPriceResource() }
     }
 
-    override suspend fun getFaqList(isRefreshing: Boolean): List<NetworkFaqResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlFaq)
-        val response = channel.articles
+    override suspend fun getFaqList(): List<NetworkFaqResource> {
+        val channel = parser.getRssChannel(urlFaq)
+        val response = channel.items
         return response.map { it.asNetworkFaqResource() }
     }
 
-    override suspend fun getContacts(isRefreshing: Boolean): List<NetworkContactResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlContacts)
-        val response = channel.articles
+    override suspend fun getContacts(): List<NetworkContactResource> {
+        val channel = parser.getRssChannel(urlContacts)
+        val response = channel.items
         return response.map { it.asNetworkContactResource() }
     }
 
-    override suspend fun getNewsList(isRefreshing: Boolean): List<NetworkNewsResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlNews)
-        val response = channel.articles
+    override suspend fun getNewsList(): List<NetworkNewsResource> {
+        val channel = parser.getRssChannel(urlNews)
+        val response = channel.items
         return response.map { it.asNetworkNewsResource() }
     }
 
-    override suspend fun getNews(newsId: String, isRefreshing: Boolean): NetworkNewsResource? {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlNews)
-        val response = channel.articles
+    override suspend fun getNews(newsId: String): NetworkNewsResource? {
+        val channel = parser.getRssChannel(urlNews)
+        val response = channel.items
         return response.map { it.asNetworkNewsResource() }.find { it.id == newsId }
     }
 
-    override suspend fun getCareerList(isRefreshing: Boolean): List<NetworkCareerResource> {
-        val currentParser = if (isRefreshing) parserNoCache else parser
-        val channel = currentParser.getChannel(urlCareer)
-        val response = channel.articles
+    override suspend fun getCareerList(): List<NetworkCareerResource> {
+        val channel = parser.getRssChannel(urlCareer)
+        val response = channel.items
         return response.map { it.asNetworkCareerResource() }
     }
 }
