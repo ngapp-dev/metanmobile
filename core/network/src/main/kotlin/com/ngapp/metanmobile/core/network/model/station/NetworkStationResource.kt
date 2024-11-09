@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.station
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkStationResource(
     val id: String,
@@ -50,7 +50,7 @@ data class NetworkStationResource(
     val url: String = "",
 )
 
-fun Article.asNetworkStationResource() = NetworkStationResource(
+fun RssItem.asNetworkStationResource() = NetworkStationResource(
     id = categories[StationCategoryValues.CATEGORY_ID],
     code = categories[StationCategoryValues.CATEGORY_CODE],
     previewPicture = categories[StationCategoryValues.CATEGORY_PREVIEW_PICTURE],

@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.career
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkCareerResource(
     val id: String,
@@ -35,7 +35,7 @@ data class NetworkCareerResource(
     val number: Int = 1,
 )
 
-fun Article.asNetworkCareerResource() = NetworkCareerResource(
+fun RssItem.asNetworkCareerResource() = NetworkCareerResource(
     id = categories[CareerCategoryValues.CATEGORY_ID],
     code = categories[CareerCategoryValues.CATEGORY_CODE],
     previewPicture = categories[CareerCategoryValues.CATEGORY_PREVIEW_PICTURE],

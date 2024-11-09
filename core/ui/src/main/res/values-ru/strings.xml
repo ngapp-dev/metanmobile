@@ -26,7 +26,6 @@
     <string name="core_ui_button_date">Дате</string>
     <string name="core_ui_button_descending">По убыванию</string>
     <string name="core_ui_button_ascending">По возрастанию</string>
-    <string name="core_ui_button_distance">Дистанции</string>
     <string name="core_ui_button_calculate">Рассчитать</string>
     <string name="core_ui_button_calculate_again">Рассчитать снова</string>
     <string name="core_ui_button_show_less">Показать меньше</string>
@@ -37,7 +36,6 @@
     <string name="core_ui_button_career_apply">Откликнуться</string>
     <string name="core_ui_button_save_changes">Сохранить изменения</string>
     <!-- Title -->
-    <string name="core_ui_title_filter_stations">Фильтр станций</string>
     <string name="core_ui_title_filter_and_sort">Фильтрация и сортировка</string>
     <string name="core_ui_title_related_news">Новости по теме</string>
     <string name="core_ui_title_latest_news">Последние новости</string>
@@ -63,7 +61,6 @@
     <string name="core_ui_text_station_payments">Методы оплаты</string>
     <string name="core_ui_text_station_address">Адрес</string>
     <string name="core_ui_text_station_hours">Время работы</string>
-    <string name="core_ui_text_current_station">Текущая станция</string>
     <string name="core_ui_text_select_application">Выберите приложение</string>
     <string name="core_ui_text_car_personal">Легковой</string>
     <string name="core_ui_text_car_van">Микроавтобус</string>
@@ -91,7 +88,6 @@
     <string name="core_ui_text_value_month">%s месяцев</string>
     <string name="core_ui_text_value_month1">%s месяц</string>
     <string name="core_ui_text_value_month2_4">%s месяца</string>
-    <string name="core_ui_text_advertisement">Реклама</string>
     <string name="core_ui_text_faq">Часто задаваемые вопросы</string>
     <string name="core_ui_text_recent_offers">Недавние вакансии</string>
     <string name="core_ui_text_google_service_unavailable">Сервисы Google недоступны</string>
@@ -111,7 +107,6 @@
     !-- Placeholder -->
     <string name="core_ui_placeholder_number">Введите значение</string>
     <!-- Ads -->
-    <string name="core_ui_loading_ad">Загрузка рекламы…</string>
     <string name="core_ui_change_consent">Вы можете изменить свои настройки согласия на персонализированную рекламу в любое время, нажав&#160;</string>
     <string name="core_ui_here">здесь</string>
 </resources>

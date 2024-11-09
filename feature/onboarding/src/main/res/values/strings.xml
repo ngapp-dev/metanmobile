@@ -18,8 +18,6 @@
 
 <resources>
     <string name="feature_onboarding_description_next_icon" translatable="false">Onboarding next icon</string>
-    <string name="feature_onboarding_description_back_icon" translatable="false">Onboarding back icon</string>
-    <string name="feature_onboarding_description_page_img" translatable="false">Onboarding page img</string>
     <string name="feature_onboarding_description_pager_indicator" translatable="false">Onboarding pager indicator</string>
     <string name="feature_onboarding_button_get_start">Get Started</string>
     <string name="feature_onboarding_title_news">News</string>

@@ -65,7 +65,7 @@ fun rememberMMAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): MMAppState {
-    NavigationTrackingSideEffect(navController)
+//    NavigationTrackingSideEffect(navController)
     return remember(
         navController,
         coroutineScope,

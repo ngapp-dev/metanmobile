@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.feature.onboarding
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -60,6 +61,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.designsystem.component.MMButton
 import com.ngapp.metanmobile.core.designsystem.component.MMOnboardingTopAppBar
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
@@ -146,13 +148,13 @@ private fun OnboardingScreen(
     TrackScreenViewEvent(screenName = "OnboardingScreen")
 }
 
+@SuppressLint("DesignSystem")
 @Composable
 private fun BottomSection(
     size: Int,
     index: Int,
     onButtonClick: () -> Unit,
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -166,7 +168,6 @@ private fun BottomSection(
         ) {
             repeat(size) { Indicator(isSelected = it == index) }
         }
-
         Button(
             onClick = onButtonClick,
             colors = ButtonDefaults.buttonColors(containerColor = Blue, contentColor = White),
@@ -220,22 +221,22 @@ private fun PagerScreen(onBoardingPage: OnBoardingPage) {
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Image(
-            painter = painterResource(id = onBoardingPage.image),
-            contentDescription = stringResource(R.string.feature_onboarding_description_page_img),
+            painter = painterResource(onBoardingPage.image),
+            contentDescription = stringResource(onBoardingPage.title),
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .weight(4f)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(id = onBoardingPage.title),
+            text = stringResource(onBoardingPage.title),
             style = MMTypography.displayMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(id = onBoardingPage.description),
+            text = stringResource(onBoardingPage.description),
             style = MMTypography.headlineMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier

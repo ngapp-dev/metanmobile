@@ -11,7 +11,7 @@
 # With R8 full mode generic signatures are stripped for classes that are not
 # kept. Suspend functions are wrapped in continuations where the type argument
 # is used.
--keep,allowobfuscation,allowshrinking class kotlin.coroutines.Contкакinuation
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 # Keep `Companion` object fields of serializable classes.
 # This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.

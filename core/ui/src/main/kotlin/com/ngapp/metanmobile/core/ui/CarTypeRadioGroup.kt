@@ -29,9 +29,12 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -39,6 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.Gray250
@@ -56,14 +61,14 @@ fun CarTypesRadioGroup(
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
     ) {
         items.forEach { item ->
             Row(
                 modifier = Modifier.selectable(
                     selected = (selected == item.first),
                     onClick = { setSelected(item) },
-                    role = Role.RadioButton
+                    role = Role.RadioButton,
                 )
             ) {
                 RadioButtonStyle(selectedItem = selected, item = item)
@@ -80,17 +85,23 @@ private fun RadioButtonStyle(selectedItem: String, item: Pair<String, Int>) {
             .border(
                 width = 1.dp,
                 color = if (selectedItem == item.first) Blue else Gray250,
-                shape = RoundedCornerShape(100)
+                shape = RoundedCornerShape(100),
             )
             .clip(RoundedCornerShape(100))
             .background(if (selectedItem == item.first) LightBlue.copy(alpha = 0.5f) else White),
     ) {
+        val painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(LocalContext.current)
+                .data(item.second)
+                .size(74)
+                .build()
+        )
         Image(
-            painter = painterResource(item.second),
+            painter = painter,
             contentScale = ContentScale.Crop,
             contentDescription = stringResource(
                 R.string.core_ui_description_radio_button_img,
-                item.first
+                item.first,
             ),
             modifier = Modifier
                 .clip(CircleShape)

@@ -28,12 +28,12 @@ import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
  * Interface representing parsing from Metan Mobile backend
  */
 interface MetanMobileParserDataSource {
-    suspend fun getStations(isRefreshing: Boolean): List<NetworkStationResource>
-    suspend fun getStation(stationCode: String, isRefreshing: Boolean): NetworkStationResource?
-    suspend fun getFuelPrices(isRefreshing: Boolean): List<NetworkPriceResource>
-    suspend fun getFaqList(isRefreshing: Boolean): List<NetworkFaqResource>
-    suspend fun getContacts(isRefreshing: Boolean): List<NetworkContactResource>
-    suspend fun getNewsList(isRefreshing: Boolean): List<NetworkNewsResource>
-    suspend fun getNews(newsId: String, isRefreshing: Boolean): NetworkNewsResource?
-    suspend fun getCareerList(isRefreshing: Boolean): List<NetworkCareerResource>
+    suspend fun getStations(): List<NetworkStationResource>
+    suspend fun getStation(stationCode: String): NetworkStationResource?
+    suspend fun getFuelPrices(): List<NetworkPriceResource>
+    suspend fun getFaqList(): List<NetworkFaqResource>
+    suspend fun getContacts(): List<NetworkContactResource>
+    suspend fun getNewsList(): List<NetworkNewsResource>
+    suspend fun getNews(newsId: String): NetworkNewsResource?
+    suspend fun getCareerList(): List<NetworkCareerResource>
 }

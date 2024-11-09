@@ -17,7 +17,7 @@
 
 package com.ngapp.metanmobile.core.network.model.news
 
-import com.prof.rssparser.Article
+import com.prof18.rssparser.model.RssItem
 
 data class NetworkNewsResource(
     val id: String,
@@ -35,7 +35,7 @@ data class NetworkNewsResource(
     val url: String = "",
 )
 
-fun Article.asNetworkNewsResource(): NetworkNewsResource {
+fun RssItem.asNetworkNewsResource(): NetworkNewsResource {
     val contentImage =
         this.content?.substringAfter("src=\"")?.substringBefore(".jpg")
 

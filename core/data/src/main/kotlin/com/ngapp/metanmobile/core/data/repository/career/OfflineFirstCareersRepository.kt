@@ -40,7 +40,7 @@ class OfflineFirstCareersRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getCareerList(true) },
+            dataFetcher = { parser.getCareerList() },
             dataWriter = {
                 val newData = it.map(NetworkCareerResource::asEntity)
                 careerResourceDao.upsertCareerResources(newData)

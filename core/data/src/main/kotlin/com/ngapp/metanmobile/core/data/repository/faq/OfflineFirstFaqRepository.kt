@@ -41,7 +41,7 @@ class OfflineFirstFaqRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getFaqList(true) },
+            dataFetcher = { parser.getFaqList() },
             dataWriter = { networkFaqList ->
                 val newData = networkFaqList.map(NetworkFaqResource::asEntity)
                 val newIds = newData.map { it.id }.toSet()

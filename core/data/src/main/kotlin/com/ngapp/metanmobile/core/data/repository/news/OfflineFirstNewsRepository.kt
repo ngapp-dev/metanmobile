@@ -60,7 +60,7 @@ internal class OfflineFirstNewsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getNewsList(true) },
+            dataFetcher = { parser.getNewsList() },
             dataWriter = { networkNewsList ->
                 val newData = networkNewsList.map(NetworkNewsResource::asEntity)
                 val newIds = newData.map { it.id }.toSet()

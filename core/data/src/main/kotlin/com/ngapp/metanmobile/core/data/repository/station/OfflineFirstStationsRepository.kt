@@ -63,7 +63,7 @@ class OfflineFirstStationsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getStations(true) },
+            dataFetcher = { parser.getStations() },
             dataWriter = { networkStationList ->
                 val newData = networkStationList.map(NetworkStationResource::asEntity)
                 val newIds = newData.map { it.code }.toSet()
