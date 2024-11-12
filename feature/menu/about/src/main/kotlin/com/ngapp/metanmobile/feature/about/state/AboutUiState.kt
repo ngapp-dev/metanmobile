@@ -20,6 +20,6 @@ package com.ngapp.metanmobile.feature.about.state
 import com.ngapp.metanmobile.core.model.githubuser.GithubUserResource
 
 sealed interface AboutUiState {
-    data class Success(val githubUser: GithubUserResource) : AboutUiState
+    data class Success(val githubUser: GithubUserResource?) : AboutUiState
     data object Loading : AboutUiState
 }

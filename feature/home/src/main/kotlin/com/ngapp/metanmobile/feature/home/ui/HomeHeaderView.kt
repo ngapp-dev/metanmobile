@@ -52,7 +52,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.ui.logNewsResourceOpened
 import com.ngapp.metanmobile.core.ui.news.NewsRow
-import com.ngapp.metanmobile.core.ui.news.NewsRowShimmer
 import com.ngapp.metanmobile.core.ui.news.PinnedNewsScreen
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
@@ -78,37 +77,37 @@ internal fun HomeHeaderView(
         if (pinnedNews.isNotEmpty()) {
             PinnedNewsScreen(pinnedNews, onNewsDetailClick)
         }
-        AnimatedVisibility(
-            visible = isLastNewsExpended,
-            enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(CoreUiR.string.core_ui_title_latest_news),
-                        style = MMTypography.displayMedium,
+        if (lastNewsItems.isNotEmpty()) {
+            AnimatedVisibility(
+                visible = isLastNewsExpended,
+                enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+            ) {
+                Column {
+                    Row(
                         modifier = Modifier
-                            .padding(start = 8.dp)
-                            .weight(1f)
-                    )
-                    MMTextButton(
-                        onClick = onShowAllNewsClick,
-                        text = {
-                            Text(
-                                text = stringResource(id = CoreUiR.string.core_ui_button_show_all),
-                                textAlign = TextAlign.End,
-                                style = MMTypography.headlineMedium,
-                                color = Gray400
-                            )
-                        }
-                    )
-                }
-                if (lastNewsItems.isNotEmpty()) {
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(CoreUiR.string.core_ui_title_latest_news),
+                            style = MMTypography.displayMedium,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .weight(1f)
+                        )
+                        MMTextButton(
+                            onClick = onShowAllNewsClick,
+                            text = {
+                                Text(
+                                    text = stringResource(id = CoreUiR.string.core_ui_button_show_all),
+                                    textAlign = TextAlign.End,
+                                    style = MMTypography.headlineMedium,
+                                    color = Gray400
+                                )
+                            }
+                        )
+                    }
                     lastNewsItems.forEachIndexed { i, news ->
                         NewsRow(
                             news = news,
@@ -123,14 +122,6 @@ internal fun HomeHeaderView(
                         if (i < lastNewsItems.size - 1) {
                             MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                         }
-                    }
-                } else {
-                    repeat(3) {
-                        NewsRowShimmer(
-                            imageSize = 64.dp,
-                            imageRoundedCornerShape = RoundedCornerShape(12.dp, 0.dp, 12.dp, 0.dp),
-                        )
-                        MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     }
                 }
             }

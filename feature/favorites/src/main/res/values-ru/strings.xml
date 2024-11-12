@@ -26,5 +26,5 @@
     <string name="feature_favorites_text_delete_favor_description">Выполняя эту операцию, вы подтверждаете удаление из избранных %s?</string>
     <string name="feature_favorites_text_approve_remove">Подтвердить удаление</string>
     <string name="feature_favorites_text_favor_delete">Удалить из Избранных</string>
-    <string name="feature_favorites_text_empty_favorite">Список Избранных пуст</string>
+    <string name="feature_favorites_text_empty">Список Избранных пуст</string>
 </resources>

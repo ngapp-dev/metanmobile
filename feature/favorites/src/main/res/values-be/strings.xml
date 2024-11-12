@@ -26,5 +26,5 @@
     <string name="feature_favorites_text_delete_favor_description">Выконваючы гэтую аперацыю, вы пацвярджаеце выдаленне з выбраных %s?</string>
     <string name="feature_favorites_text_approve_remove">Пацвердзіць выдаленне</string>
     <string name="feature_favorites_text_favor_delete">Выдаліць з Выбраных</string>
-    <string name="feature_favorites_text_empty_favorite">Спіс Выбраных пусты</string>
+    <string name="feature_favorites_text_empty">Спіс Выбраных пусты</string>
 </resources>

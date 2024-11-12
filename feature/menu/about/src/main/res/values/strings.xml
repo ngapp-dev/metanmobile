@@ -22,5 +22,6 @@
     <!-- Text -->
     <string name="feature_menu_about_text_android_developer">Android Developer</string>
     <string name="feature_menu_about_text_developed_by">Developed By</string>
+    <string name="feature_menu_about_text_ngapps_dev" translatable="false">NGApps Dev</string>
     <string name="feature_menu_about_text_copyright_explanation">Metan Mobile application performs its functions using data obtained from open sources. All rights to the application belong to NGApps Dev</string>
 </resources>

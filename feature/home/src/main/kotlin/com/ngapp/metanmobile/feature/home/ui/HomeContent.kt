@@ -69,8 +69,8 @@ internal fun HomeContent(
     val haptic = rememberReorderHapticFeedback()
     val reorderableLazyColumnState = rememberReorderableLazyListState(listState) { from, to ->
         val temporaryList = reorderableList.toMutableList().apply {
-            val fromIndex: Int = indexOfFirst { it == from.key }
-            val toIndex: Int = indexOfFirst { it == to.key }
+            val fromIndex = indexOfFirst { it == from.key }
+            val toIndex = indexOfFirst { it == to.key }
             add(toIndex, removeAt(fromIndex))
         }
         onAction(HomeAction.ReorderList(temporaryList))
@@ -116,12 +116,14 @@ internal fun HomeContent(
                     }
 
                     FAQ -> {
-                        HomeWidgetFaqView(
-                            isEditingUi = isEditingUi,
-                            pinnedFaqItems = pinnedFaqList,
-                            onSeeAllClick = onSeeAllFaqClick,
-                            reorderableItemModifier = reorderableItemModifier,
-                        )
+                        if (pinnedFaqList.isNotEmpty()) {
+                            HomeWidgetFaqView(
+                                isEditingUi = isEditingUi,
+                                pinnedFaqItems = pinnedFaqList,
+                                onSeeAllClick = onSeeAllFaqClick,
+                                reorderableItemModifier = reorderableItemModifier,
+                            )
+                        }
                     }
 
                     CAREER -> {

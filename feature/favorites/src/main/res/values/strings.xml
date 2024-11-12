@@ -26,5 +26,5 @@
     <string name="feature_favorites_text_delete_favor_description">Performing this operation, do you approve the deregistration of %s?</string>
     <string name="feature_favorites_text_approve_remove">Approve Remove</string>
     <string name="feature_favorites_text_favor_delete">Favorite Delete</string>
-    <string name="feature_favorites_text_empty_favorite">Favorite list is empty</string>
+    <string name="feature_favorites_text_empty">Favorite list is empty</string>
 </resources>

@@ -19,4 +19,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_contacts_toolbar_title">Контакты</string>
+    <!-- Text -->
+    <string name="feature_menu_contacts_text_empty">Список Контактов пуст</string>
 </resources>

@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.Flow
 interface GithubUserResourceDao {
 
     @Query(value = """SELECT * FROM github_user_resources""")
-    fun getGithubUserResource(): Flow<GithubUserResourceEntity>
+    fun getGithubUserResource(): Flow<GithubUserResourceEntity?>
 
     /**
      * Inserts [entities] into the db if they don't exist, and ignores those that do

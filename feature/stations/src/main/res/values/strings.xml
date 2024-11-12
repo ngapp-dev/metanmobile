@@ -29,6 +29,7 @@
     <string name="feature_stations_text_station_attendance">Attendance today</string>
     <string name="feature_stations_text_operate">Operate</string>
     <string name="feature_stations_text_not_operate">Not operate</string>
+    <string name="feature_stations_text_empty">Station list is empty</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Search stations</string>
 </resources>

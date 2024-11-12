@@ -19,4 +19,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_contacts_toolbar_title">Кантакты</string>
+    <!-- Text -->
+    <string name="feature_menu_contacts_text_empty">Спіс Кантактаў пусты</string>
 </resources>

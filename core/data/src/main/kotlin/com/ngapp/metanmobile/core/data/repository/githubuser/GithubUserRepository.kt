@@ -22,5 +22,5 @@ import com.ngapp.metanmobile.core.model.githubuser.GithubUserResource
 import kotlinx.coroutines.flow.Flow
 
 interface GithubUserRepository : Syncable {
-    fun getGithubUser(): Flow<GithubUserResource>
+    fun getGithubUser(): Flow<GithubUserResource?>
 }

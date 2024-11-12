@@ -24,6 +24,7 @@
     <string name="feature_news_title_all_news">Все новости</string>
     <!-- Text -->
     <string name="feature_news_text_new">Новое</string>
+    <string name="feature_news_text_empty">Список Новостей пуст</string>
     <!-- Placeholder -->
     <string name="feature_news_placeholder_search_news">Поиск новостей</string>
 </resources>

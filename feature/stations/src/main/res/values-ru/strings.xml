@@ -29,6 +29,7 @@
     <string name="feature_stations_text_station_attendance">Посещаемость сегодня</string>
     <string name="feature_stations_text_operate">Работает</string>
     <string name="feature_stations_text_not_operate">Не работает</string>
+    <string name="feature_stations_text_empty">Список Станций пуст</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Поиск станций</string>
 </resources>

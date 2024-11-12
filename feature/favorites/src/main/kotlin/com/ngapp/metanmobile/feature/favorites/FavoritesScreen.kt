@@ -35,6 +35,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -181,12 +183,7 @@ private fun FavoritesScreen(
                         )
                     }
 
-                    if (uiState.favoriteStationList.isEmpty()) {
-                        LottieEmptyView(
-                            modifier = modifier,
-                            textResId = R.string.feature_favorites_text_empty_favorite
-                        )
-                    } else {
+                    if (uiState.favoriteStationList.isNotEmpty()) {
                         Surface(shadowElevation = 4.dp) {
                             FavoritesContent(
                                 gridState = gridState,
@@ -195,6 +192,13 @@ private fun FavoritesScreen(
                                 onDetailClick = onStationDetailClick,
                             )
                         }
+                    } else {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_favorites_text_empty)
+                        )
                     }
                 }
             }

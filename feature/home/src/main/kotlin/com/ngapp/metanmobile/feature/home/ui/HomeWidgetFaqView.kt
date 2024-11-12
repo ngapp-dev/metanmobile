@@ -51,7 +51,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.model.faq.FaqResource
 import com.ngapp.metanmobile.core.ui.faq.FaqRow
-import com.ngapp.metanmobile.core.ui.faq.FaqRowShimmer
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 @Composable
@@ -83,18 +82,10 @@ internal fun HomeWidgetFaqView(
                     .background(MaterialTheme.colorScheme.onBackground)
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    if (pinnedFaqItems.isNotEmpty()) {
-                        pinnedFaqItems.forEachIndexed { i, faq ->
-                            FaqRow(faqItem = faq)
-                            if (i < pinnedFaqItems.size - 1) {
-                                MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                            }
-                        }
-                    } else {
-                        Column(modifier = Modifier.padding(vertical = 12.dp)) {
-                            FaqRowShimmer()
+                    pinnedFaqItems.forEachIndexed { i, faq ->
+                        FaqRow(faqItem = faq)
+                        if (i < pinnedFaqItems.size - 1) {
                             MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                            FaqRowShimmer()
                         }
                     }
                 }

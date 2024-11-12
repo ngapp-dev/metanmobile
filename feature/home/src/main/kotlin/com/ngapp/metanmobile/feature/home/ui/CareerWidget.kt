@@ -63,9 +63,7 @@ internal fun CareerWidget(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(BluePale, BluePale, GreenPale)
-                    )
+                    Brush.horizontalGradient(colors = listOf(BluePale, BluePale, GreenPale))
                 )
                 .padding(16.dp),
         ) {

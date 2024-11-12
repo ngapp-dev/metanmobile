@@ -24,6 +24,7 @@
     <string name="feature_news_title_all_news">All news</string>
     <!-- Text -->
     <string name="feature_news_text_new">New</string>
+    <string name="feature_news_text_empty">News list is empty</string>
     <!-- Placeholder -->
     <string name="feature_news_placeholder_search_news">Search news</string>
 </resources>

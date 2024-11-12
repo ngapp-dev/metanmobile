@@ -18,4 +18,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_careers_toolbar_title">Вакансии</string>
+    <!-- Text -->
+    <string name="feature_menu_careers_text_empty">Список Вакансий пуст</string>
 </resources>

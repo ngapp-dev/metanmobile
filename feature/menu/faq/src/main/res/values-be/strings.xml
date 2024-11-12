@@ -19,4 +19,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_faq_toolbar_title">Частыя пытанні</string>
+    <!-- Text -->
+    <string name="feature_menu_faq_text_empty">Спіс Частых пытанняў пусты</string>
 </resources>
