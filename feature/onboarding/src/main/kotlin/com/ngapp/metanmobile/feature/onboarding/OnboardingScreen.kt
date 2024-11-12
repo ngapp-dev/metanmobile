@@ -56,12 +56,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ngapp.metanmobile.core.designsystem.component.MMButton
 import com.ngapp.metanmobile.core.designsystem.component.MMOnboardingTopAppBar
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
@@ -172,7 +173,9 @@ private fun BottomSection(
             onClick = onButtonClick,
             colors = ButtonDefaults.buttonColors(containerColor = Blue, contentColor = White),
             shape = MMShapes.large,
-            modifier = Modifier.height(56.dp)
+            modifier = Modifier
+                .height(56.dp)
+                .semantics { contentDescription = "Next" }
         ) {
             AnimatedVisibility(visible = index != 2) {
                 Icon(

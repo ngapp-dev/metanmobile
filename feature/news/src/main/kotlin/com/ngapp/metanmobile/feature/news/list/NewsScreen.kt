@@ -34,6 +34,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -66,6 +68,7 @@ import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
 import com.ngapp.metanmobile.core.ui.alertdialogs.NewsSortingConfigDialog
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.feature.news.R
 import com.ngapp.metanmobile.feature.news.list.state.NewsAction
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState
@@ -106,10 +109,13 @@ private fun NewsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isLoading = uiState is NewsUiState.Loading
+
     ReportDrawnWhen { !isSyncing && !isLoading }
+
     val itemsAvailable = feedItemsSize(uiState)
     val gridState = rememberLazyGridState()
     val scrollbarState = gridState.scrollbarState(itemsAvailable = itemsAvailable)
+
     TrackScrollJank(scrollableState = gridState, stateName = "newsScreen:feed")
 
     NewsHeader(
@@ -135,13 +141,21 @@ private fun NewsScreen(
                             onShowAlertDialog = { onAction(NewsAction.ShowAlertDialog(it)) }
                         )
                     }
-
-                    Surface(shadowElevation = 4.dp) {
-                        NewsContent(
-                            gridState = gridState,
-                            newsList = uiState.newsList,
-                            pinnedNewsList = uiState.pinnedNewsList,
-                            onDetailClick = onDetailClick,
+                    if (uiState.newsList.isNotEmpty() && uiState.pinnedNewsList.isNotEmpty()) {
+                        Surface(shadowElevation = 4.dp) {
+                            NewsContent(
+                                gridState = gridState,
+                                newsList = uiState.newsList,
+                                pinnedNewsList = uiState.pinnedNewsList,
+                                onDetailClick = onDetailClick,
+                            )
+                        }
+                    } else {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_news_text_empty)
                         )
                     }
                 }

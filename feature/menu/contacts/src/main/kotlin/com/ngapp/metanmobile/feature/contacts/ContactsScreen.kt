@@ -23,16 +23,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
@@ -53,10 +51,9 @@ import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.model.contact.ContactResource
-import com.ngapp.metanmobile.core.ui.ShimmerEffect
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.feature.contacts.state.ContactsUiState
-import com.ngapp.metanmobile.feature.contacts.ui.ContactsShimmer
 
 @Composable
 internal fun ContactsRoute(
@@ -95,13 +92,14 @@ private fun ContactsScreen(
             when (uiState) {
                 ContactsUiState.Loading -> Unit
                 is ContactsUiState.Success -> {
-                    Column(
-                        modifier = modifier
-                            .padding(padding)
-                            .padding(horizontal = 16.dp)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        if (uiState.contact != null) {
+                    if (uiState.contact != null) {
+                        Column(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .padding(padding)
+                                .padding(horizontal = 16.dp)
+                                .verticalScroll(rememberScrollState())
+                        ) {
                             HtmlText(
                                 text = uiState.contact.content,
                                 modifier = Modifier.padding(top = 16.dp),
@@ -111,28 +109,33 @@ private fun ContactsScreen(
                                 flags = HtmlCompat.FROM_HTML_MODE_LEGACY,
                                 style = MMTypography.titleLarge,
                             )
-                        } else {
-                            ContactsShimmer(Modifier.padding(top = 16.dp))
                         }
+                    } else {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_menu_contacts_text_empty)
+                        )
                     }
                 }
             }
-            AnimatedVisibility(
-                visible = isSyncing || isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+        }
+        AnimatedVisibility(
+            visible = isSyncing || isLoading,
+            enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+        ) {
+            val loadingContentDescription = "Contacts screen loading wheel"
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
             ) {
-                val loadingContentDescription = "Contacts screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
-                }
+                MMOverlayLoadingWheel(
+                    modifier = Modifier.align(Alignment.Center),
+                    contentDesc = loadingContentDescription,
+                )
             }
         }
     }

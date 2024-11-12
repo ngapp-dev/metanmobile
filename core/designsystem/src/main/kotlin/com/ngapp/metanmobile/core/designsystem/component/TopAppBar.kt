@@ -53,7 +53,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -65,6 +64,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -219,11 +220,11 @@ fun MMHomeTopAppBar(
             }
         },
         actions = {
-            MMToolbarAction(
-                icon = MMIcons.PersonFilled,
-                contentDescription = stringResource(R.string.core_designsystem_description_cabinet_icon),
-                onClick = onUserClicked
-            )
+//            MMToolbarAction(
+//                icon = MMIcons.PersonFilled,
+//                contentDescription = stringResource(R.string.core_designsystem_description_cabinet_icon),
+//                onClick = onUserClicked
+//            )
             MMToolbarAction(
                 icon = MMIcons.EditFilled,
                 contentDescription = stringResource(R.string.core_designsystem_description_edit_icon),
@@ -329,7 +330,8 @@ fun MMOnboardingTopAppBar(
                 MMToolbarAction(
                     icon = MMIcons.ArrowBackFilled,
                     contentDescription = stringResource(R.string.core_designsystem_description_nav_icon),
-                    onClick = onNavigationClick
+                    onClick = onNavigationClick,
+                    modifier = Modifier.semantics { contentDescription = "Back" }
                 )
             }
         },
@@ -521,10 +523,14 @@ private fun CabinetMoreAction(
 private fun MMToolbarAction(
     icon: ImageVector,
     contentDescription: String,
+    modifier: Modifier = Modifier,
     tint: Color = MMColors.toolbarIconColor,
     onClick: () -> Unit,
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,

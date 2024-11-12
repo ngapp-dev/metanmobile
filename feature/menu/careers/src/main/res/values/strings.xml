@@ -18,4 +18,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_careers_toolbar_title">Career</string>
+    <!-- Text -->
+    <string name="feature_menu_careers_text_empty">Career list is empty</string>
 </resources>

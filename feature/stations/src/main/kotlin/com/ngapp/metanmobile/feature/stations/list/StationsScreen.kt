@@ -37,9 +37,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +53,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -69,12 +72,15 @@ import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
 import com.ngapp.metanmobile.core.ui.alertdialogs.StationsSortAndFilterConfigDialog
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.stations.R
 import com.ngapp.metanmobile.feature.stations.list.state.StationsAction
 import com.ngapp.metanmobile.feature.stations.list.state.StationsUiState
 import com.ngapp.metanmobile.feature.stations.list.ui.StationListContent
 import com.ngapp.metanmobile.feature.stations.list.ui.StationMapContent
+import com.ngapp.metanmobile.feature.stations.list.StationTabs.LIST
+import com.ngapp.metanmobile.feature.stations.list.StationTabs.MAP
 import kotlinx.coroutines.launch
 
 @Composable
@@ -141,7 +147,7 @@ private fun StationsScreen(
                         Column {
                             val tabsName =
                                 rememberSaveable { StationTabs.entries.map { it.titleResId } }
-                            var selectedIndex by rememberSaveable { mutableIntStateOf(StationTabs.LIST.ordinal) }
+                            var selectedIndex by rememberSaveable { mutableIntStateOf(LIST.ordinal) }
                             MMTabRow(selectedTabIndex = selectedIndex) {
                                 tabsName.forEachIndexed { index, stringResourceId ->
                                     MMTab(
@@ -177,7 +183,7 @@ private fun StationsScreen(
                                 }
 
                                 when (page) {
-                                    StationTabs.LIST.ordinal -> {
+                                    LIST.ordinal -> {
                                         Box(modifier = modifier) {
                                             StationListContent(
                                                 modifier = modifier,
@@ -202,7 +208,7 @@ private fun StationsScreen(
                                         TrackScreenViewEvent(screenName = "StationListContent")
                                     }
 
-                                    StationTabs.MAP.ordinal -> {
+                                    MAP.ordinal -> {
                                         StationMapContent(
                                             modifier = modifier,
                                             stationList = uiState.stationList,
@@ -214,32 +220,17 @@ private fun StationsScreen(
                                 }
                             }
                         }
-                        LoadingState(isSyncing = isSyncing, isLoading = isLoading)
                     } else {
-                        Box(modifier = modifier) {
-                            StationListContent(
-                                modifier = modifier,
-                                gridState = gridState,
-                                stationsList = emptyList(),
-                                onAction = onAction,
-                                onDetailClick = onStationDetailClick,
-                            )
-                            gridState.DraggableScrollbar(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .windowInsetsPadding(WindowInsets.systemBars)
-                                    .padding(horizontal = 2.dp)
-                                    .align(Alignment.CenterEnd),
-                                state = scrollbarState,
-                                orientation = Orientation.Vertical,
-                                onThumbMoved = gridState.rememberDraggableScroller(
-                                    itemsAvailable = itemsAvailable
-                                ),
-                            )
-                        }
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_stations_text_empty)
+                        )
                     }
                 }
             }
+            LoadingState(isSyncing = isSyncing, isLoading = isLoading)
         }
     }
 }
@@ -300,6 +291,8 @@ private fun StationsHeader(
 
     Scaffold(
         modifier = modifier,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             if (!showSearchMenu) {
                 MMFilterSearchButtonsTopAppBar(

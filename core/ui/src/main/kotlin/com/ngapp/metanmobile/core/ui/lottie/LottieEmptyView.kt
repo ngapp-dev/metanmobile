@@ -17,48 +17,77 @@
 
 package com.ngapp.metanmobile.core.ui.lottie
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
+import com.ngapp.metanmobile.core.ui.R
 
 @Composable
 fun LottieEmptyView(
+    message: String,
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues = PaddingValues(),
-    textResId: Int? = null,
+    canRetry: Boolean = false,
+    onClickRetry: () -> Unit = {},
 ) {
-    if (textResId != null) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.Asset("empty.json"))
+    val animationState by animateLottieCompositionAsState(composition = composition)
+
+    AnimatedVisibility(
+        visible = animationState > 0f,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+            modifier = modifier.padding(16.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LottieView(
-                file = "empty.json",
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier
+                    .widthIn(max = 400.dp, min = 100.dp)
+                    .heightIn(max = 400.dp, min = 100.dp)
             )
             Text(
-                text = stringResource(id = textResId),
+                text = message,
                 style = MMTypography.displaySmall,
                 textAlign = TextAlign.Center,
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
+            if (canRetry) {
+                OutlinedButton(
+                    onClick = onClickRetry,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                ) {
+                    Text(text = stringResource(R.string.core_ui_button_retry))
+                }
+            }
         }
     }
 }

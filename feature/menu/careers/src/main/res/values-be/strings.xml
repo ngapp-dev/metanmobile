@@ -19,4 +19,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_careers_toolbar_title">Вакансіі</string>
+    <!-- Text -->
+    <string name="feature_menu_careers_text_empty">Спіс Вакансій пусты</string>
 </resources>

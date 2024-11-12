@@ -81,7 +81,6 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
         val METHOD_NAMES = mapOf(
             "MaterialTheme" to "MMTheme",
             "Button" to "MMButton",
-            "OutlinedButton" to "MMOutlinedButton",
             "TextButton" to "MMTextButton",
             "FilterChip" to "MMFilterChip",
             "ElevatedFilterChip" to "MMFilterChip",

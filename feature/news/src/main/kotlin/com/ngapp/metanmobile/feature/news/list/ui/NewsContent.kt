@@ -18,33 +18,19 @@
 package com.ngapp.metanmobile.feature.news.list.ui
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
-import com.ngapp.metanmobile.core.designsystem.component.MMDivider
-import com.ngapp.metanmobile.core.designsystem.theme.MMColors
-import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
-import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.ui.logNewsResourceOpened
 import com.ngapp.metanmobile.core.ui.news.NewsRow
-import com.ngapp.metanmobile.core.ui.news.NewsRowShimmer
 import com.ngapp.metanmobile.core.ui.news.PinnedNewsScreen
 
 @Composable
@@ -71,10 +57,10 @@ internal fun NewsContent(
             }
         }
 
-        item(key = "newsSubHeader", span = { GridItemSpan(maxLineSpan) }) {
-            NewsSubHeader()
-        }
         if (newsList.isNotEmpty()) {
+            item(key = "newsSubHeader", span = { GridItemSpan(maxLineSpan) }) {
+                NewsSubHeader()
+            }
             items(items = newsList, key = { news -> news.id }) { news ->
                 NewsRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -84,10 +70,6 @@ internal fun NewsContent(
                         onDetailClick(news.id)
                     }
                 )
-            }
-        } else {
-            items(10) {
-                NewsRowShimmer(modifier = Modifier.fillMaxWidth())
             }
         }
     }

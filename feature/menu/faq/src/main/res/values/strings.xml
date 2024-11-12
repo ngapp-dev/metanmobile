@@ -19,4 +19,6 @@
 <resources>
     <!-- Toolbar -->
     <string name="feature_menu_faq_toolbar_title">FAQ</string>
+    <!-- Text -->
+    <string name="feature_menu_faq_text_empty">Faq list is empty</string>
 </resources>

@@ -26,20 +26,21 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
 fun LottieView(
     file: String,
     modifier: Modifier = Modifier,
-    iterations: Int = 120
+    iterations: Int = LottieConstants.IterateForever
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.Asset(file))
     LottieAnimation(
         composition,
         modifier = modifier
             .defaultMinSize(250.dp)
-            .semantics { this.contentDescription = "Loading animation" },
+            .semantics { contentDescription = "Loading animation" },
         iterations = iterations
     )
 }

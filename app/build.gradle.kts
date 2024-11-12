@@ -38,7 +38,7 @@ android {
                 .toInt() * 100 + libs.versions.versionPatch.get().toInt()
         versionName =
             "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}"
-        testInstrumentationRunner = "com.ngapp.metanmobile.core.testing.MetanMobileTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }

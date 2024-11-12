@@ -111,9 +111,7 @@ private fun AboutScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MMAsyncImage(
-                            imageUrl = uiState.githubUser.avatarUrl
-                        )
+                        MMAsyncImage(imageUrl = uiState.githubUser?.avatarUrl)
                         Spacer(Modifier.height(18.dp))
                         Text(
                             text = stringResource(R.string.feature_menu_about_text_developed_by),
@@ -122,7 +120,8 @@ private fun AboutScreen(
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            text = uiState.githubUser.name.orEmpty(),
+                            text = uiState.githubUser?.name
+                                ?: stringResource(R.string.feature_menu_about_text_ngapps_dev),
                             style = MMTypography.titleLarge,
                             textAlign = TextAlign.Center
                         )
@@ -134,10 +133,12 @@ private fun AboutScreen(
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            text = uiState.githubUser.htmlUrl,
+                            text = uiState.githubUser?.htmlUrl.orEmpty(),
                             style = MMTypography.titleLarge,
                             modifier = Modifier
-                                .clickable { uriHandler.openUri(uiState.githubUser.htmlUrl) }
+                                .clickable(uiState.githubUser?.htmlUrl.isNullOrEmpty().not()) {
+                                    uriHandler.openUri(uiState.githubUser?.htmlUrl.orEmpty())
+                                }
                         )
                         Spacer(Modifier.height(18.dp))
                         Text(

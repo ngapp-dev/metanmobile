@@ -21,7 +21,6 @@ import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.githubuser.asEntity
 import com.ngapp.metanmobile.core.data.updateSingleDataSync
 import com.ngapp.metanmobile.core.database.dao.githubuser.GithubUserResourceDao
-import com.ngapp.metanmobile.core.database.model.githubuser.GithubUserResourceEntity
 import com.ngapp.metanmobile.core.database.model.githubuser.asExternalModel
 import com.ngapp.metanmobile.core.network.GithubNetworkDataSource
 import kotlinx.coroutines.flow.map
@@ -33,7 +32,7 @@ class OfflineFirstGithubUserRepository @Inject constructor(
 ) : GithubUserRepository {
 
     override fun getGithubUser() =
-        githubUserResourceDao.getGithubUserResource().map(GithubUserResourceEntity::asExternalModel)
+        githubUserResourceDao.getGithubUserResource().map { it?.asExternalModel() }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateSingleDataSync(

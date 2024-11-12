@@ -33,8 +33,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -42,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +57,7 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.career.CareerResource
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.feature.careers.state.CareersUiState
 import com.ngapp.metanmobile.feature.careers.ui.CareersContent
 
@@ -101,11 +104,20 @@ private fun CareersScreen(
             when (uiState) {
                 CareersUiState.Loading -> Unit
                 is CareersUiState.Success -> {
-                    CareersContent(
-                        modifier = modifier,
-                        staggeredGridState = staggeredGridState,
-                        careers = uiState.careers,
-                    )
+                    if (uiState.careers.isNotEmpty()) {
+                        CareersContent(
+                            modifier = modifier,
+                            staggeredGridState = staggeredGridState,
+                            careers = uiState.careers,
+                        )
+                    } else {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_menu_careers_text_empty)
+                        )
+                    }
                 }
             }
             AnimatedVisibility(

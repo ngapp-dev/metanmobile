@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -36,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +48,7 @@ import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.faq.FaqResource
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.feature.faq.state.FaqUiState
 import com.ngapp.metanmobile.feature.faq.ui.FaqContent
 
@@ -88,8 +92,17 @@ private fun FaqScreen(
             when (uiState) {
                 FaqUiState.Loading -> Unit
                 is FaqUiState.Success -> {
-                    Surface(shadowElevation = 4.dp) {
-                        FaqContent(faqList = uiState.faqList)
+                    if (uiState.faqList.isNotEmpty()) {
+                        Surface(shadowElevation = 4.dp) {
+                            FaqContent(faqList = uiState.faqList)
+                        }
+                    } else {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_menu_faq_text_empty)
+                        )
                     }
                 }
             }

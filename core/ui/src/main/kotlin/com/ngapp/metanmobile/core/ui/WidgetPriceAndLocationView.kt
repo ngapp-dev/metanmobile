@@ -42,7 +42,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.model.price.PriceResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
-import com.ngapp.metanmobile.core.ui.lottie.LottieLoadingView
 import com.ngapp.metanmobile.core.ui.stations.StationStatusView
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.core.ui.util.isGoogleServicesAvailable
@@ -59,29 +58,33 @@ fun WidgetPriceAndLocationView(
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.Top
     ) {
-        LeftWidgetView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f)
-                .padding(vertical = 2.dp),
-            cngPrice = cngPrice
-        )
-        RightWidgetView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(weight = 1f)
-                .padding(vertical = 2.dp),
-            nearestStation = nearestStation,
-            subtitle = subtitle,
-            onStationDetailClick = onStationDetailClick,
-        )
+        if (cngPrice != null) {
+            LeftWidgetView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(weight = 1f)
+                    .padding(vertical = 2.dp),
+                cngPrice = cngPrice
+            )
+        }
+        if (nearestStation != null) {
+            RightWidgetView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(weight = 1f)
+                    .padding(vertical = 2.dp),
+                nearestStation = nearestStation,
+                subtitle = subtitle,
+                onStationDetailClick = onStationDetailClick,
+            )
+        }
     }
 }
 
 @Composable
 fun LeftWidgetView(
     modifier: Modifier = Modifier,
-    cngPrice: PriceResource?,
+    cngPrice: PriceResource,
 ) {
     Box(
         contentAlignment = Alignment.CenterStart,
@@ -90,31 +93,27 @@ fun LeftWidgetView(
             .background(MaterialTheme.colorScheme.onBackground)
     ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-            if (cngPrice == null) {
-                LottieLoadingView()
-            } else {
-                Text(
-                    text = stringResource(id = R.string.core_ui_text_value_byn, cngPrice.content),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MMTypography.displayMedium,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = stringResource(R.string.core_ui_text_cng_price),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-                Text(
-                    text = stringResource(R.string.core_ui_text_for_one_meter),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.core_ui_text_value_byn, cngPrice.content),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MMTypography.displayMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = stringResource(R.string.core_ui_text_cng_price),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+            Text(
+                text = stringResource(R.string.core_ui_text_for_one_meter),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(top = 2.dp)
+            )
         }
     }
 }
@@ -122,7 +121,7 @@ fun LeftWidgetView(
 @Composable
 fun RightWidgetView(
     modifier: Modifier = Modifier,
-    nearestStation: UserStationResource?,
+    nearestStation: UserStationResource,
     subtitle: Int,
     onStationDetailClick: (String) -> Unit = {},
 ) {
@@ -138,56 +137,50 @@ fun RightWidgetView(
             .clip(MMShapes.large)
             .background(MaterialTheme.colorScheme.onBackground)
             .clickable {
-                analyticsHelper.logStationResourceOpened(stationCode = nearestStation?.code.orEmpty())
-                if (nearestStation != null) {
-                    onStationDetailClick(nearestStation.code)
-                }
+                analyticsHelper.logStationResourceOpened(stationCode = nearestStation.code)
+                onStationDetailClick(nearestStation.code)
             },
     ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
             if (permissionsState.hasLocationPermissions) {
-                if (nearestStation == null || nearestStation.distanceBetween == 0.0) {
-                    LottieLoadingView()
-                } else {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val distanceBetween =
-                            String.format(
-                                Locale.getDefault(),
-                                "%.1f",
-                                nearestStation.distanceBetween
-                            ).replace('.', ',')
-                        Text(
-                            text = stringResource(
-                                id = R.string.core_ui_text_value_km,
-                                distanceBetween
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MMTypography.displayMedium,
-                            modifier = Modifier
-                        )
-                        StationStatusView(nearestStation)
-                    }
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val distanceBetween =
+                        String.format(
+                            Locale.getDefault(),
+                            "%.1f",
+                            nearestStation.distanceBetween
+                        ).replace('.', ',')
                     Text(
-                        text = stringResource(id = subtitle),
+                        text = stringResource(
+                            id = R.string.core_ui_text_value_km,
+                            distanceBetween
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier.padding(top = 2.dp)
-                    )
-                    Text(
-                        text = nearestStation.address,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MMTypography.displayMedium,
                         modifier = Modifier
-                            .padding(top = 2.dp)
-                            .fillMaxWidth()
                     )
+                    StationStatusView(nearestStation)
                 }
+                Text(
+                    text = stringResource(id = subtitle),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+                Text(
+                    text = nearestStation.address,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .fillMaxWidth()
+                )
             } else if (!isGoogleServicesAvailable) {
                 RequestPermissionOrGoogleServices(
                     modifier = Modifier,
@@ -200,9 +193,7 @@ fun RightWidgetView(
                     modifier = Modifier,
                     titleText = R.string.core_ui_text_permission_denied,
                     buttonText = R.string.core_ui_button_permission_request,
-                    onClick = {
-                        permissionsState.requestPermissions()
-                    }
+                    onClick = { permissionsState.requestPermissions() }
                 )
             }
         }
