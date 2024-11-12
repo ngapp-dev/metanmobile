@@ -21,8 +21,6 @@ import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.githubuser.asEntity
 import com.ngapp.metanmobile.core.data.updateSingleDataSync
 import com.ngapp.metanmobile.core.database.dao.githubuser.GithubUserResourceDao
-import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
-import com.ngapp.metanmobile.core.database.model.githubuser.GithubUserResourceEntity
 import com.ngapp.metanmobile.core.database.model.githubuser.asExternalModel
 import com.ngapp.metanmobile.core.network.GithubNetworkDataSource
 import kotlinx.coroutines.flow.map
