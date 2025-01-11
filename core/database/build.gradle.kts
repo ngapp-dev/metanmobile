@@ -27,7 +27,7 @@ android {
         testInstrumentationRunner =
             "com.ngapp.metanmobile.core.testing.MetanMobileTestRunner"
     }
-    namespace = "com.ngapp.metanmobile.core.data"
+    namespace = "com.ngapp.metanmobile.core.database"
 }
 
 dependencies {
