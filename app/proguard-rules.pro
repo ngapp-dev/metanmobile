@@ -39,3 +39,7 @@
 
 # @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+-keep class com.ngapp.metanmobile.core.datastore.UserPreferences { *; }
+-keep class com.ngapp.metanmobile.core.datastore.* { *; }
+-keepclassmembers class com.ngapp.metanmobile.core.datastore.UserPreferences { public *; }
