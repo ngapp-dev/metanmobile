@@ -1,5 +1,5 @@
-![Android Gradle Plugin](https://img.shields.io/badge/gradle-8.6.1-brightgreen?logo=gradle)
-![kotlin-version](https://img.shields.io/badge/kotlin-2.0.20-blue?logo=kotlin)
+![Android Gradle Plugin](https://img.shields.io/badge/gradle-8.7.3-brightgreen?logo=gradle)
+![kotlin-version](https://img.shields.io/badge/kotlin-2.1.0-blue?logo=kotlin)
 
 ![Metan Mobile](docs/images/logo_full_solid.jpg "Metan Mobile")
 
