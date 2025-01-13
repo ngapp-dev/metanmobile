@@ -21,19 +21,19 @@ import com.ngapp.metanmobile.configureKotlinAndroid
 import com.ngapp.metanmobile.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
 class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("com.android.test")
-                apply("org.jetbrains.kotlin.android")
-            }
+            apply(plugin = "com.android.test")
+            apply(plugin = "org.jetbrains.kotlin.android")
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = libs.findVersion("androidTargetSdk").get().toString().toInt()
+                defaultConfig.targetSdk =
+                    libs.findVersion("androidTargetSdk").get().toString().toInt()
                 configureGradleManagedDevices(this)
             }
         }

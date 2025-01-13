@@ -55,7 +55,7 @@ internal fun Project.configureKotlinAndroid(
     configureKotlin<KotlinAndroidProjectExtension>()
 
     dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+        "coreLibraryDesugaring"(libs.findLibrary("android.desugarJdkLibs").get())
     }
 }
 
@@ -90,6 +90,9 @@ private inline fun <reified T : KotlinTopLevelExtension> Project.configureKotlin
         freeCompilerArgs.add(
             // Enable experimental coroutines APIs, including Flow
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+        )
+        freeCompilerArgs.add(
+            "-Xconsistent-data-class-copy-visibility"
         )
     }
 }

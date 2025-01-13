@@ -20,37 +20,38 @@ import com.ngapp.metanmobile.configureGradleManagedDevices
 import com.ngapp.metanmobile.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
 
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply {
-                apply("metanmobile.android.library")
-                apply("metanmobile.hilt")
-                apply("org.jetbrains.kotlin.plugin.serialization")
-            }
+            apply(plugin = "metanmobile.android.library")
+            apply(plugin = "metanmobile.hilt")
+            apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)
             }
 
             dependencies {
-                add("implementation", project(":core:data"))
-                add("implementation", project(":core:ui"))
-                add("implementation", project(":core:designsystem"))
+                "implementation"(project(":core:data"))
+                "implementation"(project(":core:ui"))
+                "implementation"(project(":core:designsystem"))
 
-                add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
-                add("implementation", libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
-                add("implementation", libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
-                add("implementation", libs.findLibrary("androidx.navigation.compose").get())
-                add("implementation", libs.findLibrary("androidx.tracing.ktx").get())
-                add("implementation", libs.findLibrary("kotlinx.serialization.json").get())
+                "implementation"(libs.findLibrary("androidx.hilt.navigation.compose").get())
+                "implementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
+                "implementation"(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
+                "implementation"(libs.findLibrary("androidx.navigation.compose").get())
+                "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
+                "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
 
-                add("testImplementation", libs.findLibrary("androidx.navigation.testing").get())
-                add("androidTestImplementation", libs.findLibrary("androidx.lifecycle.runtimeTesting").get())
+                "testImplementation"(libs.findLibrary("androidx.navigation.testing").get())
+                "androidTestImplementation"(
+                    libs.findLibrary("androidx.lifecycle.runtimeTesting").get()
+                )
             }
         }
     }
