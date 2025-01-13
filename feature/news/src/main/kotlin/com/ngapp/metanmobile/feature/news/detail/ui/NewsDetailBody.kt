@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
@@ -43,7 +42,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 internal fun NewsDetailBody(content: String) {
     val context = LocalContext.current
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
-    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = Modifier
