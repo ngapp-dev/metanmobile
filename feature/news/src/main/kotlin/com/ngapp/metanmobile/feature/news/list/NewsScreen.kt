@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.feature.news.list
 
+import android.util.Log
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -86,6 +87,8 @@ internal fun NewsRoute(
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
 
+    Log.e("NewsRoute", "NewsRoute: $uiState")
+
     NewsScreen(
         modifier = modifier,
         isSyncing = isSyncing,
@@ -141,7 +144,7 @@ private fun NewsScreen(
                             onShowAlertDialog = { onAction(NewsAction.ShowAlertDialog(it)) }
                         )
                     }
-                    if (uiState.newsList.isNotEmpty() && uiState.pinnedNewsList.isNotEmpty()) {
+                    if (uiState.newsList.isNotEmpty() || uiState.pinnedNewsList.isNotEmpty()) {
                         Surface(shadowElevation = 4.dp) {
                             NewsContent(
                                 gridState = gridState,

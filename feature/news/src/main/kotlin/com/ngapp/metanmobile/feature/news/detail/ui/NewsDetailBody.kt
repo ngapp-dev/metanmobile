@@ -17,13 +17,21 @@
 
 package com.ngapp.metanmobile.feature.news.detail.ui
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.webkit.URLUtil
+import androidx.annotation.ColorInt
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +41,8 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 
 @Composable
 internal fun NewsDetailBody(content: String) {
+    val context = LocalContext.current
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     val uriHandler = LocalUriHandler.current
 
     Column(
@@ -47,7 +57,7 @@ internal fun NewsDetailBody(content: String) {
             modifier = Modifier,
             onLinkClick = { url ->
                 if (URLUtil.isValidUrl(url)) {
-                    uriHandler.openUri(url)
+                    launchCustomChromeTab(context, Uri.parse(url), backgroundColor)
                 }
             },
             flags = HtmlCompat.FROM_HTML_MODE_LEGACY,
@@ -55,4 +65,14 @@ internal fun NewsDetailBody(content: String) {
             lineHeight = 22.sp
         )
     }
+}
+
+fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
+    val customTabBarColor = CustomTabColorSchemeParams.Builder()
+        .setToolbarColor(toolbarColor).build()
+    val customTabsIntent = CustomTabsIntent.Builder()
+        .setDefaultColorSchemeParams(customTabBarColor)
+        .build()
+
+    customTabsIntent.launchUrl(context, uri)
 }

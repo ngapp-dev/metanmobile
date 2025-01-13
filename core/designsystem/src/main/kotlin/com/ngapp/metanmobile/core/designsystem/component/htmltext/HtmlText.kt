@@ -157,7 +157,11 @@ private fun String.asHTML(
                 is SubscriptSpan -> span.spanStyle()
                 is URLSpan -> {
                     val url =
-                        if (span.url.startsWith("https://metan.by") || span.url.startsWith("http://metan.by")) span.url else "https://metan.by${span.url}"
+                        when {
+                            span.url.startsWith("http://") || span.url.startsWith("https://") -> span.url
+                            span.url.startsWith("https://metan.by") || span.url.startsWith("http://metan.by") -> span.url
+                            else -> "https://metan.by${span.url}"
+                        }
                     addStringAnnotation(
                         tag = URL_TAG,
                         annotation = url,

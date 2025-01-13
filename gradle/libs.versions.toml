@@ -4,14 +4,13 @@ androidMinSdk = "21"
 androidTargetSdk = "35"
 versionMajor = "2"
 versionMinor = "1"
-versionPatch = "14"
+versionPatch = "15"
 applicationId = "com.ngapp.metanmobile"
 
-accompanist = "0.34.0"
-accompanistPermissions = "0.37.0"
+accompanist = "0.37.0"
 androidDesugarJdkLibs = "2.1.4"
 androidGradlePlugin = "8.7.3"
-androidTools = "31.7.2"
+androidTools = "31.7.3"
 androidxActivity = "1.9.3"
 androidxAppCompat = "1.7.0"
 androidxBrowser = "1.8.0"
@@ -79,14 +78,7 @@ truth = "1.4.4"
 turbine = "1.2.0"
 
 [libraries]
-accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
-accompanist-navigation-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
-accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
-accompanist-placeholder-material = { group = "com.google.accompanist", name = "accompanist-placeholder-material", version.ref = "accompanist" }
-accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-testharness = { group = "com.google.accompanist", name = "accompanist-testharness", version.ref = "accompanist" }
-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }

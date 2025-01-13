@@ -19,6 +19,8 @@ package com.ngapp.metanmobile.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
@@ -91,9 +93,22 @@ class MMAppState(
     userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
-    val currentDestination: NavDestination?
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
+    private val previousDestination = mutableStateOf<NavDestination?>(null)
 
+    val currentDestination: NavDestination?
+        @Composable get() {
+            // Collect the currentBackStackEntryFlow as a state
+            val currentEntry = navController.currentBackStackEntryFlow
+                .collectAsState(initial = null)
+
+            // Fallback to previousDestination if currentEntry is null
+            return currentEntry.value?.destination.also { destination ->
+                if (destination != null) {
+                    previousDestination.value = destination
+                }
+            } ?: previousDestination.value
+        }
+    
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() {
             with(currentDestination) {

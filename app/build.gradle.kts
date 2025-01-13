@@ -98,13 +98,7 @@ dependencies {
     implementation(projects.feature.stations)
 
     // Accompanist
-    implementation(libs.accompanist.swiperefresh)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.placeholder.material)
-    implementation(libs.accompanist.navigation.material)
-    implementation(libs.accompanist.navigation.animation)
     implementation(libs.accompanist.permissions)
-    implementation(libs.accompanist.webview)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3.adaptive)
@@ -137,7 +131,6 @@ dependencies {
 
     testImplementation(projects.core.dataTest)
     testImplementation(projects.core.testing)
-    testImplementation(libs.accompanist.testharness)
     testImplementation(libs.hilt.android.testing)
 
     testImplementation(libs.robolectric)
@@ -149,9 +142,7 @@ dependencies {
     androidTestImplementation(projects.core.datastoreTest)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.accompanist.testharness)
     androidTestImplementation(libs.hilt.android.testing)
-
 //    baselineProfile(projects.benchmarks)
 }
 
