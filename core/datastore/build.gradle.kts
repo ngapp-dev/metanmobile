@@ -22,6 +22,9 @@ plugins {
 }
 
 android {
+    defaultConfig {
+        consumerProguardFiles("consumer-proguard-rules.pro")
+    }
     namespace = "com.ngapp.metanmobile.core.datastore"
     testOptions {
         unitTests {
