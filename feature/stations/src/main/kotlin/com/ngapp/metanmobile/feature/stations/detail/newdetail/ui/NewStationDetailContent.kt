@@ -23,13 +23,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ngapp.metanmobile.core.designsystem.component.MMDivider
 import com.ngapp.metanmobile.core.designsystem.component.MMTab
 import com.ngapp.metanmobile.core.designsystem.component.MMTabRow
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
@@ -58,9 +57,9 @@ import com.ngapp.metanmobile.core.ui.stations.createLocationIntent
 import com.ngapp.metanmobile.feature.stations.R
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailAction
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.ui.MenuTabs.OVERVIEW
-import com.ngapp.metanmobile.feature.stations.detail.newdetail.ui.MenuTabs.UPDATES
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.ui.MenuTabs.PAYMENTS
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.ui.MenuTabs.PHOTOS
+import com.ngapp.metanmobile.feature.stations.detail.newdetail.ui.MenuTabs.UPDATES
 
 
 @Composable
@@ -76,7 +75,7 @@ internal fun NewStationDetailContent(
     val context = LocalContext.current
     val listState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
-    val callNumber = stationDetail.phones.split(",").first().trim()
+    val phoneNumber = stationDetail.phones.split(",").first().trim()
 
     LazyColumn(
         state = listState,
@@ -103,7 +102,7 @@ internal fun NewStationDetailContent(
                 HeaderButtons(
                     isFavorite = stationDetail.isFavorite,
                     onDirectionsClick = { context.createLocationIntent(stationDetail) },
-                    onCallClick = { uriHandler.openUri("tel:$callNumber") },
+                    onCallClick = { uriHandler.openUri("tel:$phoneNumber") },
                     onToggleBookmark = {
                         onAction(
                             NewStationDetailAction.UpdateStationFavorite(
@@ -135,7 +134,7 @@ internal fun NewStationDetailContent(
                         .clip(RoundedCornerShape(topStart = 1.dp, topEnd = 1.dp))
                         .offset(y = (-2).dp),
                     divider = {
-                        HorizontalDivider(
+                        MMDivider(
                             thickness = 2.dp,
                             color = MMColors.dividerColor
                         )
@@ -160,10 +159,17 @@ internal fun NewStationDetailContent(
                     label = "contentMenu",
                 ) { page ->
                     when (MenuTabs.entries[page]) {
-                        OVERVIEW -> {}
-                        UPDATES -> {}
-                        PAYMENTS -> {}
-                        PHOTOS -> {}
+                        OVERVIEW -> StationDetailOverview(
+                            address = stationDetail.address,
+                            coordinates = "${stationDetail.latitude}, ${stationDetail.longitude}",
+                            workingTime = stationDetail.workingTime,
+                            phones = stationDetail.phones,
+                            station = stationDetail,
+                        )
+
+                        UPDATES -> StationDetailUpdates()
+                        PAYMENTS -> StationDetailPayments()
+                        PHOTOS -> StationDetailPhotos()
                     }
                 }
             }

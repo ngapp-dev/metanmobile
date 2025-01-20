@@ -39,7 +39,6 @@
     <string name="feature_stations_text_operate">Працуе</string>
     <string name="feature_stations_text_not_operate">Не працуе</string>
     <string name="feature_stations_text_empty">Спіс Станцый пусты</string>
-    <string name="feature_stations_text_open_24_hours">Кругласутачна</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Пошук станцый</string>
     <!-- Description -->

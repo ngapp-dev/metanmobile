@@ -97,6 +97,19 @@
     <string name="core_ui_text_share_via">&#160;- Share via&#160;</string>
     <string name="core_ui_text_no_experience">Not required</string>
     <string name="core_ui_text_place_any">Any</string>
+    <string name="core_ui_text_copied_to_clipboard">Copied to clipboard</string>
+    <string name="core_ui_text_open_24_hours">Open 24 hours</string>
+    <string name="core_ui_text_popular_times">Popular times:</string>
+    <string-array name="core_ui_text_on_day_of_week">
+        <item>Mondays</item>
+        <item>Tuesdays</item>
+        <item>Wednesdays</item>
+        <item>Thursdays</item>
+        <item>Fridays</item>
+        <item>Saturdays</item>
+        <item>Sundays</item>
+    </string-array>
+    <string name="core_ui_text_busy_now">Busy now</string>
     <!-- Description -->
     <string name="core_ui_description_radio_button_img" translatable="false">Chosen: %s</string>
     <string name="core_ui_description_like_icon" translatable="false">Like: %s</string>

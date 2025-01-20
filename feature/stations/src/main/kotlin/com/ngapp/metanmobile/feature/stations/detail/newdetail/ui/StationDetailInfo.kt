@@ -17,12 +17,46 @@
 
 package com.ngapp.metanmobile.feature.stations.detail.newdetail.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
+import com.ngapp.metanmobile.core.model.station.UserStationResource
+import com.ngapp.metanmobile.core.ui.stations.StationBusyHours
+import com.ngapp.metanmobile.core.ui.stations.StationInfoRow
+import com.ngapp.metanmobile.core.ui.stations.StationPhonesRow
+import com.ngapp.metanmobile.core.ui.stations.StationWorkTimeRow
 
 @Composable
-internal fun StationDetailOverview(modifier: Modifier = Modifier) {
-
+internal fun StationDetailOverview(
+    address: String,
+    coordinates: String,
+    workingTime: String,
+    phones: String,
+    station: UserStationResource,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier) {
+        StationInfoRow(
+            rowIcon = MMIcons.LocationOnOutlined,
+            text = address,
+            isExpandable = false,
+        )
+        StationInfoRow(
+            rowIcon = MMIcons.ExploreOutlined,
+            text = coordinates,
+            isExpandable = false,
+        )
+        StationWorkTimeRow(
+            rowIcon = MMIcons.ClockOutlined,
+            workingTime = workingTime,
+        )
+        StationPhonesRow(
+            rowIcon = MMIcons.CallFilled,
+            phones = phones,
+        )
+        StationBusyHours(station = station)
+    }
 }
 
 @Composable

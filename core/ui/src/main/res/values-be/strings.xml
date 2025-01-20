@@ -97,6 +97,19 @@
     <string name="core_ui_text_share_via">&#160;- Падзяліцца праз&#160;</string>
     <string name="core_ui_text_no_experience">Не патрабуецца</string>
     <string name="core_ui_text_place_any">Любое</string>
+    <string name="core_ui_text_copied_to_clipboard">Скапіравана ў буфер абмену</string>
+    <string name="core_ui_text_open_24_hours">Кругласутачна</string>
+    <string name="core_ui_text_popular_times">Папулярны час:</string>
+    <string-array name="core_ui_text_on_day_of_week">
+        <item>Панядзелкі</item>
+        <item>Аўторкі</item>
+        <item>Серады</item>
+        <item>Чацвяргі</item>
+        <item>Пятніцы</item>
+        <item>Суботы</item>
+        <item>Нядзелі</item>
+    </string-array>
+    <string name="core_ui_text_busy_now">Загружанасць зараз</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">Час чакання запыту скончыўся</string>
     <string name="core_ui_no_internet">Ой! Здаецца, ваша інтэрнэт-злучэнне павольнае або парушана. Праверце падключэнне да сеткі і паўтарыце спробу</string>

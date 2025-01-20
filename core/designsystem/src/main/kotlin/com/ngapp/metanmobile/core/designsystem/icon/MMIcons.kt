@@ -47,15 +47,18 @@ import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BusinessCenter
 import androidx.compose.material.icons.outlined.Directions
 import androidx.compose.material.icons.outlined.DirectionsCar
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LocalGasStation
 import androidx.compose.material.icons.outlined.LocationDisabled
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.WatchLater
 import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ngapp.metanmobile.core.designsystem.R
@@ -103,6 +106,9 @@ object MMIcons {
     val CallFilled = Icons.Filled.Call
     val BookmarkBorder = Icons.Filled.BookmarkBorder
     val Bookmark = Icons.Filled.Bookmark
+    val LocationOnOutlined = Icons.Outlined.LocationOn
+    val ExploreOutlined = Icons.Outlined.Explore
+    val ClockOutlined = Icons.Outlined.WatchLater
 
     // Painter
     val LogoFullSolid = R.drawable.core_designsystem_logo_full_solid

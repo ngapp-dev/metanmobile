@@ -39,7 +39,6 @@
     <string name="feature_stations_text_operate">Работает</string>
     <string name="feature_stations_text_not_operate">Не работает</string>
     <string name="feature_stations_text_empty">Список Станций пуст</string>
-    <string name="feature_stations_text_open_24_hours">Круглосуточно</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Поиск станций</string>
     <!-- Description -->

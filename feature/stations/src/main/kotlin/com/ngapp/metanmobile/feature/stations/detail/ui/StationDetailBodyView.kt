@@ -126,7 +126,7 @@ private fun StationDetailInfoContent(stationContent: String?) {
 
 @Composable
 private fun StationDetailPhones(station: UserStationResource) {
-    val number = station.phones.split(",").toTypedArray()
+    val number = station.phones.split(",")
     val uriHandler = LocalUriHandler.current
     Column(
         modifier = Modifier

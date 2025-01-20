@@ -39,7 +39,6 @@
     <string name="feature_stations_text_operate">Operate</string>
     <string name="feature_stations_text_not_operate">Not operate</string>
     <string name="feature_stations_text_empty">Station list is empty</string>
-    <string name="feature_stations_text_open_24_hours">Open 24 hours</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Search stations</string>
     <!-- Description -->

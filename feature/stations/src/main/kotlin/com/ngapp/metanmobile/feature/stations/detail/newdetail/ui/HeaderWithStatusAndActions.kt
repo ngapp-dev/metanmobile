@@ -17,10 +17,8 @@
 
 package com.ngapp.metanmobile.feature.stations.detail.newdetail.ui
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ngapp.metanmobile.core.designsystem.component.ButtonWithIcon
-import com.ngapp.metanmobile.core.designsystem.component.MMButton
 import com.ngapp.metanmobile.core.designsystem.component.MMFilledIconButton
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Black
@@ -50,10 +46,8 @@ import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.LightBlue
-import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.White
-import com.ngapp.metanmobile.core.ui.stations.createLocationIntent
 import com.ngapp.metanmobile.feature.stations.R
 import java.util.Locale
 import com.ngapp.metanmobile.core.designsystem.R as DesignSystemR
@@ -152,7 +146,7 @@ internal fun HeaderObjectType(
 internal fun HeaderObjectWorkTime(workingTime: String) {
     Text(
         text = if (workingTime.contains("круглосуточно")) {
-            stringResource(R.string.feature_stations_text_open_24_hours)
+            stringResource(CoreUiR.string.core_ui_text_open_24_hours)
         } else {
             workingTime
         },

@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.dividerColor
@@ -32,11 +33,11 @@ import com.ngapp.metanmobile.core.designsystem.theme.dividerColor
 fun MMDivider(
     modifier: Modifier = Modifier,
     color: Color = MMColors.dividerColor,
+    thickness: Dp = 1.dp,
 ) {
     HorizontalDivider(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(1.dp),
+        modifier = modifier.fillMaxWidth(),
+        thickness = thickness,
         color = color
     )
 }
