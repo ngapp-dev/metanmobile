@@ -18,6 +18,7 @@
 package com.ngapp.metanmobile.feature.stations.list.ui
 
 import android.util.Log
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,11 +53,11 @@ internal fun StationMapContent(
     LaunchedEffect(shouldAnimateCamera, userLocation) {
         if (shouldAnimateCamera && permissionsState.hasLocationPermissions && userLocation != null) {
             val location = LatLng(userLocation.latitude, userLocation.longitude)
-            cameraPositionState.animate(
-                update = CameraUpdateFactory.newCameraPosition(
-                    CameraPosition(location, 15f, 0f, 0f)
-                )
-            )
+//            cameraPositionState.animate(
+//                update = CameraUpdateFactory.newCameraPosition(
+//                    CameraPosition(location, 15f, 0f, 0f)
+//                )
+//            )
             shouldAnimateCamera = false
         }
     }

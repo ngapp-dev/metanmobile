@@ -15,19 +15,27 @@
  *
  */
 
-package com.ngapp.metanmobile.core.network.model.contact
+package com.ngapp.metanmobile.feature.stations.detail.newdetail.ui
 
-import com.prof18.rssparser.model.RssItem
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-data class NetworkContactResource(
-    val id: Int,
-    val dateCreated: String = "",
-    val content: String = "",
-)
+@Composable
+internal fun StationDetailOverview(modifier: Modifier = Modifier) {
 
-fun RssItem.asNetworkContactResource() = NetworkContactResource(
-    id = categories[ContactCategoryValues.CATEGORY_ID].toInt(),
-    dateCreated = pubDate ?: "",
-    content = content ?: "",
-)
+}
 
+@Composable
+internal fun StationDetailUpdates(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+internal fun StationDetailPayments(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+internal fun StationDetailPhotos(modifier: Modifier = Modifier) {
+
+}

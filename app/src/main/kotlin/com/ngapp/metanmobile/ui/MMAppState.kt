@@ -15,8 +15,15 @@
  *
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.ngapp.metanmobile.ui
 
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -65,6 +72,12 @@ fun rememberMMAppState(
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
+    bottomSheetScaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            skipHiddenState = false,
+            initialValue = SheetValue.Hidden
+        ),
+    ),
 ): MMAppState {
 //    NavigationTrackingSideEffect(navController)
     return remember(
@@ -73,6 +86,7 @@ fun rememberMMAppState(
         networkMonitor,
         userNewsResourceRepository,
         timeZoneMonitor,
+        bottomSheetScaffoldState,
     ) {
         MMAppState(
             navController = navController,
@@ -80,6 +94,7 @@ fun rememberMMAppState(
             networkMonitor = networkMonitor,
             userNewsResourceRepository = userNewsResourceRepository,
             timeZoneMonitor = timeZoneMonitor,
+            bottomSheetScaffoldState = bottomSheetScaffoldState,
         )
     }
 }
@@ -91,6 +106,7 @@ class MMAppState(
     networkMonitor: NetworkMonitor,
     userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
+    val bottomSheetScaffoldState: BottomSheetScaffoldState,
 ) {
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 

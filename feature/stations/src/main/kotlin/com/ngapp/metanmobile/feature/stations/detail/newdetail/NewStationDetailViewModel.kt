@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ * Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@
  *
  */
 
-package com.ngapp.metanmobile.feature.stations.detail
+package com.ngapp.metanmobile.feature.stations.detail.newdetail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.ngapp.metanmobile.core.data.repository.news.NewsResourceQuery
 import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepository
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
@@ -29,54 +27,66 @@ import com.ngapp.metanmobile.core.data.repository.station.StationResourcesWithFa
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.ui.ShareManager
-import com.ngapp.metanmobile.feature.stations.detail.navigation.StationDetailNavigation
-import com.ngapp.metanmobile.feature.stations.detail.state.StationDetailAction
-import com.ngapp.metanmobile.feature.stations.detail.state.StationDetailUiState
-import com.ngapp.metanmobile.feature.stations.detail.state.StationDetailUiState.Loading
-import com.ngapp.metanmobile.feature.stations.detail.state.StationDetailUiState.Success
+import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailAction
+import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StationDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    userStationsRepository: StationResourcesWithFavoritesRepository,
-    fuelPricesRepository: PricesRepository,
-    userNewsResourceRepository: UserNewsResourceRepository,
+class NewStationDetailViewModel @Inject constructor(
+    private val userStationsRepository: StationResourcesWithFavoritesRepository,
+    private val fuelPricesRepository: PricesRepository,
+    private val userNewsResourceRepository: UserNewsResourceRepository,
     private val userDataRepository: UserDataRepository,
     private val shareManager: ShareManager,
 ) : ViewModel() {
 
-    private val stationCode = savedStateHandle.toRoute<StationDetailNavigation>().stationCode
+    private val _uiState = MutableStateFlow(NewStationDetailUiState())
+    val uiState = _uiState.asStateFlow()
 
-    val uiState: StateFlow<StationDetailUiState> = stationDetailUiState(
-        stationCode = stationCode,
-        userStationsRepository = userStationsRepository,
-        userNewsResourceRepository = userNewsResourceRepository,
-        fuelPricesRepository = fuelPricesRepository,
-    )
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileSubscribed(5_000),
-            initialValue = Loading,
-        )
-
-    fun triggerAction(action: StationDetailAction) {
+    fun triggerAction(action: NewStationDetailAction) {
         when (action) {
-            is StationDetailAction.UpdateStationFavorite -> onUpdateStationFavorite(
-                action.stationCode,
-                action.favorite
-            )
+            is NewStationDetailAction.LoadStationDetail -> onLoadStationDetail(action.stationCode)
+            is NewStationDetailAction.UpdateStationFavorite ->
+                onUpdateStationFavorite(action.stationCode, action.favorite)
 
-            is StationDetailAction.ShareStation -> onShareStation(action.station)
+            is NewStationDetailAction.ShareStation -> onShareStation(action.station)
+        }
+    }
+
+    private fun onLoadStationDetail(stationCode: String) = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = false) }
+        val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
+            query = StationResourceQuery(filterStationCodes = setOf(stationCode))
+        ).map { it.first() }
+        val fuelPriceFlow = fuelPricesRepository.getFuelPrice()
+        val relatedNewsFlow = stationFlow.flatMapLatest { station ->
+            userNewsResourceRepository.observeAll(
+                query = NewsResourceQuery(filterNewsByStationTitle = station.title)
+            )
+        }
+        combine(
+            stationFlow,
+            fuelPriceFlow,
+            relatedNewsFlow,
+            ::Triple
+        ).collectLatest { (stationDetail, fuelPrice, relatedNewsList) ->
+            _uiState.update {
+                it.copy(
+                    stationDetail = stationDetail,
+                    cngPrice = fuelPrice,
+                    relatedNewsList = relatedNewsList
+                )
+            }
         }
     }
 
@@ -95,7 +105,7 @@ private fun stationDetailUiState(
     userStationsRepository: StationResourcesWithFavoritesRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
     fuelPricesRepository: PricesRepository,
-): Flow<StationDetailUiState> {
+): Flow<NewStationDetailUiState> {
 
     val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
         query = StationResourceQuery(filterStationCodes = setOf(stationCode))
@@ -114,7 +124,7 @@ private fun stationDetailUiState(
         relatedNewsFlow,
         fuelPriceFlow
     ) { stationDetail, relatedNewsList, fuelPrice ->
-        Success(
+        NewStationDetailUiState(
             stationDetail = stationDetail,
             cngPrice = fuelPrice,
             relatedNewsList = relatedNewsList,

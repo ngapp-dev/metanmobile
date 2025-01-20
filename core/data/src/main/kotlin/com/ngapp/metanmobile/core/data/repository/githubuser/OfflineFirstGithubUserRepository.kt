@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OfflineFirstGithubUserRepository @Inject constructor(
-    val network: GithubNetworkDataSource,
+    private val network: GithubNetworkDataSource,
     private val githubUserResourceDao: GithubUserResourceDao,
 ) : GithubUserRepository {
 

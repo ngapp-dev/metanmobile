@@ -15,6 +15,8 @@
  *
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.ngapp.metanmobile.feature.stations.list
 
 import androidx.activity.compose.ReportDrawnWhen
@@ -33,15 +35,18 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,17 +80,21 @@ import com.ngapp.metanmobile.core.ui.alertdialogs.StationsSortAndFilterConfigDia
 import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.stations.R
+import com.ngapp.metanmobile.feature.stations.list.StationTabs.LIST
+import com.ngapp.metanmobile.feature.stations.list.StationTabs.MAP
 import com.ngapp.metanmobile.feature.stations.list.state.StationsAction
 import com.ngapp.metanmobile.feature.stations.list.state.StationsUiState
 import com.ngapp.metanmobile.feature.stations.list.ui.StationListContent
+import com.ngapp.metanmobile.feature.stations.list.ui.StationMapBottomSheet
 import com.ngapp.metanmobile.feature.stations.list.ui.StationMapContent
-import com.ngapp.metanmobile.feature.stations.list.StationTabs.LIST
-import com.ngapp.metanmobile.feature.stations.list.StationTabs.MAP
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun StationsRoute(
+    bottomSheetState: BottomSheetScaffoldState,
     onStationDetailClick: (String) -> Unit,
+    onNewsDetailClick: (String) -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StationsViewModel = hiltViewModel(),
 ) {
@@ -100,15 +109,20 @@ internal fun StationsRoute(
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val bottomSheetExpanded = bottomSheetState.bottomSheetState.currentValue != SheetValue.Expanded
 
     StationsScreen(
         modifier = modifier,
         isSyncing = isSyncing,
         searchQuery = searchQuery,
         showDialog = showDialog,
+        showTopBar = bottomSheetExpanded,
         uiState = uiState,
+        bottomSheetState = bottomSheetState,
         onAction = viewModel::triggerAction,
         onStationDetailClick = onStationDetailClick,
+        onNewsDetailClick = onNewsDetailClick,
+        onBackClick = onBackClick,
     )
 }
 
@@ -118,15 +132,21 @@ private fun StationsScreen(
     isSyncing: Boolean,
     searchQuery: String,
     showDialog: Boolean,
+    showTopBar: Boolean,
     uiState: StationsUiState,
+    bottomSheetState: BottomSheetScaffoldState,
     onAction: (StationsAction) -> Unit,
     onStationDetailClick: (String) -> Unit,
+    onNewsDetailClick: (String) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     StationsHeader(
         modifier = modifier,
         searchQuery = searchQuery,
+        showTopBar = showTopBar,
         onAction = onAction,
     ) { padding ->
+
         val coroutineScope = rememberCoroutineScope()
         val isLoading = uiState is StationsUiState.Loading
         ReportDrawnWhen { !isSyncing && !isLoading }
@@ -148,21 +168,32 @@ private fun StationsScreen(
                             val tabsName =
                                 rememberSaveable { StationTabs.entries.map { it.titleResId } }
                             var selectedIndex by rememberSaveable { mutableIntStateOf(LIST.ordinal) }
-                            MMTabRow(selectedTabIndex = selectedIndex) {
-                                tabsName.forEachIndexed { index, stringResourceId ->
-                                    MMTab(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(color = MMColors.cardBackgroundColor),
-                                        selected = index == selectedIndex,
-                                        onClick = { selectedIndex = index },
-                                        text = {
-                                            Text(
-                                                text = stringResource(id = stringResourceId),
-                                                style = MMTypography.headlineMedium,
-                                            )
-                                        }
-                                    )
+                            AnimatedVisibility(
+                                visible = showTopBar,
+                                enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+                                exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
+                            ) {
+                                MMTabRow(
+                                    selectedTabIndex = selectedIndex,
+                                    indicatorModifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .offset(y = (-5).dp)
+                                ) {
+                                    tabsName.forEachIndexed { index, stringResourceId ->
+                                        MMTab(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(color = MMColors.cardBackgroundColor),
+                                            selected = index == selectedIndex,
+                                            onClick = { selectedIndex = index },
+                                            text = {
+                                                Text(
+                                                    text = stringResource(id = stringResourceId),
+                                                    style = MMTypography.headlineMedium,
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
                             }
                             Crossfade(
@@ -182,39 +213,61 @@ private fun StationsScreen(
                                     )
                                 }
 
-                                when (page) {
-                                    LIST.ordinal -> {
-                                        Box(modifier = modifier) {
-                                            StationListContent(
-                                                modifier = modifier,
-                                                gridState = gridState,
-                                                stationsList = uiState.stationList,
-                                                onAction = onAction,
-                                                onDetailClick = onStationDetailClick,
-                                            )
-                                            gridState.DraggableScrollbar(
-                                                modifier = Modifier
-                                                    .fillMaxHeight()
-                                                    .windowInsetsPadding(WindowInsets.systemBars)
-                                                    .padding(horizontal = 2.dp)
-                                                    .align(Alignment.CenterEnd),
-                                                state = scrollbarState,
-                                                orientation = Orientation.Vertical,
-                                                onThumbMoved = gridState.rememberDraggableScroller(
-                                                    itemsAvailable = itemsAvailable
-                                                ),
-                                            )
+                                when (StationTabs.entries[page]) {
+                                    LIST -> {
+                                        var stationCode by rememberSaveable { mutableStateOf("") }
+                                        StationMapBottomSheet(
+                                            stationCode = stationCode,
+                                            bottomSheetState = bottomSheetState,
+                                            onNewsDetailClick = onNewsDetailClick,
+                                            onBackClick = onBackClick,
+                                        ) {
+                                            Box(modifier = modifier) {
+                                                StationListContent(
+                                                    modifier = modifier,
+                                                    gridState = gridState,
+                                                    stationsList = uiState.stationList,
+                                                    onAction = onAction,
+                                                    onDetailClick = {
+                                                        stationCode = it
+                                                        coroutineScope.launch { bottomSheetState.bottomSheetState.expand() }
+                                                    },
+                                                )
+                                                gridState.DraggableScrollbar(
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .windowInsetsPadding(WindowInsets.systemBars)
+                                                        .padding(horizontal = 2.dp)
+                                                        .align(Alignment.CenterEnd),
+                                                    state = scrollbarState,
+                                                    orientation = Orientation.Vertical,
+                                                    onThumbMoved = gridState.rememberDraggableScroller(
+                                                        itemsAvailable = itemsAvailable
+                                                    ),
+                                                )
+                                            }
                                         }
                                         TrackScreenViewEvent(screenName = "StationListContent")
                                     }
 
-                                    MAP.ordinal -> {
-                                        StationMapContent(
-                                            modifier = modifier,
-                                            stationList = uiState.stationList,
-                                            userLocation = uiState.userLocation,
-                                            onDetailClick = onStationDetailClick,
-                                        )
+                                    MAP -> {
+                                        var stationCode by rememberSaveable { mutableStateOf("") }
+                                        StationMapBottomSheet(
+                                            stationCode = stationCode,
+                                            bottomSheetState = bottomSheetState,
+                                            onNewsDetailClick = onNewsDetailClick,
+                                            onBackClick = onBackClick,
+                                        ) {
+                                            StationMapContent(
+                                                modifier = modifier,
+                                                stationList = uiState.stationList,
+                                                userLocation = uiState.userLocation,
+                                                onDetailClick = {
+                                                    stationCode = it
+                                                    coroutineScope.launch { bottomSheetState.bottomSheetState.partialExpand() }
+                                                },
+                                            )
+                                        }
                                         TrackScreenViewEvent(screenName = "StationMapContent")
                                     }
                                 }
@@ -279,6 +332,7 @@ private fun feedItemsSize(uiState: StationsUiState): Int {
 private fun StationsHeader(
     modifier: Modifier,
     searchQuery: String,
+    showTopBar: Boolean,
     onAction: (StationsAction) -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
@@ -294,28 +348,32 @@ private fun StationsHeader(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
-            if (!showSearchMenu) {
-                MMFilterSearchButtonsTopAppBar(
-                    title = title,
-                    onSearchActionClick = { showSearchMenu = true },
-                    onFilterActionClick = { onAction(StationsAction.ShowAlertDialog(true)) }
-                )
-            } else {
-                MMFilterSearchFieldTopAppBar(
-                    searchText = searchQuery,
-                    placeholderRes = R.string.feature_stations_placeholder_search_stations,
-                    onSearchTextChanged = { onAction(StationsAction.UpdateSearchQuery(it)) },
-                    onClearClick = { onAction(StationsAction.UpdateSearchQuery("")) },
-                    onNavigationClick = {
-                        onAction(StationsAction.UpdateSearchQuery(""))
-                        showSearchMenu = false
-                    },
-                    onFilterActionClick = { onAction(StationsAction.ShowAlertDialog(true)) }
-                )
+            AnimatedVisibility(
+                visible = showTopBar,
+                enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
+            ) {
+                if (!showSearchMenu) {
+                    MMFilterSearchButtonsTopAppBar(
+                        title = title,
+                        onSearchActionClick = { showSearchMenu = true },
+                        onFilterActionClick = { onAction(StationsAction.ShowAlertDialog(true)) }
+                    )
+                } else {
+                    MMFilterSearchFieldTopAppBar(
+                        searchText = searchQuery,
+                        placeholderRes = R.string.feature_stations_placeholder_search_stations,
+                        onSearchTextChanged = { onAction(StationsAction.UpdateSearchQuery(it)) },
+                        onClearClick = { onAction(StationsAction.UpdateSearchQuery("")) },
+                        onNavigationClick = {
+                            onAction(StationsAction.UpdateSearchQuery(""))
+                            showSearchMenu = false
+                        },
+                        onFilterActionClick = { onAction(StationsAction.ShowAlertDialog(true)) }
+                    )
+                }
             }
         },
         content = pageContent
     )
 }
-
-

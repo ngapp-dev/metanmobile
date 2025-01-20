@@ -1,6 +1,6 @@
 /*
- * Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
- *  
+ * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,19 +15,12 @@
  *
  */
 
-package com.ngapp.metanmobile.core.network.model.contact
+package com.ngapp.metanmobile.feature.stations.detail.newdetail.state
 
-import com.prof18.rssparser.model.RssItem
+import com.ngapp.metanmobile.core.model.station.UserStationResource
 
-data class NetworkContactResource(
-    val id: Int,
-    val dateCreated: String = "",
-    val content: String = "",
-)
-
-fun RssItem.asNetworkContactResource() = NetworkContactResource(
-    id = categories[ContactCategoryValues.CATEGORY_ID].toInt(),
-    dateCreated = pubDate ?: "",
-    content = content ?: "",
-)
-
+sealed interface NewStationDetailAction {
+    data class LoadStationDetail(val stationCode: String) : NewStationDetailAction
+    data class UpdateStationFavorite(val stationCode: String, val favorite: Boolean) : NewStationDetailAction
+    data class ShareStation(val station: UserStationResource?) : NewStationDetailAction
+}

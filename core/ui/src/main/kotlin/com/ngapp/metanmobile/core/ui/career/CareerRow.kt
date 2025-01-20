@@ -172,7 +172,6 @@ fun CareerRow(
                 textResId = R.string.core_ui_button_career_apply,
                 buttonBackgroundColor = Blue,
                 fontColor = White,
-                borderStrokeColor = Blue,
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     analyticsHelper.logCareerResourceOpened(career.title)

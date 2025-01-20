@@ -23,13 +23,25 @@
     <!-- Title -->
     <string name="feature_stations_title_station_list">Station List</string>
     <string name="feature_stations_title_stations_map">Station Map</string>
+    <string name="feature_stations_title_overview">Overview</string>
+    <string name="feature_stations_title_updates">Updates</string>
+    <string name="feature_stations_title_payments">Payments</string>
+    <string name="feature_stations_title_photos">Photos</string>
     <!-- Buttons -->
     <string name="feature_stations_button_navigate">Navigate</string>
+    <string name="feature_stations_button_directions">Directions</string>
+    <string name="feature_stations_button_call">Call</string>
+    <string name="feature_stations_button_save">Save</string>
+    <string name="feature_stations_button_saved">Saved</string>
+    <string name="feature_stations_button_share">Share</string>
     <!-- Text -->
     <string name="feature_stations_text_station_attendance">Attendance today</string>
     <string name="feature_stations_text_operate">Operate</string>
     <string name="feature_stations_text_not_operate">Not operate</string>
     <string name="feature_stations_text_empty">Station list is empty</string>
+    <string name="feature_stations_text_open_24_hours">Open 24 hours</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Search stations</string>
+    <!-- Description -->
+    <string name="feature_stations_description_share_station">Share this station</string>
 </resources>

@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -41,7 +42,6 @@ import com.ngapp.metanmobile.feature.menu.navigation.navigateToMenu
 import com.ngapp.metanmobile.feature.news.detail.navigation.navigateToNewsDetail
 import com.ngapp.metanmobile.feature.news.detail.navigation.newsDetailScreen
 import com.ngapp.metanmobile.feature.news.list.navigation.newsScreen
-import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
 import com.ngapp.metanmobile.feature.onboarding.navigation.onboardingScreen
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.navigateToPrivacyPolicy
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.privacyPolicyScreen
@@ -62,10 +62,10 @@ import kotlin.reflect.KClass
  * The navigation graph defined in this file defines the different top level routes. Navigation
  * within each route is handled using state and Back Handlers.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MMNavHost(
     appState: MMAppState,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
     modifier: Modifier = Modifier,
     startDestination: KClass<*>,
 ) {
@@ -85,7 +85,12 @@ fun MMNavHost(
             onCabinetClick = navController::navigateToCabinet,
             onSettingsClick = navController::navigateToMenu,
         )
-        stationsScreen(onStationDetailClick = navController::navigateToStationDetail)
+        stationsScreen(
+            bottomSheetScaffoldState = appState.bottomSheetScaffoldState,
+            onStationDetailClick = navController::navigateToStationDetail,
+            onNewsDetailClick = navController::navigateToNewsDetail,
+            onBackClick = navController::navigateUp,
+        )
         newsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
         favoritesScreen(onStationDetailClick = navController::navigateToStationDetail)
         newsDetailScreen(onBackClick = navController::navigateUp)

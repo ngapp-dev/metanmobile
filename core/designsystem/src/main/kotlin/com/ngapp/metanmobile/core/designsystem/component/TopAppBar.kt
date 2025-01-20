@@ -177,7 +177,7 @@ fun MMNavShareButtonsTopAppBar(
         },
         actions = {
             MMToolbarAction(
-                icon = MMIcons.ShareFilled,
+                icon = MMIcons.Share,
                 contentDescription = stringResource(R.string.core_designsystem_description_share_icon),
                 onClick = onShareActionClick
             )

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -95,6 +96,9 @@ fun MetanMobileCalculators(
         MMTabRow(
             selectedTabIndex = pagerState.currentPage,
             tabRowIndicatorColor = tabRowIndicatorColor,
+            indicatorModifier = Modifier
+                .padding(horizontal = 16.dp)
+                .offset(y = (-5).dp),
         ) {
             tabsNames.forEachIndexed { index, titleResId ->
                 val tab = if (titleResId == MILEAGE.titleResId) MILEAGE else PAYBACK
@@ -271,7 +275,6 @@ private fun CalculatorMileageEnterValueView(onCalculate: (Triple<String, String,
             textResId = R.string.core_ui_button_calculate,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(top = 8.dp),
             onClick = {
                 focusManager.clearFocus()
@@ -437,7 +440,6 @@ private fun CalculatorPaybackEnterValueView(
             textResId = R.string.core_ui_button_calculate,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(top = 8.dp),
             onClick = {
                 focusManager.clearFocus()
@@ -495,7 +497,6 @@ private fun CalculatorMileageResultView(
             textResId = R.string.core_ui_button_calculate_again,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
             onClick = { onCalculateAgain(!it) },
         )
@@ -673,7 +674,6 @@ private fun CalculatorPaybackResultView(
             textResId = R.string.core_ui_button_calculate_again,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(vertical = 8.dp),
             onClick = { onCalculateAgain(it) }
         )

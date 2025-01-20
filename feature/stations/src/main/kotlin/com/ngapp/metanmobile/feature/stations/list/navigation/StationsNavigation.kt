@@ -17,6 +17,8 @@
 
 package com.ngapp.metanmobile.feature.stations.list.navigation
 
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -30,11 +32,17 @@ private const val DEEP_LINK_URI_PATTERN = "https://metan.by/ecogas-map/"
 fun NavController.navigateToStations(navOptions: NavOptions) =
     navigate(route = StationsNavigation, navOptions)
 
-fun NavGraphBuilder.stationsScreen(onStationDetailClick: (String) -> Unit) {
+@OptIn(ExperimentalMaterial3Api::class)
+fun NavGraphBuilder.stationsScreen(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    onStationDetailClick: (String) -> Unit,
+    onNewsDetailClick: (String) -> Unit,
+    onBackClick: () -> Unit,
+) {
     composable<StationsNavigation>(
         deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
     ) {
-        StationsRoute(onStationDetailClick)
+        StationsRoute(bottomSheetScaffoldState, onStationDetailClick, onNewsDetailClick, onBackClick)
     }
 }
 

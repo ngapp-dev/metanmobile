@@ -51,7 +51,6 @@ internal fun StationDetailFooterView(
             textResId = R.string.feature_stations_button_navigate,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(vertical = 18.dp),
             onClick = { onNavigateButtonClick() }
         )

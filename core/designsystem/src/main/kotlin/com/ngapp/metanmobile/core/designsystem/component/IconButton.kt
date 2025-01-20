@@ -17,13 +17,16 @@
 
 package com.ngapp.metanmobile.core.designsystem.component
 
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 
@@ -60,6 +63,38 @@ fun MMIconToggleButton(
         enabled = enabled,
     ) {
         if (checked) checkedIcon() else icon()
+    }
+}
+
+/**
+ * MetanMobile filled icon button. Wraps Material 3's [FilledIconButton].
+ *
+ * @param imageVector The ImageVector to draw inside the FilledIconButton.
+ * @param contentDescription The content description associated with the FilledIconButton.
+ * @param modifier Modifier to be applied to the FilledIconButton.
+ * @param onClick The callback to be invoked when the FilledIconButton is clicked.
+ */
+@Composable
+fun MMFilledIconButton(
+    imageVector: ImageVector,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    FilledIconButton(
+        modifier = modifier,
+        colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.inverseSurface,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+        onClick = onClick
+    ) {
+        Icon(
+            modifier = iconModifier,
+            imageVector = imageVector,
+            contentDescription = contentDescription
+        )
     }
 }
 

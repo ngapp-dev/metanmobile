@@ -36,7 +36,7 @@ fun StationStatusView(station: UserStationResource) {
     Spacer(
         Modifier
             .padding(horizontal = 6.dp)
-            .size(8.dp)
+            .size(6.dp)
             .clip(CircleShape)
             .background(
                 when (station.isOperate) {

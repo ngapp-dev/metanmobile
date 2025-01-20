@@ -57,6 +57,7 @@
     <string name="core_ui_text_value_byn">%s бел.руб.</string>
     <string name="core_ui_text_cng_price">Кошт метану</string>
     <string name="core_ui_text_for_one_meter">За 1 куб. метр</string>
+    <string name="core_ui_text_byn_per_one_meter">%s бел.руб/м<sup>3</sup></string>
     <string name="core_ui_text_value_km">%s км</string>
     <string name="core_ui_text_station_phones">Тэлефоны</string>
     <string name="core_ui_text_station_payments">Метады аплаты</string>
