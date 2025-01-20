@@ -86,4 +86,9 @@ interface UserDataRepository {
      * Sets last news of home page expanded.
      */
     suspend fun setHomeLastNewsExpanded(isExpanded: Boolean)
+
+    /**
+     * Sets station detail page code.
+     */
+    suspend fun setStationDetailCode(stationCode: String)
 }

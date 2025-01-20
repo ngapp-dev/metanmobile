@@ -73,10 +73,7 @@ internal fun StationListContent(
                     },
                     onToggleBookmark = {
                         onAction(
-                            StationsAction.UpdateStationFavorite(
-                                station.code,
-                                !station.isFavorite
-                            )
+                            StationsAction.UpdateStationFavorite(station.code, !station.isFavorite)
                         )
                     },
                     locationPermissionGranted = permissionsState.hasLocationPermissions,

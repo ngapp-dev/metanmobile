@@ -193,6 +193,9 @@ private fun DestinationScaffold(
     }
 }
 
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
+    this?.hierarchy?.any { it.hasRoute(route) } ?: false
+
 private fun Modifier.notificationDot(): Modifier = composed {
     val tertiaryColor = Green
     drawWithContent {
@@ -207,6 +210,3 @@ private fun Modifier.notificationDot(): Modifier = composed {
         )
     }
 }
-
-private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
-    this?.hierarchy?.any { it.hasRoute(route) } ?: false

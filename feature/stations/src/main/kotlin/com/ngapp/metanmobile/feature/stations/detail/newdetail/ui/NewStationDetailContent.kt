@@ -35,7 +35,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -43,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
 import com.ngapp.metanmobile.core.designsystem.component.MMTab
 import com.ngapp.metanmobile.core.designsystem.component.MMTabRow
+import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
@@ -76,6 +80,7 @@ internal fun NewStationDetailContent(
     val listState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
     val phoneNumber = stationDetail.phones.split(",").first().trim()
+    val hasUnread = relatedNewsList.any { !it.hasBeenViewed }
 
     LazyColumn(
         state = listState,
@@ -141,8 +146,13 @@ internal fun NewStationDetailContent(
                     }
                 ) {
                     tabsName.forEachIndexed { index, stringResourceId ->
+                        val extraModifier = if (index == UPDATES.ordinal) {
+                            if (hasUnread) Modifier.notificationDot() else Modifier
+                        } else {
+                            Modifier
+                        }
                         MMTab(
-                            modifier = Modifier.background(color = MMColors.cardBackgroundColor),
+                            modifier = extraModifier.background(color = MMColors.cardBackgroundColor),
                             selected = index == selectedIndex,
                             onClick = { selectedIndex = index },
                             text = {
@@ -159,17 +169,10 @@ internal fun NewStationDetailContent(
                     label = "contentMenu",
                 ) { page ->
                     when (MenuTabs.entries[page]) {
-                        OVERVIEW -> StationDetailOverview(
-                            address = stationDetail.address,
-                            coordinates = "${stationDetail.latitude}, ${stationDetail.longitude}",
-                            workingTime = stationDetail.workingTime,
-                            phones = stationDetail.phones,
-                            station = stationDetail,
-                        )
-
-                        UPDATES -> StationDetailUpdates()
-                        PAYMENTS -> StationDetailPayments()
-                        PHOTOS -> StationDetailPhotos()
+                        OVERVIEW -> StationDetailOverview(stationDetail)
+                        UPDATES -> StationDetailUpdates(relatedNewsList, onNewsDetailClick)
+                        PAYMENTS -> StationDetailPayments(stationDetail)
+                        PHOTOS -> StationDetailPhotos(stationDetail.detailPicture)
                     }
                 }
             }
@@ -182,4 +185,19 @@ private enum class MenuTabs(val titleResId: Int) {
     UPDATES(R.string.feature_stations_title_updates),
     PAYMENTS(R.string.feature_stations_title_payments),
     PHOTOS(R.string.feature_stations_title_photos),
+}
+
+private fun Modifier.notificationDot(): Modifier = composed {
+    val tertiaryColor = Green
+    drawWithContent {
+        drawContent()
+        drawCircle(
+            tertiaryColor,
+            radius = 5.dp.toPx(),
+            center = center + Offset(
+                80.dp.toPx() * .45f,
+                12.dp.toPx() * -.45f - 6.dp.toPx(),
+            ),
+        )
+    }
 }

@@ -110,6 +110,8 @@
         <item>Нядзелі</item>
     </string-array>
     <string name="core_ui_text_busy_now">Загружанасць зараз</string>
+    <string name="core_ui_text_based_on_visits">На аснове наведванняў гэтага месца.</string>
+    <string name="core_ui_text_no_news">Навін пакуль што няма</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">Час чакання запыту скончыўся</string>
     <string name="core_ui_no_internet">Ой! Здаецца, ваша інтэрнэт-злучэнне павольнае або парушана. Праверце падключэнне да сеткі і паўтарыце спробу</string>

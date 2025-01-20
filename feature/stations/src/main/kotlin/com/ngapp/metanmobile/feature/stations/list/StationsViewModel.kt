@@ -80,11 +80,10 @@ class StationsViewModel @Inject constructor(
             is StationsAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
             is StationsAction.ShowAlertDialog -> onShowAlertDialog(action.showDialog)
             is StationsAction.UpdateSearchQuery -> onUpdateSearchQuery(action.input)
+            is StationsAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
             is StationsAction.UpdateSortingConfig -> onUpdateSortingConfig(action.stationSortingConfig)
-            is StationsAction.UpdateStationFavorite -> onUpdateStationFavorite(
-                action.stationCode,
-                action.favorite
-            )
+            is StationsAction.UpdateStationFavorite ->
+                onUpdateStationFavorite(action.stationCode, action.favorite)
         }
     }
 
@@ -108,6 +107,12 @@ class StationsViewModel @Inject constructor(
 
     private fun onShowAlertDialog(showDialog: Boolean) {
         _showDialog.value = showDialog
+    }
+
+    private fun onUpdateStationCode(stationCode: String) {
+        viewModelScope.launch {
+            userDataRepository.setStationDetailCode(stationCode)
+        }
     }
 }
 

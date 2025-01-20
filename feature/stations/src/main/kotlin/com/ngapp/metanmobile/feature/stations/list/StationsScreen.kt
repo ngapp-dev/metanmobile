@@ -19,6 +19,7 @@
 
 package com.ngapp.metanmobile.feature.stations.list
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -48,6 +49,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -84,8 +87,8 @@ import com.ngapp.metanmobile.feature.stations.list.StationTabs.LIST
 import com.ngapp.metanmobile.feature.stations.list.StationTabs.MAP
 import com.ngapp.metanmobile.feature.stations.list.state.StationsAction
 import com.ngapp.metanmobile.feature.stations.list.state.StationsUiState
+import com.ngapp.metanmobile.feature.stations.list.ui.StationDetailBottomSheet
 import com.ngapp.metanmobile.feature.stations.list.ui.StationListContent
-import com.ngapp.metanmobile.feature.stations.list.ui.StationMapBottomSheet
 import com.ngapp.metanmobile.feature.stations.list.ui.StationMapContent
 import kotlinx.coroutines.launch
 
@@ -155,6 +158,17 @@ private fun StationsScreen(
         val scrollbarState = gridState.scrollbarState(itemsAvailable = itemsAvailable)
         TrackScrollJank(scrollableState = gridState, stateName = "stationsScreen:feed")
 
+        val hideBottomSheet = {
+            onAction(StationsAction.UpdateStationCode(""))
+            coroutineScope.launch { bottomSheetState.bottomSheetState.hide() }
+        }
+
+        BackHandler {
+            when (bottomSheetState.bottomSheetState.currentValue) {
+                SheetValue.Expanded, SheetValue.PartiallyExpanded -> hideBottomSheet()
+                else -> onBackClick()
+            }
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -175,9 +189,7 @@ private fun StationsScreen(
                             ) {
                                 MMTabRow(
                                     selectedTabIndex = selectedIndex,
-                                    indicatorModifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .offset(y = (-5).dp)
+                                    indicatorModifier = Modifier.offset(y = (-5).dp)
                                 ) {
                                     tabsName.forEachIndexed { index, stringResourceId ->
                                         MMTab(
@@ -215,12 +227,11 @@ private fun StationsScreen(
 
                                 when (StationTabs.entries[page]) {
                                     LIST -> {
-                                        var stationCode by rememberSaveable { mutableStateOf("") }
-                                        StationMapBottomSheet(
-                                            stationCode = stationCode,
+                                        StationDetailBottomSheet(
                                             bottomSheetState = bottomSheetState,
+                                            openFullScreen = true,
                                             onNewsDetailClick = onNewsDetailClick,
-                                            onBackClick = onBackClick,
+                                            onBackClick = { hideBottomSheet() },
                                         ) {
                                             Box(modifier = modifier) {
                                                 StationListContent(
@@ -229,7 +240,7 @@ private fun StationsScreen(
                                                     stationsList = uiState.stationList,
                                                     onAction = onAction,
                                                     onDetailClick = {
-                                                        stationCode = it
+                                                        onAction(StationsAction.UpdateStationCode(it))
                                                         coroutineScope.launch { bottomSheetState.bottomSheetState.expand() }
                                                     },
                                                 )
@@ -251,20 +262,24 @@ private fun StationsScreen(
                                     }
 
                                     MAP -> {
-                                        var stationCode by rememberSaveable { mutableStateOf("") }
-                                        StationMapBottomSheet(
-                                            stationCode = stationCode,
-                                            bottomSheetState = bottomSheetState,
+                                        val bottomSheetScaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+                                            bottomSheetState = rememberStandardBottomSheetState(
+                                                skipHiddenState = false,
+                                                initialValue = SheetValue.Hidden
+                                            ),
+                                        )
+                                        StationDetailBottomSheet(
+                                            bottomSheetState = bottomSheetScaffoldState,
                                             onNewsDetailClick = onNewsDetailClick,
-                                            onBackClick = onBackClick,
+                                            onBackClick = { hideBottomSheet() },
                                         ) {
                                             StationMapContent(
                                                 modifier = modifier,
                                                 stationList = uiState.stationList,
                                                 userLocation = uiState.userLocation,
                                                 onDetailClick = {
-                                                    stationCode = it
-                                                    coroutineScope.launch { bottomSheetState.bottomSheetState.partialExpand() }
+                                                    onAction(StationsAction.UpdateStationCode(it))
+                                                    coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.partialExpand() }
                                                 },
                                             )
                                         }

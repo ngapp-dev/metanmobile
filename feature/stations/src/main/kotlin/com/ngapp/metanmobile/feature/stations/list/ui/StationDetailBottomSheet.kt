@@ -19,12 +19,12 @@
 
 package com.ngapp.metanmobile.feature.stations.list.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,7 +35,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,17 +44,15 @@ import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.NewStationDetailRoute
-import kotlinx.coroutines.launch
 
 @Composable
-internal fun StationMapBottomSheet(
-    stationCode: String,
+internal fun StationDetailBottomSheet(
     bottomSheetState: BottomSheetScaffoldState,
+    openFullScreen: Boolean = false,
     onNewsDetailClick: (String) -> Unit,
     onBackClick: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val bottomSheetExpanded = bottomSheetState.bottomSheetState.currentValue == SheetValue.Expanded
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
@@ -63,18 +60,10 @@ internal fun StationMapBottomSheet(
         targetValue = if (bottomSheetExpanded) 0.dp else 16.dp,
         animationSpec = tween(durationMillis = 150)
     )
-    val hideBottomSheet = { coroutineScope.launch { bottomSheetState.bottomSheetState.hide() } }
-
-    BackHandler {
-        when (bottomSheetState.bottomSheetState.currentValue) {
-            SheetValue.Expanded, SheetValue.PartiallyExpanded -> hideBottomSheet()
-            else -> onBackClick()
-        }
-    }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetState,
-        sheetPeekHeight = (screenHeight / 2).dp,
+        sheetPeekHeight = if (openFullScreen) screenHeight.dp else (screenHeight / 2).dp,
         sheetShape = RoundedCornerShape(
             topStart = roundedCornerShape,
             topEnd = roundedCornerShape,
@@ -85,17 +74,14 @@ internal fun StationMapBottomSheet(
         sheetContent = {
             Column {
                 BottomSheetDragHandle()
-                if (stationCode.isNotEmpty()) {
-                    NewStationDetailRoute(
-                        stationCode = stationCode,
-                        onNewsDetailClick = onNewsDetailClick,
-                        onBackClick = { hideBottomSheet() },
-                    )
-                }
+                NewStationDetailRoute(
+                    onNewsDetailClick = onNewsDetailClick,
+                    onBackClick = onBackClick,
+                )
             }
         },
-    ) {
-        content()
+    ) { padding ->
+        content(padding)
     }
 }
 

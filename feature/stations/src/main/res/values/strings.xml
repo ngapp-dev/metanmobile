@@ -39,6 +39,8 @@
     <string name="feature_stations_text_operate">Operate</string>
     <string name="feature_stations_text_not_operate">Not operate</string>
     <string name="feature_stations_text_empty">Station list is empty</string>
+    <string name="feature_stations_text_individual_contract">Conclusion of contracts with an individual</string>
+    <string name="feature_stations_text_company_contract">Conclusion of contracts with a legal entity</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Search stations</string>
     <!-- Description -->

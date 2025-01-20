@@ -17,13 +17,9 @@
 
 package com.ngapp.metanmobile.feature.news.detail.ui
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.webkit.URLUtil
-import androidx.annotation.ColorInt
-import androidx.browser.customtabs.CustomTabColorSchemeParams
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
+import com.ngapp.metanmobile.core.ui.util.launchCustomChromeTab
 
 @Composable
 internal fun NewsDetailBody(content: String) {
@@ -65,12 +62,3 @@ internal fun NewsDetailBody(content: String) {
     }
 }
 
-fun launchCustomChromeTab(context: Context, uri: Uri, @ColorInt toolbarColor: Int) {
-    val customTabBarColor = CustomTabColorSchemeParams.Builder()
-        .setToolbarColor(toolbarColor).build()
-    val customTabsIntent = CustomTabsIntent.Builder()
-        .setDefaultColorSchemeParams(customTabBarColor)
-        .build()
-
-    customTabsIntent.launchUrl(context, uri)
-}

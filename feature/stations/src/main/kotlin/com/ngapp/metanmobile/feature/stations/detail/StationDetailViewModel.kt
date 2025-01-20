@@ -71,10 +71,8 @@ class StationDetailViewModel @Inject constructor(
 
     fun triggerAction(action: StationDetailAction) {
         when (action) {
-            is StationDetailAction.UpdateStationFavorite -> onUpdateStationFavorite(
-                action.stationCode,
-                action.favorite
-            )
+            is StationDetailAction.UpdateStationFavorite ->
+                onUpdateStationFavorite(action.stationCode, action.favorite)
 
             is StationDetailAction.ShareStation -> onShareStation(action.station)
         }

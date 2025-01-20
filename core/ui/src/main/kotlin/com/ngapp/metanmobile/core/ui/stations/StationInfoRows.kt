@@ -17,7 +17,8 @@
 
 package com.ngapp.metanmobile.core.ui.stations
 
-import android.util.Log
+import android.net.Uri
+import android.webkit.URLUtil
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -41,10 +42,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,6 +55,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
 import com.ngapp.metanmobile.core.designsystem.component.MMTextButton
 import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
@@ -74,6 +79,7 @@ import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.ui.R
 import com.ngapp.metanmobile.core.ui.charts.SimpleVerticalBarChartView
 import com.ngapp.metanmobile.core.ui.charts.createCharItems
+import com.ngapp.metanmobile.core.ui.util.launchCustomChromeTab
 import com.ngapp.metanmobile.core.ui.util.showClipboardToast
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -81,9 +87,10 @@ import java.util.Calendar
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationInfoRow(
+    isExpandable: Boolean,
     rowIcon: ImageVector,
     text: String,
-    isExpandable: Boolean,
+    url: String = "",
     modifier: Modifier = Modifier,
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -92,6 +99,7 @@ fun StationInfoRow(
     )
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
 
     Column {
         Row(
@@ -119,7 +127,15 @@ fun StationInfoRow(
                             clipboardManager.setText(AnnotatedString(text))
                             context.showClipboardToast()
                         },
-                        onClick = { isExpanded = !isExpanded }
+                        onClick = {
+                            if (url.isEmpty()) {
+                                isExpanded = !isExpanded
+                            } else {
+                                if (URLUtil.isValidUrl(url)) {
+                                    launchCustomChromeTab(context, Uri.parse(url), backgroundColor)
+                                }
+                            }
+                        }
                     )
                     .padding(vertical = 16.dp)
             )
@@ -225,15 +241,16 @@ fun StationWorkTimeRow(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StationPhonesRow(
+fun StationInfoListRow(
+    isClickable: Boolean = true,
     rowIcon: ImageVector,
-    phones: String,
+    text: String,
     modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    val phoneNumbers = phones.split(",")
+    val list = text.split(",")
 
     Column {
         Row(
@@ -243,7 +260,7 @@ fun StationPhonesRow(
         ) {
             Icon(
                 imageVector = rowIcon,
-                contentDescription = phones,
+                contentDescription = text,
                 tint = Blue,
                 modifier = Modifier
                     .padding(top = 12.dp)
@@ -251,24 +268,25 @@ fun StationPhonesRow(
             )
             Spacer(modifier = Modifier.width(32.dp))
             Column(Modifier.weight(1f)) {
-                phoneNumbers.forEachIndexed { index, phone ->
+                list.forEachIndexed { index, info ->
                     Text(
-                        text = phone.trim(),
+                        text = info.trim(),
                         style = MMTypography.bodyLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .fillMaxWidth()
                             .combinedClickable(
+                                enabled = isClickable,
                                 onLongClick = {
-                                    clipboardManager.setText(AnnotatedString(phones))
+                                    clipboardManager.setText(AnnotatedString(text))
                                     context.showClipboardToast()
                                 },
-                                onClick = { uriHandler.openUri("tel:$phone") }
+                                onClick = { uriHandler.openUri("tel:$info") }
                             )
                             .padding(vertical = 16.dp)
                     )
-                    if (index < phoneNumbers.size - 1) {
+                    if (index < list.size - 1) {
                         MMDivider()
                     }
                 }
@@ -281,10 +299,11 @@ fun StationPhonesRow(
 @Composable
 fun StationBusyHours(
     modifier: Modifier = Modifier,
-    station: UserStationResource,
+    stationDetail: UserStationResource,
 ) {
     val coroutineScope = rememberCoroutineScope()
     var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isPopupVisible by rememberSaveable { mutableStateOf(false) }
 
     val daysOfWeek = stringArrayResource(R.array.core_ui_text_on_day_of_week)
     val currentDayOfWeek = (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 5) % 7
@@ -297,7 +316,7 @@ fun StationBusyHours(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(start = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -362,6 +381,37 @@ fun StationBusyHours(
                     }
                 }
             }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = { isPopupVisible = !isPopupVisible }) {
+                Icon(
+                    imageVector = MMIcons.QuestionFilled,
+                    contentDescription = stringResource(R.string.core_ui_description_attendance),
+                    tint = MMColors.inverseSurface,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+        if (isPopupVisible) {
+            Popup(
+                alignment = Alignment.TopEnd,
+                onDismissRequest = { isPopupVisible = false }
+            ) {
+                Box(modifier = Modifier.padding(top = 36.dp, end = 4.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .shadow(8.dp)
+                            .background(MMColors.surface)
+                            .padding(16.dp)
+
+                    ) {
+                        Text(
+                            text = stringResource(R.string.core_ui_text_based_on_visits),
+                            style = MMTypography.bodyLarge
+                        )
+                    }
+                }
+            }
         }
         HorizontalPager(
             modifier = Modifier.padding(top = 24.dp),
@@ -376,7 +426,7 @@ fun StationBusyHours(
                     .widthIn(0.dp, 420.dp)
             ) {
                 SimpleVerticalBarChartView(
-                    data = createCharItems(currentDayOfWeek, selectedPage, station)
+                    data = createCharItems(currentDayOfWeek, selectedPage, stationDetail)
                 )
             }
         }

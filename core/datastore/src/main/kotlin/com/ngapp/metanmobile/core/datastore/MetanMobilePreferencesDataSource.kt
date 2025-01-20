@@ -66,6 +66,7 @@ class MetanMobilePreferencesDataSource @Inject constructor(
                 totalUsageTime = it.totalUsageTime,
                 homeReorderableList = it.homeReorderableList.map(String::asHomeContentItem),
                 homeLastNewsExpanded = it.isHomeLastNewsExpanded,
+                stationDetailCode = it.stationDetailCode,
             )
         }
 
@@ -182,6 +183,12 @@ class MetanMobilePreferencesDataSource @Inject constructor(
     suspend fun setHomeExpandedLastNews(isExpanded: Boolean) {
         userPreferences.updateData {
             it.copy { this.isHomeLastNewsExpanded = isExpanded }
+        }
+    }
+
+    suspend fun setStationDetailCode(stationDetailCode: String) {
+        userPreferences.updateData {
+            it.copy { this.stationDetailCode = stationDetailCode }
         }
     }
 }

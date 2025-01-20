@@ -32,5 +32,7 @@ message UserPreferences {
 
   repeated string home_reorderable = 14;
   bool is_home_last_news_expanded = 15;
-  // NEXT AVAILABLE ID: 16
+
+  string station_detail_code = 16;
+  // NEXT AVAILABLE ID: 17
 }

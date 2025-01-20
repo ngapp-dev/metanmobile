@@ -29,15 +29,15 @@ import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.ui.ShareManager
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailAction
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailUiState
+import com.ngapp.metanmobile.feature.stations.detail.newdetail.state.NewStationDetailUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,12 +50,26 @@ class NewStationDetailViewModel @Inject constructor(
     private val shareManager: ShareManager,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(NewStationDetailUiState())
-    val uiState = _uiState.asStateFlow()
+//    private val _stationCode = MutableStateFlow("agnks_vitebsk")
+//    val stationCode = _stationCode.asStateFlow()
+
+    val uiState: StateFlow<NewStationDetailUiState> = stationDetailUiState(
+//        stationCode = stationCode,
+        userDataRepository = userDataRepository,
+        userStationsRepository = userStationsRepository,
+        userNewsResourceRepository = userNewsResourceRepository,
+        fuelPricesRepository = fuelPricesRepository,
+    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = NewStationDetailUiState.Loading,
+        )
 
     fun triggerAction(action: NewStationDetailAction) {
         when (action) {
-            is NewStationDetailAction.LoadStationDetail -> onLoadStationDetail(action.stationCode)
+//            is NewStationDetailAction.LoadStationDetail -> onLoadStationDetail(action.stationCode)
+            is NewStationDetailAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
             is NewStationDetailAction.UpdateStationFavorite ->
                 onUpdateStationFavorite(action.stationCode, action.favorite)
 
@@ -63,32 +77,36 @@ class NewStationDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onLoadStationDetail(stationCode: String) = viewModelScope.launch {
-        _uiState.update { it.copy(isLoading = false) }
-        val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
-            query = StationResourceQuery(filterStationCodes = setOf(stationCode))
-        ).map { it.first() }
-        val fuelPriceFlow = fuelPricesRepository.getFuelPrice()
-        val relatedNewsFlow = stationFlow.flatMapLatest { station ->
-            userNewsResourceRepository.observeAll(
-                query = NewsResourceQuery(filterNewsByStationTitle = station.title)
-            )
-        }
-        combine(
-            stationFlow,
-            fuelPriceFlow,
-            relatedNewsFlow,
-            ::Triple
-        ).collectLatest { (stationDetail, fuelPrice, relatedNewsList) ->
-            _uiState.update {
-                it.copy(
-                    stationDetail = stationDetail,
-                    cngPrice = fuelPrice,
-                    relatedNewsList = relatedNewsList
-                )
-            }
-        }
+    private fun onUpdateStationCode(stationCode: String) {
+//        _stationCode.value = stationCode
     }
+
+//    private fun onLoadStationDetail(stationCode: String) = viewModelScope.launch {
+//        _uiState.update { it.copy(isLoading = false) }
+//        val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
+//            query = StationResourceQuery(filterStationCodes = setOf(stationCode))
+//        ).map { it.first() }
+//        val fuelPriceFlow = fuelPricesRepository.getFuelPrice()
+//        val relatedNewsFlow = stationFlow.flatMapLatest { station ->
+//            userNewsResourceRepository.observeAll(
+//                query = NewsResourceQuery(filterNewsByStationTitle = station.title)
+//            )
+//        }
+//        combine(
+//            stationFlow,
+//            fuelPriceFlow,
+//            relatedNewsFlow,
+//            ::Triple
+//        ).collectLatest { (stationDetail, fuelPrice, relatedNewsList) ->
+//            _uiState.update {
+//                it.copy(
+//                    stationDetail = stationDetail,
+//                    cngPrice = fuelPrice,
+//                    relatedNewsList = relatedNewsList
+//                )
+//            }
+//        }
+//    }
 
     private fun onUpdateStationFavorite(stationCode: String, favorite: Boolean) =
         viewModelScope.launch {
@@ -101,15 +119,21 @@ class NewStationDetailViewModel @Inject constructor(
 }
 
 private fun stationDetailUiState(
-    stationCode: String,
+//    stationCode: StateFlow<String>,
+    userDataRepository: UserDataRepository,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
     fuelPricesRepository: PricesRepository,
 ): Flow<NewStationDetailUiState> {
 
-    val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
-        query = StationResourceQuery(filterStationCodes = setOf(stationCode))
-    ).map { it.first() }
+    val stationFlow = userDataRepository.userData.flatMapLatest { userData ->
+        userStationsRepository.observeAll(
+            query = StationResourceQuery(filterStationCodes = setOf(userData.stationDetailCode))
+        ).map { it.first() }
+    }
+//    val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
+//        query = StationResourceQuery(filterStationCodes = setOf(stationCode.value))
+//    ).map { it.first() }
 
     val fuelPriceFlow = fuelPricesRepository.getFuelPrice()
 
@@ -124,7 +148,7 @@ private fun stationDetailUiState(
         relatedNewsFlow,
         fuelPriceFlow
     ) { stationDetail, relatedNewsList, fuelPrice ->
-        NewStationDetailUiState(
+        Success(
             stationDetail = stationDetail,
             cngPrice = fuelPrice,
             relatedNewsList = relatedNewsList,

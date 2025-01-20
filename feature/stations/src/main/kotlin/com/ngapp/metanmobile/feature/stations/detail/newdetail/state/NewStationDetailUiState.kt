@@ -20,10 +20,21 @@ package com.ngapp.metanmobile.feature.stations.detail.newdetail.state
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.model.price.PriceResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
+import com.ngapp.metanmobile.feature.stations.detail.state.StationDetailUiState
 
-data class NewStationDetailUiState(
-    val stationDetail: UserStationResource? = null,
-    val cngPrice: PriceResource? = null,
-    val relatedNewsList: List<UserNewsResource> = emptyList(),
-    val isLoading: Boolean = true,
-)
+//data class NewStationDetailUiState(
+//    val stationDetail: UserStationResource? = null,
+//    val cngPrice: PriceResource? = null,
+//    val relatedNewsList: List<UserNewsResource> = emptyList(),
+//    val isLoading: Boolean = true,
+//)
+
+sealed interface NewStationDetailUiState {
+    data class Success(
+        val stationDetail: UserStationResource,
+        val cngPrice: PriceResource?,
+        val relatedNewsList: List<UserNewsResource>,
+    ) : NewStationDetailUiState
+
+    data object Loading : NewStationDetailUiState
+}

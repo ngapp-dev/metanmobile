@@ -109,6 +109,8 @@
         <item>Воскресенья</item>
     </string-array>
     <string name="core_ui_text_busy_now">Загруженность сейчас</string>
+    <string name="core_ui_text_based_on_visits">На основе посещений этого места.</string>
+    <string name="core_ui_text_no_news">Новостей пока что нет</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">Время запроса истекло</string>
     <string name="core_ui_no_internet">Упс! Похоже, у вас медленное или отсутствует подключение к Интернету. Пожалуйста, проверьте сетевое соединение и повторите попытку</string>

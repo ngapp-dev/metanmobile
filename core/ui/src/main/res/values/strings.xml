@@ -110,6 +110,7 @@
         <item>Sundays</item>
     </string-array>
     <string name="core_ui_text_busy_now">Busy now</string>
+    <string name="core_ui_text_no_news">There is no news yet</string>
     <!-- Description -->
     <string name="core_ui_description_radio_button_img" translatable="false">Chosen: %s</string>
     <string name="core_ui_description_like_icon" translatable="false">Like: %s</string>
@@ -119,6 +120,7 @@
     <string name="core_ui_description_station_list_img" translatable="false">News list img</string>
     <string name="core_ui_description_settings_arrow_icon" translatable="false">Settings Arrow Icon</string>
     <string name="core_ui_description_reorder_drag_handle_icon" translatable="false">Reorder drag handle Icon</string>
+    <string name="core_ui_description_attendance" translatable="false">Question Icon</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">The request timed out</string>
     <string name="core_ui_no_internet">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>
@@ -133,4 +135,5 @@
     <!-- Ads -->
     <string name="core_ui_change_consent">You can change your consent preferences for personalized ads at any time by clicking&#160;</string>
     <string name="core_ui_here">here</string>
+    <string name="core_ui_text_based_on_visits">Based on visits to this place.</string>
 </resources>

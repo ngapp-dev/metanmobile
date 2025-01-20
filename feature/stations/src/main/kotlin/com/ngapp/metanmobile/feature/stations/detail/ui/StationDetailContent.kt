@@ -17,10 +17,6 @@
 
 package com.ngapp.metanmobile.feature.stations.detail.ui
 
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

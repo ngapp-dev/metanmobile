@@ -39,6 +39,8 @@
     <string name="feature_stations_text_operate">Працуе</string>
     <string name="feature_stations_text_not_operate">Не працуе</string>
     <string name="feature_stations_text_empty">Спіс Станцый пусты</string>
+    <string name="feature_stations_text_individual_contract">Заключэнне дагавораў з фізічнай асобай</string>
+    <string name="feature_stations_text_company_contract">Заключэнне дагавораў з юрыдычнай асобай</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Пошук станцый</string>
     <!-- Description -->
