@@ -96,6 +96,7 @@ dependencies {
     implementation(projects.feature.news)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.stations)
+    implementation(projects.feature.stationdetail)
 
     // Accompanist
     implementation(libs.accompanist.permissions)

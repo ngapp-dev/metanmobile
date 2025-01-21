@@ -33,7 +33,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -43,7 +42,10 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -119,8 +121,7 @@ internal fun MMApp(
     val unreadDestinations by appState.topLevelDestinationsWithUnreadResources.collectAsStateWithLifecycle()
     val currentDestination = appState.currentDestination
     val currentTopLevelDestination = appState.currentTopLevelDestination
-    val isBottomSheetHidden =
-        appState.bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Hidden
+    var showBottomBar by rememberSaveable { mutableStateOf(true) }
 
     MMNavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -156,9 +157,15 @@ internal fun MMApp(
                 MainBannerAd()
             }
         },
-        showBottomBar = currentTopLevelDestination != null && isBottomSheetHidden
+        showBottomBar = currentTopLevelDestination != null && showBottomBar,
     ) {
-        DestinationScaffold(appState, startDestination, snackbarHostState, modifier)
+        DestinationScaffold(
+            appState = appState,
+            onShowBottomBar = { showBottomBar = it },
+            startDestination = startDestination,
+            snackbarHostState = snackbarHostState,
+            modifier = modifier
+        )
     }
 }
 
@@ -166,6 +173,7 @@ internal fun MMApp(
 @Composable
 private fun DestinationScaffold(
     appState: MMAppState,
+    onShowBottomBar: (Boolean) -> Unit,
     startDestination: KClass<*>,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
@@ -187,7 +195,11 @@ private fun DestinationScaffold(
                 ),
         ) {
             Box(modifier = Modifier.consumeWindowInsets(WindowInsets(0, 0, 0, 0))) {
-                MMNavHost(appState = appState, startDestination = startDestination)
+                MMNavHost(
+                    appState = appState,
+                    onShowBottomBar = onShowBottomBar,
+                    startDestination = startDestination
+                )
             }
         }
     }

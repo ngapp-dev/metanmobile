@@ -44,6 +44,7 @@ dependencies {
     api(projects.core.designsystem)
     api(projects.core.model)
 
+    implementation(libs.androidx.activity.compose)
     implementation(libs.accompanist.permissions)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.appcompat)

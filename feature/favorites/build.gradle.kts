@@ -26,6 +26,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.stationdetail)
+
     implementation(libs.accompanist.permissions)
 
     testImplementation(libs.hilt.android.testing)

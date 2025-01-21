@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.navigation
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -47,9 +46,7 @@ import com.ngapp.metanmobile.feature.privacypolicy.navigation.navigateToPrivacyP
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.privacyPolicyScreen
 import com.ngapp.metanmobile.feature.settings.ui.legalregulations.locationinformation.navigation.locationInformationScreen
 import com.ngapp.metanmobile.feature.settings.ui.legalregulations.locationinformation.navigation.navigateToLocationInformation
-import com.ngapp.metanmobile.feature.stations.detail.navigation.navigateToStationDetail
-import com.ngapp.metanmobile.feature.stations.detail.navigation.stationDetailScreen
-import com.ngapp.metanmobile.feature.stations.list.navigation.stationsScreen
+import com.ngapp.metanmobile.feature.stations.navigation.stationsScreen
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.navigateToTermsAndConditions
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.termsAndConditionsScreen
 import com.ngapp.metanmobile.ui.MMAppState
@@ -62,10 +59,10 @@ import kotlin.reflect.KClass
  * The navigation graph defined in this file defines the different top level routes. Navigation
  * within each route is handled using state and Back Handlers.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MMNavHost(
     appState: MMAppState,
+    onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: KClass<*>,
 ) {
@@ -79,25 +76,22 @@ fun MMNavHost(
         homeScreen(
             onNewsClick = appState::navigateToNewsListFromHomeScreen,
             onNewsDetailClick = navController::navigateToNewsDetail,
-            onStationDetailClick = navController::navigateToStationDetail,
             onFaqListClick = navController::navigateToFaq,
             onCareersClick = navController::navigateToCareers,
             onCabinetClick = navController::navigateToCabinet,
             onSettingsClick = navController::navigateToMenu,
+            onShowBottomBar = onShowBottomBar,
         )
         stationsScreen(
-            bottomSheetScaffoldState = appState.bottomSheetScaffoldState,
-            onStationDetailClick = navController::navigateToStationDetail,
             onNewsDetailClick = navController::navigateToNewsDetail,
-            onBackClick = navController::navigateUp,
+            onShowBottomBar = onShowBottomBar,
         )
         newsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
-        favoritesScreen(onStationDetailClick = navController::navigateToStationDetail)
-        newsDetailScreen(onBackClick = navController::navigateUp)
-        stationDetailScreen(
+        favoritesScreen(
             onNewsDetailClick = navController::navigateToNewsDetail,
-            onBackClick = navController::navigateUp
+            onShowBottomBar = onShowBottomBar,
         )
+        newsDetailScreen(onBackClick = navController::navigateUp)
         menuScreen(
             onContactsPageClick = navController::navigateToContacts,
             onFaqPageClick = navController::navigateToFaq,

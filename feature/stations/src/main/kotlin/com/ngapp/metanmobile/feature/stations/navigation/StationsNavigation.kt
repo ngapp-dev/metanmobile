@@ -15,26 +15,31 @@
  *
  */
 
-package com.ngapp.metanmobile.feature.favorites.navigation
+package com.ngapp.metanmobile.feature.stations.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
-import com.ngapp.metanmobile.feature.favorites.FavoritesRoute
+import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.feature.stations.StationsRoute
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateToFavorites(navOptions: NavOptions) = navigate(route = FavoritesNavigation, navOptions)
+private const val DEEP_LINK_URI_PATTERN = "https://metan.by/ecogas-map/"
 
-fun NavGraphBuilder.favoritesScreen(
+fun NavController.navigateToStations(navOptions: NavOptions) =
+    navigate(route = StationsNavigation, navOptions)
+
+fun NavGraphBuilder.stationsScreen(
     onNewsDetailClick: (String) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
 ) {
-    composable<FavoritesNavigation> {
-        FavoritesRoute(onNewsDetailClick, onShowBottomBar)
+    composable<StationsNavigation>(
+        deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
+    ) {
+        StationsRoute(onNewsDetailClick, onShowBottomBar)
     }
 }
 
 @Serializable
-data object FavoritesNavigation
+data object StationsNavigation

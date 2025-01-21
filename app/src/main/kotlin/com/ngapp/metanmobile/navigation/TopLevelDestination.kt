@@ -22,7 +22,7 @@ import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.feature.favorites.navigation.FavoritesNavigation
 import com.ngapp.metanmobile.feature.home.navigation.HomeScreenNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.NewsNavigation
-import com.ngapp.metanmobile.feature.stations.list.navigation.StationsNavigation
+import com.ngapp.metanmobile.feature.stations.navigation.StationsNavigation
 import kotlin.reflect.KClass
 import com.ngapp.metanmobile.core.designsystem.R as DesignsystemR
 

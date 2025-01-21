@@ -19,11 +19,7 @@
 
 package com.ngapp.metanmobile.ui
 
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -51,8 +47,8 @@ import com.ngapp.metanmobile.feature.menu.navigation.MenuNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.NewsNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.navigateToNews
 import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
-import com.ngapp.metanmobile.feature.stations.list.navigation.StationsNavigation
-import com.ngapp.metanmobile.feature.stations.list.navigation.navigateToStations
+import com.ngapp.metanmobile.feature.stations.navigation.StationsNavigation
+import com.ngapp.metanmobile.feature.stations.navigation.navigateToStations
 import com.ngapp.metanmobile.navigation.TopLevelDestination
 import com.ngapp.metanmobile.navigation.TopLevelDestination.FAVORITES
 import com.ngapp.metanmobile.navigation.TopLevelDestination.HOME
@@ -72,12 +68,6 @@ fun rememberMMAppState(
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
-    bottomSheetScaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            skipHiddenState = false,
-            initialValue = SheetValue.Hidden
-        ),
-    ),
 ): MMAppState {
 //    NavigationTrackingSideEffect(navController)
     return remember(
@@ -86,7 +76,6 @@ fun rememberMMAppState(
         networkMonitor,
         userNewsResourceRepository,
         timeZoneMonitor,
-        bottomSheetScaffoldState,
     ) {
         MMAppState(
             navController = navController,
@@ -94,7 +83,6 @@ fun rememberMMAppState(
             networkMonitor = networkMonitor,
             userNewsResourceRepository = userNewsResourceRepository,
             timeZoneMonitor = timeZoneMonitor,
-            bottomSheetScaffoldState = bottomSheetScaffoldState,
         )
     }
 }
@@ -106,15 +94,13 @@ class MMAppState(
     networkMonitor: NetworkMonitor,
     userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
-    val bottomSheetScaffoldState: BottomSheetScaffoldState,
 ) {
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 
     val currentDestination: NavDestination?
         @Composable get() {
             // Collect the currentBackStackEntryFlow as a state
-            val currentEntry = navController.currentBackStackEntryFlow
-                .collectAsState(initial = null)
+            val currentEntry = navController.currentBackStackEntryFlow.collectAsState(null)
 
             // Fallback to previousDestination if currentEntry is null
             return currentEntry.value?.destination.also { destination ->

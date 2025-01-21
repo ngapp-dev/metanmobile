@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ * Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,13 @@ plugins {
     alias(libs.plugins.mm.android.feature)
     alias(libs.plugins.mm.android.library.compose)
     alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.roborazzi)
 }
 
 android {
-    namespace = "com.ngapp.metanmobile.feature.home"
+    namespace = "com.ngapp.metanmobile.feature.stationdetail"
 }
 
 dependencies {
-    implementation(projects.feature.stationdetail)
-    
     implementation(libs.accompanist.permissions)
 
     testImplementation(libs.hilt.android.testing)

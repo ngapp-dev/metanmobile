@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,26 +22,13 @@
     <!-- Title -->
     <string name="feature_stations_title_stations_map">Карта станций</string>
     <string name="feature_stations_title_station_list">Список станций</string>
-    <string name="feature_stations_title_overview">Обзор</string>
-    <string name="feature_stations_title_updates">Новости</string>
-    <string name="feature_stations_title_payments">Оплата</string>
-    <string name="feature_stations_title_photos">Фото</string>
     <!-- Buttons -->
     <string name="feature_stations_button_navigate">Проложить маршрут</string>
-    <string name="feature_stations_button_directions">Маршрут</string>
-    <string name="feature_stations_button_call">Вызов</string>
-    <string name="feature_stations_button_save">Сохранить</string>
-    <string name="feature_stations_button_saved">Сохранено</string>
-    <string name="feature_stations_button_share">Поделиться</string>
     <!-- Text -->
     <string name="feature_stations_text_station_attendance">Посещаемость сегодня</string>
     <string name="feature_stations_text_operate">Работает</string>
     <string name="feature_stations_text_not_operate">Не работает</string>
     <string name="feature_stations_text_empty">Список Станций пуст</string>
-    <string name="feature_stations_text_individual_contract">Заключение договоров с физическим лицом</string>
-    <string name="feature_stations_text_company_contract">Заключение договоров с юридическим лицом</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Поиск станций</string>
-    <!-- Description -->
-    <string name="feature_stations_description_share_station">Поделиться этой станцией</string>
 </resources>

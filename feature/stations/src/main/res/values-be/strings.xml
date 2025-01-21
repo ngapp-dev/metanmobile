@@ -23,26 +23,13 @@
     <!-- Title -->
     <string name="feature_stations_title_stations_map">Карта станцый</string>
     <string name="feature_stations_title_station_list">Спіс станцый</string>
-    <string name="feature_stations_title_overview">Агляд</string>
-    <string name="feature_stations_title_updates">Навіны</string>
-    <string name="feature_stations_title_payments">Аплата</string>
-    <string name="feature_stations_title_photos">Фота</string>
     <!-- Buttons -->
     <string name="feature_stations_button_navigate">Пракласці маршрут</string>
-    <string name="feature_stations_button_directions">Маршрут</string>
-    <string name="feature_stations_button_call">Выклік</string>
-    <string name="feature_stations_button_save">Захаваць</string>
-    <string name="feature_stations_button_saved">Захавана</string>
-    <string name="feature_stations_button_share">Падзяліцца</string>
     <!-- Text -->
     <string name="feature_stations_text_station_attendance">Наведвальнасць сёння</string>
     <string name="feature_stations_text_operate">Працуе</string>
     <string name="feature_stations_text_not_operate">Не працуе</string>
     <string name="feature_stations_text_empty">Спіс Станцый пусты</string>
-    <string name="feature_stations_text_individual_contract">Заключэнне дагавораў з фізічнай асобай</string>
-    <string name="feature_stations_text_company_contract">Заключэнне дагавораў з юрыдычнай асобай</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Пошук станцый</string>
-    <!-- Description -->
-    <string name="feature_stations_description_share_station">Падзяліцца гэтай станцыяй</string>
 </resources>

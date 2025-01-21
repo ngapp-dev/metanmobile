@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ * Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *
  */
 
-package com.ngapp.metanmobile.feature.favorites
+package com.ngapp.metanmobile.feature.stations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,12 +23,12 @@ import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationResourceQuery
 import com.ngapp.metanmobile.core.data.repository.station.StationResourcesWithFavoritesRepository
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
-import com.ngapp.metanmobile.core.model.station.UserStationResource
+import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
-import com.ngapp.metanmobile.feature.favorites.state.FavoritesAction
-import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState
-import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState.Loading
-import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState.Success
+import com.ngapp.metanmobile.feature.stations.state.StationsAction
+import com.ngapp.metanmobile.feature.stations.state.StationsUiState
+import com.ngapp.metanmobile.feature.stations.state.StationsUiState.Loading
+import com.ngapp.metanmobile.feature.stations.state.StationsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor(
+class StationsViewModel @Inject constructor(
+    syncManager: SyncManager,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     private val locationsRepository: LocationsRepository,
     private val userDataRepository: UserDataRepository,
@@ -51,22 +52,17 @@ class FavoritesViewModel @Inject constructor(
     private var _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    private var _showDialog = MutableStateFlow(false)
-    val showDialog = _showDialog.asStateFlow()
-
-    private var _showBottomSheet = MutableStateFlow(false)
-    val showBottomSheet = _showBottomSheet.asStateFlow()
-
-    private var _stationForDelete = MutableStateFlow<UserStationResource?>(null)
-    val stationForDelete = _stationForDelete.asStateFlow()
-
     private var _stationCode = MutableStateFlow("")
     val stationCode = _stationCode.asStateFlow()
 
-    val uiState: StateFlow<FavoritesUiState> = favoritesUiState(
+    private var _showDialog = MutableStateFlow(false)
+    val showDialog = _showDialog.asStateFlow()
+
+    val uiState: StateFlow<StationsUiState> = stationsUiState(
         searchQuery = searchQuery,
         userStationsRepository = userStationsRepository,
-        userDataRepository = userDataRepository,
+        locationsRepository = locationsRepository,
+        userDataRepository = userDataRepository
     )
         .stateIn(
             scope = viewModelScope,
@@ -74,18 +70,23 @@ class FavoritesViewModel @Inject constructor(
             initialValue = Loading,
         )
 
-    fun triggerAction(action: FavoritesAction) {
-        when (action) {
-            is FavoritesAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
-            is FavoritesAction.ShowAlertDialog -> onShowAlertDialog(action.showDialog)
-            is FavoritesAction.ShowBottomSheet -> onShowBottomSheet(action.showBottomSheet)
-            is FavoritesAction.UpdateSearchQuery -> onUpdateSearchQuery(action.input)
-            is FavoritesAction.UpdateSortingConfig -> onUpdateSortingConfig(action.stationSortingConfig)
-            is FavoritesAction.UpdateStationFavorite ->
-                onUpdateStationFavorite(action.stationCode, action.favorite)
+    val isSyncing = syncManager.isSyncing
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
 
-            is FavoritesAction.UpdateStationForDelete -> onUpdateStationForDelete(action.station)
-            is FavoritesAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
+
+    fun triggerAction(action: StationsAction) {
+        when (action) {
+            is StationsAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
+            is StationsAction.ShowAlertDialog -> onShowAlertDialog(action.showDialog)
+            is StationsAction.UpdateSearchQuery -> onUpdateSearchQuery(action.input)
+            is StationsAction.UpdateSortingConfig -> onUpdateSortingConfig(action.stationSortingConfig)
+            is StationsAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
+            is StationsAction.UpdateStationFavorite ->
+                onUpdateStationFavorite(action.stationCode, action.favorite)
         }
     }
 
@@ -111,31 +112,26 @@ class FavoritesViewModel @Inject constructor(
         _showDialog.value = showDialog
     }
 
-    private fun onShowBottomSheet(showBottomSheet: Boolean) {
-        _showBottomSheet.value = showBottomSheet
-    }
-
-    private fun onUpdateStationForDelete(station: UserStationResource) {
-        _stationForDelete.value = station
-    }
-
     private fun onUpdateStationCode(stationCode: String) {
         _stationCode.value = stationCode
     }
 }
 
-private fun favoritesUiState(
+private fun stationsUiState(
     searchQuery: Flow<String>,
     userStationsRepository: StationResourcesWithFavoritesRepository,
+    locationsRepository: LocationsRepository,
     userDataRepository: UserDataRepository,
-): Flow<FavoritesUiState> {
+): Flow<StationsUiState> {
     return searchQuery.flatMapLatest { query ->
         combine(
-            userStationsRepository.observeAllFavorites(query = StationResourceQuery(searchQuery = query)),
-            userDataRepository.userData,
-        ) { stationList, userData ->
+            userStationsRepository.observeAll(query = StationResourceQuery(searchQuery = query)),
+            locationsRepository.getLocationResource(),
+            userDataRepository.userData
+        ) { stationList, userLocation, userData ->
             Success(
-                favoriteStationList = stationList,
+                stationList = stationList,
+                userLocation = userLocation,
                 stationSortingConfig = userData.stationSortingConfig,
             )
         }
