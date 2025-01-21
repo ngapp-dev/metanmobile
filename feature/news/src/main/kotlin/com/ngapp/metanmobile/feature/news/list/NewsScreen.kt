@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.feature.news.list
 
-import android.util.Log
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -86,8 +85,6 @@ internal fun NewsRoute(
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
-
-    Log.e("NewsRoute", "NewsRoute: $uiState")
 
     NewsScreen(
         modifier = modifier,

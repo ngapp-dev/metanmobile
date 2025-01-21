@@ -34,5 +34,4 @@ data class UserData(
     val isReviewShown: Boolean,
     val homeReorderableList: List<HomeContentItem>,
     val homeLastNewsExpanded: Boolean,
-    val stationDetailCode: String,
 )

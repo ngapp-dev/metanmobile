@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ngapp.metanmobile.core.designsystem.component.ButtonWithIcon
 import com.ngapp.metanmobile.core.designsystem.component.MMFilledIconButton
+import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Black
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
@@ -144,14 +145,13 @@ internal fun HeaderObjectType(
 
 @Composable
 internal fun HeaderObjectWorkTime(workingTime: String) {
-    Text(
-        text = if (workingTime.contains("круглосуточно")) {
-            stringResource(CoreUiR.string.core_ui_text_open_24_hours)
-        } else {
-            workingTime
-        },
-        overflow = TextOverflow.Ellipsis,
+    val is24Hours = workingTime.contains("круглосуточно")
+    val displayText =
+        if (is24Hours) stringResource(CoreUiR.string.core_ui_text_open_24_hours) else workingTime
+    HtmlText(
+        text = displayText,
         maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         style = MMTypography.titleLarge,
         color = Green,
         modifier = Modifier.padding(horizontal = 16.dp)
@@ -215,7 +215,8 @@ internal fun HeaderButtons(
         ButtonWithIcon(
             imageVector = if (isFavorite) MMIcons.Bookmark else MMIcons.BookmarkBorder,
             textResId = if (isFavorite) R.string.feature_stations_button_saved else R.string.feature_stations_button_save,
-            containerColor = if (isFavorite) LightBlue.copy(alpha = 0.8f).compositeOver(Gray500) else LightBlue,
+            containerColor = if (isFavorite) LightBlue.copy(alpha = 0.8f)
+                .compositeOver(Gray500) else LightBlue,
             contentColor = if (isFavorite) Black else Blue,
             shape = ShapeDefaults.ExtraLarge,
             onClick = { onToggleBookmark() }

@@ -45,8 +45,10 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.feature.stations.detail.newdetail.NewStationDetailRoute
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun StationDetailBottomSheet(
+    stationCode: String,
     bottomSheetState: BottomSheetScaffoldState,
     openFullScreen: Boolean = false,
     onNewsDetailClick: (String) -> Unit,
@@ -74,10 +76,13 @@ internal fun StationDetailBottomSheet(
         sheetContent = {
             Column {
                 BottomSheetDragHandle()
-                NewStationDetailRoute(
-                    onNewsDetailClick = onNewsDetailClick,
-                    onBackClick = onBackClick,
-                )
+                if (stationCode.isNotEmpty()) {
+                    NewStationDetailRoute(
+                        stationCode = stationCode,
+                        onNewsDetailClick = onNewsDetailClick,
+                        onBackClick = onBackClick,
+                    )
+                }
             }
         },
     ) { padding ->

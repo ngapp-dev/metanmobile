@@ -67,7 +67,7 @@ class OfflineFirstLocationsRepository @Inject constructor(
                 if (isAvailable) {
                     val location = getLocationData()?.asEntity()
                     location?.let {
-                        locationResourceDao.deleteLocationResources()
+//                        locationResourceDao.deleteLocationResources()
                         locationResourceDao.insertOrIgnoreLocationResource(it)
                     }
                 } else {

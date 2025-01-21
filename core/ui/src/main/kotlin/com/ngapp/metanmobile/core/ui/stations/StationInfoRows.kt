@@ -56,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -148,6 +149,7 @@ fun StationInfoRow(
                     } else {
                         stringResource(R.string.core_ui_button_show_more)
                     },
+                    tint = MMColors.onSurfaceVariant,
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .size(24.dp)
@@ -173,11 +175,9 @@ fun StationWorkTimeRow(
     )
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
-    val workingTimeString = if (workingTime.contains("круглосуточно")) {
-        stringResource(R.string.core_ui_text_open_24_hours)
-    } else {
-        workingTime
-    }
+    val is24Hours = workingTime.contains("круглосуточно")
+    val displayText =
+        if (is24Hours) stringResource(R.string.core_ui_text_open_24_hours) else workingTime
 
     Column {
         Row(
@@ -195,31 +195,23 @@ fun StationWorkTimeRow(
                     .size(24.dp),
             )
             Spacer(modifier = Modifier.width(32.dp))
-            if (isExpanded) {
-                HtmlText(text = workingTime, modifier = Modifier
+            HtmlText(
+                text = if (isExpanded) workingTime else displayText,
+                style = if (isExpanded) MMTypography.bodyLarge else MMTypography.titleLarge,
+                color = if (isExpanded) Color.Unspecified else Green,
+                maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                overflow = if (isExpanded) TextOverflow.Clip else TextOverflow.Ellipsis,
+                modifier = Modifier
                     .weight(1f)
-                    .clickable { isExpanded = !isExpanded }
+                    .combinedClickable(
+                        onLongClick = {
+                            clipboardManager.setText(AnnotatedString(workingTime))
+                            context.showClipboardToast()
+                        },
+                        onClick = { isExpanded = !isExpanded }
+                    )
                     .padding(vertical = 16.dp)
-                )
-            } else {
-                Text(
-                    text = workingTimeString,
-                    style = MMTypography.titleLarge,
-                    color = Green,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(1f)
-                        .combinedClickable(
-                            onLongClick = {
-                                clipboardManager.setText(AnnotatedString(workingTime))
-                                context.showClipboardToast()
-                            },
-                            onClick = { isExpanded = !isExpanded }
-                        )
-                        .padding(vertical = 16.dp)
-                )
-            }
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = MMIcons.ExpandMore,
@@ -228,6 +220,7 @@ fun StationWorkTimeRow(
                 } else {
                     stringResource(R.string.core_ui_button_show_more)
                 },
+                tint = MMColors.onSurfaceVariant,
                 modifier = Modifier
                     .padding(top = 12.dp)
                     .size(24.dp)
@@ -253,17 +246,13 @@ fun StationInfoListRow(
     val list = text.split(",")
 
     Column {
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
+        Row(modifier = modifier.fillMaxWidth()) {
             Icon(
                 imageVector = rowIcon,
                 contentDescription = text,
                 tint = Blue,
                 modifier = Modifier
-                    .padding(top = 12.dp)
+                    .padding(top = 12.dp, start = 16.dp)
                     .size(24.dp),
             )
             Spacer(modifier = Modifier.width(32.dp))
@@ -285,6 +274,7 @@ fun StationInfoListRow(
                                 onClick = { uriHandler.openUri("tel:$info") }
                             )
                             .padding(vertical = 16.dp)
+                            .padding(end = 16.dp)
                     )
                     if (index < list.size - 1) {
                         MMDivider()

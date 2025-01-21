@@ -17,14 +17,19 @@
 
 package com.ngapp.metanmobile.feature.stations.detail.newdetail
 
+import android.util.Log
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -49,11 +54,23 @@ internal fun NewStationDetailRoute(
     modifier: Modifier = Modifier,
     viewModel: NewStationDetailViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(stationCode) {
-        viewModel.triggerAction(NewStationDetailAction.UpdateStationCode(stationCode))
-    }
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var counter by rememberSaveable { mutableIntStateOf(0) }
 
+    DisposableEffect(stationCode) {
+        viewModel.triggerAction(NewStationDetailAction.LoadStationDetail(stationCode))
+
+        onDispose {
+            viewModel.triggerAction(NewStationDetailAction.ClearStationDetail)
+        }
+    }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(uiState) {
+        counter++
+    }
+    Log.e("NewStationDetailRoute", "stationCode: $stationCode")
+    Log.e("NewStationDetailRoute", "uiState: ${uiState.stationDetail?.code}")
+    Log.e("NewStationDetailRoute", "LaunchedEffect: $counter")
     NewStationDetailScreen(
         modifier = modifier,
         uiState = uiState,
@@ -71,11 +88,11 @@ private fun NewStationDetailScreen(
     onNewsDetailClick: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val isLoading = uiState == NewStationDetailUiState.Loading
+    val isLoading = uiState.isLoading
     ReportDrawnWhen { isLoading }
 
-    when(uiState) {
-        NewStationDetailUiState.Loading -> {
+    when {
+        isLoading -> {
             val loadingContentDescription = "Station detail screen loading wheel"
             Box(
                 modifier = modifier
@@ -89,7 +106,7 @@ private fun NewStationDetailScreen(
             }
         }
 
-        is NewStationDetailUiState.Success -> {
+        uiState.stationDetail != null -> {
             Column(modifier) {
                 NewStationDetailContent(
                     stationDetail = uiState.stationDetail,
@@ -111,7 +128,7 @@ private fun StationDetailScreenPreview() {
     MMTheme {
         NewStationDetailScreen(
             modifier = Modifier,
-            uiState = NewStationDetailUiState.Success(
+            uiState = NewStationDetailUiState(
                 stationDetail = UserStationResource.init(),
                 cngPrice = PriceResource.init(),
                 relatedNewsList = listOf(UserNewsResource.init())

@@ -80,6 +80,7 @@ fun HtmlText(
         fontSize = 10.sp,
         baselineShift = BaselineShift.Superscript
     ),
+    color: Color = Color.Unspecified,
 ) {
     val content = text.asHTML(fontSize, flags, urlSpanStyle, imgSpanStyle, supSpanStyle)
     if (onLinkClick != null) {
@@ -107,7 +108,8 @@ fun HtmlText(
             overflow = overflow,
             maxLines = maxLines,
             onTextLayout = onTextLayout,
-            lineHeight = lineHeight
+            lineHeight = lineHeight,
+            color = color
         )
     }
 }

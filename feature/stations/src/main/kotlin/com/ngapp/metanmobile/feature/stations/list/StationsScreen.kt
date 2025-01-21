@@ -19,7 +19,7 @@
 
 package com.ngapp.metanmobile.feature.stations.list
 
-import androidx.activity.compose.BackHandler
+import android.util.Log
 import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -112,6 +111,7 @@ internal fun StationsRoute(
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val stationCode by viewModel.stationCode.collectAsStateWithLifecycle()
     val bottomSheetExpanded = bottomSheetState.bottomSheetState.currentValue != SheetValue.Expanded
 
     StationsScreen(
@@ -120,6 +120,7 @@ internal fun StationsRoute(
         searchQuery = searchQuery,
         showDialog = showDialog,
         showTopBar = bottomSheetExpanded,
+        stationCode = stationCode,
         uiState = uiState,
         bottomSheetState = bottomSheetState,
         onAction = viewModel::triggerAction,
@@ -136,6 +137,7 @@ private fun StationsScreen(
     searchQuery: String,
     showDialog: Boolean,
     showTopBar: Boolean,
+    stationCode: String,
     uiState: StationsUiState,
     bottomSheetState: BottomSheetScaffoldState,
     onAction: (StationsAction) -> Unit,
@@ -158,17 +160,34 @@ private fun StationsScreen(
         val scrollbarState = gridState.scrollbarState(itemsAvailable = itemsAvailable)
         TrackScrollJank(scrollableState = gridState, stateName = "stationsScreen:feed")
 
-        val hideBottomSheet = {
-            onAction(StationsAction.UpdateStationCode(""))
-            coroutineScope.launch { bottomSheetState.bottomSheetState.hide() }
-        }
+        val listBottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = rememberStandardBottomSheetState(
+                skipHiddenState = false,
+                initialValue = SheetValue.Hidden,
+            )
+        )
 
-        BackHandler {
-            when (bottomSheetState.bottomSheetState.currentValue) {
-                SheetValue.Expanded, SheetValue.PartiallyExpanded -> hideBottomSheet()
-                else -> onBackClick()
-            }
-        }
+        val mapBottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = rememberStandardBottomSheetState(
+                skipHiddenState = false,
+                initialValue = SheetValue.Hidden,
+            )
+        )
+
+        Log.e("StationsScreen", "listBottomSheetScaffoldState: ${listBottomSheetScaffoldState.bottomSheetState.currentValue}")
+//        val hideBottomSheet = {
+//            coroutineScope.launch {
+//                bottomSheetState.bottomSheetState.hide()
+//                onAction(StationsAction.UpdateStationCode(""))
+//            }
+//        }
+
+//        BackHandler {
+//            when (bottomSheetState.bottomSheetState.currentValue) {
+//                SheetValue.Expanded, SheetValue.PartiallyExpanded -> hideBottomSheet()
+//                else -> onBackClick()
+//            }
+//        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -182,15 +201,20 @@ private fun StationsScreen(
                             val tabsName =
                                 rememberSaveable { StationTabs.entries.map { it.titleResId } }
                             var selectedIndex by rememberSaveable { mutableIntStateOf(LIST.ordinal) }
+                            LaunchedEffect(selectedIndex) {
+                                coroutineScope.launch {
+                                    when (selectedIndex) {
+                                        LIST.ordinal -> mapBottomSheetScaffoldState.bottomSheetState.hide()
+                                        MAP.ordinal -> listBottomSheetScaffoldState.bottomSheetState.hide()
+                                    }
+                                }
+                            }
                             AnimatedVisibility(
                                 visible = showTopBar,
                                 enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
                                 exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
                             ) {
-                                MMTabRow(
-                                    selectedTabIndex = selectedIndex,
-                                    indicatorModifier = Modifier.offset(y = (-5).dp)
-                                ) {
+                                MMTabRow(selectedTabIndex = selectedIndex) {
                                     tabsName.forEachIndexed { index, stringResourceId ->
                                         MMTab(
                                             modifier = Modifier
@@ -228,10 +252,17 @@ private fun StationsScreen(
                                 when (StationTabs.entries[page]) {
                                     LIST -> {
                                         StationDetailBottomSheet(
-                                            bottomSheetState = bottomSheetState,
+                                            stationCode = stationCode,
+                                            bottomSheetState = listBottomSheetScaffoldState,
                                             openFullScreen = true,
                                             onNewsDetailClick = onNewsDetailClick,
-                                            onBackClick = { hideBottomSheet() },
+                                            onBackClick = {
+                                                coroutineScope.launch {
+                                                    listBottomSheetScaffoldState.bottomSheetState.hide()
+                                                    onAction(StationsAction.UpdateStationCode(""))
+                                                }
+//                                                hideBottomSheet()
+                                            },
                                         ) {
                                             Box(modifier = modifier) {
                                                 StationListContent(
@@ -241,7 +272,7 @@ private fun StationsScreen(
                                                     onAction = onAction,
                                                     onDetailClick = {
                                                         onAction(StationsAction.UpdateStationCode(it))
-                                                        coroutineScope.launch { bottomSheetState.bottomSheetState.expand() }
+                                                        coroutineScope.launch { listBottomSheetScaffoldState.bottomSheetState.expand() }
                                                     },
                                                 )
                                                 gridState.DraggableScrollbar(
@@ -262,16 +293,17 @@ private fun StationsScreen(
                                     }
 
                                     MAP -> {
-                                        val bottomSheetScaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-                                            bottomSheetState = rememberStandardBottomSheetState(
-                                                skipHiddenState = false,
-                                                initialValue = SheetValue.Hidden
-                                            ),
-                                        )
                                         StationDetailBottomSheet(
-                                            bottomSheetState = bottomSheetScaffoldState,
+                                            stationCode = stationCode,
+                                            bottomSheetState = mapBottomSheetScaffoldState,
                                             onNewsDetailClick = onNewsDetailClick,
-                                            onBackClick = { hideBottomSheet() },
+                                            onBackClick = {
+                                                coroutineScope.launch {
+                                                    mapBottomSheetScaffoldState.bottomSheetState.hide()
+                                                    onAction(StationsAction.UpdateStationCode(""))
+                                                }
+//                                                hideBottomSheet()
+                                            },
                                         ) {
                                             StationMapContent(
                                                 modifier = modifier,
@@ -279,7 +311,7 @@ private fun StationsScreen(
                                                 userLocation = uiState.userLocation,
                                                 onDetailClick = {
                                                     onAction(StationsAction.UpdateStationCode(it))
-                                                    coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.partialExpand() }
+                                                    coroutineScope.launch { mapBottomSheetScaffoldState.bottomSheetState.partialExpand() }
                                                 },
                                             )
                                         }

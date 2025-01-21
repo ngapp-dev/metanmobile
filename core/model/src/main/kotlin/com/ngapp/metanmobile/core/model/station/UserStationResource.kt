@@ -19,6 +19,7 @@ package com.ngapp.metanmobile.core.model.station
 
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import kotlinx.datetime.Clock
+import sun.awt.image.MultiResolutionCachedImage.map
 
 data class UserStationResource(
     val id: String,
@@ -121,3 +122,6 @@ data class UserStationResource(
 
 fun List<StationResource>.mapToUserStationResources(userData: UserData): List<UserStationResource> =
     map { UserStationResource(it, userData) }
+
+fun StationResource.mapToUserStationResource(userData: UserData): UserStationResource =
+    UserStationResource(this, userData)

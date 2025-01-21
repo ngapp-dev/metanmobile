@@ -23,7 +23,7 @@ sealed interface StationsAction {
     data class UpdateLocation(val hasPermissions: Boolean) : StationsAction
     data class ShowAlertDialog(val showDialog: Boolean) : StationsAction
     data class UpdateSearchQuery(val input: String) : StationsAction
-    data class UpdateStationCode(val stationCode: String) : StationsAction
     data class UpdateSortingConfig(val stationSortingConfig: StationSortingConfig) : StationsAction
+    data class UpdateStationCode(val stationCode: String) : StationsAction
     data class UpdateStationFavorite(val stationCode: String, val favorite: Boolean) : StationsAction
 }

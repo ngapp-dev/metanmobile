@@ -20,8 +20,8 @@ package com.ngapp.metanmobile.feature.stations.detail.newdetail.state
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 
 sealed interface NewStationDetailAction {
-//    data class LoadStationDetail(val stationCode: String) : NewStationDetailAction
-    data class UpdateStationCode(val stationCode: String) : NewStationDetailAction
+    data class LoadStationDetail(val stationCode: String) : NewStationDetailAction
     data class UpdateStationFavorite(val stationCode: String, val favorite: Boolean) : NewStationDetailAction
     data class ShareStation(val station: UserStationResource?) : NewStationDetailAction
+    data object ClearStationDetail : NewStationDetailAction
 }

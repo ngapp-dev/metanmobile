@@ -52,6 +52,9 @@ class StationsViewModel @Inject constructor(
     private var _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private var _stationCode = MutableStateFlow("")
+    val stationCode = _stationCode.asStateFlow()
+
     private var _showDialog = MutableStateFlow(false)
     val showDialog = _showDialog.asStateFlow()
 
@@ -80,8 +83,8 @@ class StationsViewModel @Inject constructor(
             is StationsAction.UpdateLocation -> onUpdateLocation(action.hasPermissions)
             is StationsAction.ShowAlertDialog -> onShowAlertDialog(action.showDialog)
             is StationsAction.UpdateSearchQuery -> onUpdateSearchQuery(action.input)
-            is StationsAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
             is StationsAction.UpdateSortingConfig -> onUpdateSortingConfig(action.stationSortingConfig)
+            is StationsAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
             is StationsAction.UpdateStationFavorite ->
                 onUpdateStationFavorite(action.stationCode, action.favorite)
         }
@@ -110,9 +113,7 @@ class StationsViewModel @Inject constructor(
     }
 
     private fun onUpdateStationCode(stationCode: String) {
-        viewModelScope.launch {
-            userDataRepository.setStationDetailCode(stationCode)
-        }
+        _stationCode.value = stationCode
     }
 }
 

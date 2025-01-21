@@ -77,8 +77,4 @@ class FakeUserDataRepository @Inject constructor(
     override suspend fun setHomeLastNewsExpanded(isExpanded: Boolean) {
         preferencesDataSource.setHomeExpandedLastNews(isExpanded)
     }
-
-    override suspend fun setStationDetailCode(stationCode: String) {
-        preferencesDataSource.setStationDetailCode(stationCode)
-    }
 }
