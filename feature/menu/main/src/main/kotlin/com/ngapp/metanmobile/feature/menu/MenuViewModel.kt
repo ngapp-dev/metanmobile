@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.feature.menu.state.SettingsAction
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState.Loading
