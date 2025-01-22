@@ -21,19 +21,11 @@ import com.ngapp.metanmobile.core.common.network.Dispatcher
 import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.career.asEntity
-import com.ngapp.metanmobile.core.data.model.faq.asEntity
 import com.ngapp.metanmobile.core.data.repository.career.CareersRepository
-import com.ngapp.metanmobile.core.data.repository.faq.FaqRepository
-import com.ngapp.metanmobile.core.data.repository.faq.FaqResourceQuery
 import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.career.asExternalModel
-import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
-import com.ngapp.metanmobile.core.database.model.faq.asExternalModel
 import com.ngapp.metanmobile.core.model.career.CareerResource
-import com.ngapp.metanmobile.core.model.faq.FaqResource
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
-import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +45,7 @@ internal class FakeCareersRepository @Inject constructor(
 ) : CareersRepository {
 
     override fun getCareerList(): Flow<List<CareerResource>> = flow {
-        val careersList = parser.getCareerList(true)
+        val careersList = parser.getCareerList()
             .map(NetworkCareerResource::asEntity)
             .map(CareerResourceEntity::asExternalModel)
         emit(careersList)

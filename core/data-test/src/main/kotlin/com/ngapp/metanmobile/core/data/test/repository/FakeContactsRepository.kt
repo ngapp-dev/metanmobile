@@ -44,7 +44,7 @@ internal class FakeContactsRepository @Inject constructor(
 ) : ContactsRepository {
 
     override fun getContactResource(): Flow<ContactResource?> = flow {
-        val contactsResource = parser.getContacts(true)
+        val contactsResource = parser.getContacts()
             .firstOrNull()
             ?.asEntity()
             ?.asExternalModel()

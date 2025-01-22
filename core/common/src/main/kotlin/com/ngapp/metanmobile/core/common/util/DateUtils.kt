@@ -26,7 +26,7 @@ import java.util.Locale
 
 fun formatRssDate(dateString: String?): Long {
     val cleanedDateString = dateString?.replace(Regex("^[a-zA-Z]+, "), "")
-    val formatter = DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss Z", Locale.getDefault())
+    val formatter = DateTimeFormatter.ofPattern("d MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
     val zonedDateTime = ZonedDateTime.parse(cleanedDateString, formatter)
     return zonedDateTime.toInstant().toEpochMilli()
 }

@@ -34,7 +34,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.ngapp.metanmobile.core.designsystem.R as DesignsystemR
-import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 /**
  * Tests all the navigation flows that are handled by the navigation library.
@@ -61,7 +60,7 @@ class NavigationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     // The strings used for matching in these tests
-    private val navigateUp by composeTestRule.stringResource(CoreUiR.string.core_ui_navigate_up)
+    private val navigateUp by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_description_back)
     private val home by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_home)
     private val stations by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_stations)
     private val news by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_news)

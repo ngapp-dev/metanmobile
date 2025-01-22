@@ -49,7 +49,7 @@ internal class FakeNewsRepository @Inject constructor(
 ) : NewsRepository {
 
     override fun getNewsResourcesAsc(query: NewsResourceQuery): Flow<List<NewsResource>> = flow {
-        val newsList = parser.getNewsList(true)
+        val newsList = parser.getNewsList()
             .map(NetworkNewsResource::asEntity)
             .map(NewsResourceEntity::asExternalModel)
             .applyQueryFilters(query)
@@ -58,7 +58,7 @@ internal class FakeNewsRepository @Inject constructor(
     }.flowOn(ioDispatcher)
 
     override fun getNewsResourcesDesc(query: NewsResourceQuery): Flow<List<NewsResource>> = flow {
-        val newsList = parser.getNewsList(true)
+        val newsList = parser.getNewsList()
             .map(NetworkNewsResource::asEntity)
             .map(NewsResourceEntity::asExternalModel)
             .applyQueryFilters(query)
@@ -67,7 +67,7 @@ internal class FakeNewsRepository @Inject constructor(
     }.flowOn(ioDispatcher)
 
     override fun getNewsResource(newsId: String): Flow<NewsResource> = flow {
-        val newsResource = parser.getNews(newsId, true)
+        val newsResource = parser.getNews(newsId)
             ?.asEntity()
             ?.asExternalModel()
         emit(newsResource ?: NewsResource.init())
