@@ -78,9 +78,8 @@ import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
 import com.ngapp.metanmobile.core.ui.alertdialogs.StationsSortAndFilterConfigDialog
 import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
-import com.ngapp.metanmobile.core.ui.stations.stationDetail.StationDetailBottomSheet
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
-import com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute
+import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailBottomSheet
 import com.ngapp.metanmobile.feature.stations.StationTabs.LIST
 import com.ngapp.metanmobile.feature.stations.StationTabs.MAP
 import com.ngapp.metanmobile.feature.stations.state.StationsAction
@@ -232,19 +231,7 @@ private fun StationsScreen(
                                             openFullScreen = true,
                                             onShowTopAppBar = { showTopAppBar = it },
                                             onShowBottomBar = onShowBottomBar,
-                                            sheetContent = {
-                                                StationDetailRoute(
-                                                    stationCode = stationCode,
-                                                    onNewsDetailClick = onNewsDetailClick,
-                                                    onBackClick = {
-                                                        coroutineScope.launch {
-                                                            listBottomSheetScaffoldState.bottomSheetState.hide()
-                                                            showTopAppBar = true
-                                                            onShowBottomBar(true)
-                                                        }
-                                                    },
-                                                )
-                                            }
+                                            onNewsDetailClick = onNewsDetailClick,
                                         ) {
                                             Box(modifier = modifier) {
                                                 StationListContent(
@@ -282,19 +269,7 @@ private fun StationsScreen(
                                             bottomSheetState = mapBottomSheetScaffoldState,
                                             onShowTopAppBar = { showTopAppBar = it },
                                             onShowBottomBar = onShowBottomBar,
-                                            sheetContent = {
-                                                StationDetailRoute(
-                                                    stationCode = stationCode,
-                                                    onNewsDetailClick = onNewsDetailClick,
-                                                    onBackClick = {
-                                                        coroutineScope.launch {
-                                                            mapBottomSheetScaffoldState.bottomSheetState.hide()
-                                                            showTopAppBar = true
-                                                            onShowBottomBar(true)
-                                                        }
-                                                    },
-                                                )
-                                            }
+                                            onNewsDetailClick = onNewsDetailClick,
                                         ) { bottomSheetPartiallyExpanded ->
                                             StationMapContent(
                                                 modifier = modifier,

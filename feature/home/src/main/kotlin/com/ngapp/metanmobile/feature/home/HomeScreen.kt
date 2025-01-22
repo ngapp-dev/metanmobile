@@ -59,12 +59,11 @@ import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
-import com.ngapp.metanmobile.core.ui.stations.stationDetail.StationDetailBottomSheet
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.home.state.HomeAction
 import com.ngapp.metanmobile.feature.home.state.HomeUiState
 import com.ngapp.metanmobile.feature.home.ui.HomeContent
-import com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute
+import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailBottomSheet
 import kotlinx.coroutines.launch
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
@@ -162,19 +161,7 @@ private fun HomeScreen(
                         openFullScreen = true,
                         onShowTopAppBar = { showTopAppBar = it },
                         onShowBottomBar = onShowBottomBar,
-                        sheetContent = {
-                            StationDetailRoute(
-                                stationCode = uiState.nearestStation?.code,
-                                onNewsDetailClick = onNewsDetailClick,
-                                onBackClick = {
-                                    coroutineScope.launch {
-                                        bottomSheetScaffoldState.bottomSheetState.hide()
-                                        showTopAppBar = true
-                                        onShowBottomBar(true)
-                                    }
-                                },
-                            )
-                        }
+                        onNewsDetailClick = onNewsDetailClick,
                     ) {
                         HomeContent(
                             isEditingUi = isEditingUi,

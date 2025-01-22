@@ -32,7 +32,6 @@ import com.ngapp.metanmobile.core.database.model.location.asExternalModel
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

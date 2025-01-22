@@ -17,7 +17,7 @@
 
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.ngapp.metanmobile.core.ui.stations.stationDetail
+package com.ngapp.metanmobile.feature.stationdetail.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
+import com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +56,7 @@ fun StationDetailBottomSheet(
     openFullScreen: Boolean = false,
     onShowTopAppBar: (Boolean) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
-    sheetContent: @Composable () -> Unit,
+    onNewsDetailClick: (String) -> Unit,
     content: @Composable (Boolean) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -113,7 +114,17 @@ fun StationDetailBottomSheet(
             Column {
                 BottomSheetDragHandle()
                 if (!stationCode.isNullOrEmpty()) {
-                    sheetContent()
+                    StationDetailRoute(
+                        stationCode = stationCode,
+                        onNewsDetailClick = onNewsDetailClick,
+                        onBackClick = {
+                            coroutineScope.launch {
+                                bottomSheetState.bottomSheetState.hide()
+                                onShowTopAppBar(true)
+                                onShowBottomBar(true)
+                            }
+                        },
+                    )
                 }
             }
         },

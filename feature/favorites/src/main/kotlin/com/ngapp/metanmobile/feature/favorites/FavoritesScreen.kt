@@ -76,15 +76,13 @@ import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
 import com.ngapp.metanmobile.core.ui.alertdialogs.StationsSortAndFilterConfigDialog
 import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
-import com.ngapp.metanmobile.core.ui.stations.stationDetail.StationDetailBottomSheet
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesAction
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState
 import com.ngapp.metanmobile.feature.favorites.ui.FavoritesBottomSheetContent
 import com.ngapp.metanmobile.feature.favorites.ui.FavoritesContent
-import com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute
+import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailBottomSheet
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonNull.content
 
 @Composable
 internal fun FavoritesRoute(
@@ -211,19 +209,7 @@ private fun FavoritesScreen(
                                 openFullScreen = true,
                                 onShowTopAppBar = { showTopAppBar = it },
                                 onShowBottomBar = onShowBottomBar,
-                                sheetContent = {
-                                    StationDetailRoute(
-                                        stationCode = stationCode,
-                                        onNewsDetailClick = onNewsDetailClick,
-                                        onBackClick = {
-                                            coroutineScope.launch {
-                                                bottomSheetScaffoldState.bottomSheetState.hide()
-                                                showTopAppBar = true
-                                                onShowBottomBar(true)
-                                            }
-                                        },
-                                    )
-                                }
+                                onNewsDetailClick = onNewsDetailClick,
                             ) {
                                 FavoritesContent(
                                     gridState = gridState,

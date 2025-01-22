@@ -22,7 +22,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import com.ngapp.metanmobile.core.ui.util.PermissionsManager
 import com.ngapp.metanmobile.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
 
