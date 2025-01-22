@@ -17,6 +17,7 @@
 
 package com.google.samples.apps.nowinandroid.core.testing.util
 
+import android.graphics.Bitmap.CompressFormat.PNG
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -26,16 +27,30 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.test.DarkMode
+import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import com.github.takahirom.roborazzi.RoborazziATFAccessibilityCheckOptions
+import com.github.takahirom.roborazzi.RoborazziATFAccessibilityChecker
+import com.github.takahirom.roborazzi.RoborazziATFAccessibilityChecker.CheckLevel
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziOptions.CompareOptions
 import com.github.takahirom.roborazzi.RoborazziOptions.RecordOptions
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.google.accompanist.testharness.TestHarness
+import com.github.takahirom.roborazzi.checkRoboAccessibility
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckPreset
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
+import com.google.android.apps.common.testing.accessibility.framework.integrations.espresso.AccessibilityViewCheckException
+import com.google.android.apps.common.testing.accessibility.framework.utils.contrast.BitmapImage
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.robolectric.RuntimeEnvironment
+import java.io.File
+import java.io.FileOutputStream
 
 val DefaultRoborazziOptions =
     RoborazziOptions(
@@ -53,18 +68,27 @@ enum class DefaultTestDevices(val description: String, val spec: String) {
 
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureMultiDevice(
     screenshotName: String,
+    accessibilitySuppressions: Matcher<in AccessibilityViewCheckResult> = Matchers.not(Matchers.anything()),
     body: @Composable () -> Unit,
 ) {
     DefaultTestDevices.entries.forEach {
-        this.captureForDevice(it.description, it.spec, screenshotName, body = body)
+        this.captureForDevice(
+            deviceName = it.description,
+            deviceSpec = it.spec,
+            screenshotName = screenshotName,
+            body = body,
+            accessibilitySuppressions = accessibilitySuppressions,
+        )
     }
 }
 
+@OptIn(ExperimentalRoborazziApi::class)
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureForDevice(
     deviceName: String,
     deviceSpec: String,
     screenshotName: String,
     roborazziOptions: RoborazziOptions = DefaultRoborazziOptions,
+    accessibilitySuppressions: Matcher<in AccessibilityViewCheckResult> = Matchers.not(Matchers.anything()),
     darkMode: Boolean = false,
     body: @Composable () -> Unit,
 ) {
@@ -77,16 +101,54 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
         CompositionLocalProvider(
             LocalInspectionMode provides true,
         ) {
-            TestHarness(darkMode = darkMode) {
+            DeviceConfigurationOverride(
+                override = DeviceConfigurationOverride.Companion.DarkMode(darkMode),
+            ) {
                 body()
             }
         }
     }
+
+    // Run Accessibility checks first so logging is included
+    val accessibilityException = try {
+        this.onRoot().checkRoboAccessibility(
+            roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
+                failureLevel = CheckLevel.Error,
+                checker = RoborazziATFAccessibilityChecker(
+                    preset = AccessibilityCheckPreset.LATEST,
+                    suppressions = accessibilitySuppressions,
+                ),
+            ),
+        )
+        null
+    } catch (e: AccessibilityViewCheckException) {
+        e
+    }
+
     this.onRoot()
         .captureRoboImage(
             "src/test/screenshots/${screenshotName}_$deviceName.png",
             roborazziOptions = roborazziOptions,
         )
+
+    // Rethrow the Accessibility exception once screenshots have passed
+    if (accessibilityException != null) {
+        accessibilityException.results.forEachIndexed { index, check ->
+            val viewImage = check.viewImage
+            if (viewImage is BitmapImage) {
+                val file =
+                    File("build/outputs/roborazzi/${screenshotName}_${deviceName}_$index.png")
+                println("Writing check.viewImage to $file")
+                FileOutputStream(
+                    file,
+                ).use {
+                    viewImage.bitmap.compress(PNG, 100, it)
+                }
+            }
+        }
+
+        throw accessibilityException
+    }
 }
 
 /**
@@ -102,14 +164,18 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
     val darkModeValues = if (shouldCompareDarkMode) listOf(true, false) else listOf(false)
 
     var darkMode by mutableStateOf(true)
+    var dynamicTheming by mutableStateOf(false)
+    var androidTheme by mutableStateOf(false)
 
     this.setContent {
         CompositionLocalProvider(
             LocalInspectionMode provides true,
         ) {
-            MMTheme(darkTheme = darkMode) {
+            MMTheme(
+                darkTheme = darkMode,
+            ) {
                 // Keying is necessary in some cases (e.g. animations)
-                key(darkMode) {
+                key(androidTheme, darkMode, dynamicTheming) {
                     val description = generateDescription(
                         shouldCompareDarkMode,
                         darkMode,
@@ -119,20 +185,22 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
             }
         }
     }
+
+    // Create permutations
     darkModeValues.forEach { isDarkMode ->
         darkMode = isDarkMode
         val darkModeDesc = if (isDarkMode) "dark" else "light"
 
-        // Generate file name based on dark mode state
         val filename = overrideFileName ?: name
 
-        // Capture screenshot
-        this.onRoot().captureRoboImage(
-            "src/test/screenshots/" +
-                    "$name/$filename" +
-                    "_$darkModeDesc.png",
-            roborazziOptions = DefaultRoborazziOptions
-        )
+        this.onRoot()
+            .captureRoboImage(
+                "src/test/screenshots/" +
+                        "$name/$filename" +
+                        "_$darkModeDesc" +
+                        ".png",
+                roborazziOptions = DefaultRoborazziOptions,
+            )
     }
 }
 
@@ -147,7 +215,6 @@ private fun generateDescription(
             } else {
                 ""
             }
-
     return description.trim()
 }
 

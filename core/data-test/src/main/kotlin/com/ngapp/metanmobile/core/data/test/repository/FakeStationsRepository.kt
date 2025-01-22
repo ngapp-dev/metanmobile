@@ -51,7 +51,7 @@ internal class FakeStationsRepository @Inject constructor(
 
     override fun getStationResourcesAsc(query: StationResourceQuery): Flow<List<StationResource>> =
         flow {
-            val stationsList = parser.getStations(true)
+            val stationsList = parser.getStations()
                 .map(NetworkStationResource::asEntity)
                 .map(StationResourceEntity::asExternalModel)
                 .applyQueryFilters(query)
@@ -61,7 +61,7 @@ internal class FakeStationsRepository @Inject constructor(
 
     override fun getStationResourcesDesc(query: StationResourceQuery): Flow<List<StationResource>> =
         flow {
-            val stationsList = parser.getStations(true)
+            val stationsList = parser.getStations()
                 .map(NetworkStationResource::asEntity)
                 .map(StationResourceEntity::asExternalModel)
                 .applyQueryFilters(query)
@@ -70,7 +70,7 @@ internal class FakeStationsRepository @Inject constructor(
         }.flowOn(ioDispatcher)
 
     override fun getStationResource(stationCode: String): Flow<StationResource> = flow {
-        val stationResource = parser.getStation(stationCode, true)
+        val stationResource = parser.getStation(stationCode)
             ?.asEntity()
             ?.asExternalModel()
         emit(stationResource ?: StationResource.init())

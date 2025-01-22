@@ -18,8 +18,8 @@
 package com.ngapp.metanmobile.core.testing.repository
 
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
@@ -31,12 +31,13 @@ import kotlinx.coroutines.flow.filterNotNull
 val emptyUserData = UserData(
     favoriteStationResources = emptySet(),
     viewedNewsResources = emptySet(),
-    languageConfig = LanguageConfig.EN,
     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     shouldHideOnboarding = false,
     newsSortingConfig = NewsSortingConfig.init(),
     stationSortingConfig = StationSortingConfig.init(),
     totalUsageTime = 0L,
+    homeReorderableList = emptyList(),
+    homeLastNewsExpanded = true,
     isReviewShown = false,
 )
 
@@ -61,13 +62,6 @@ class TestUserDataRepository : UserDataRepository {
             _userData.tryEmit(current.copy(favoriteStationResources = favoriteStations))
         }
     }
-
-    override suspend fun setLanguageConfig(languageConfig: LanguageConfig) {
-        currentUserData.let { current ->
-            _userData.tryEmit(current.copy(languageConfig = languageConfig))
-        }
-    }
-
 
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         currentUserData.let { current ->
@@ -118,6 +112,18 @@ class TestUserDataRepository : UserDataRepository {
     override suspend fun setReviewShown(isShown: Boolean) {
         currentUserData.let { current ->
             _userData.tryEmit(current.copy(isReviewShown = isShown))
+        }
+    }
+
+    override suspend fun setHomeReorderableList(homeReorderableList: List<HomeContentItem>) {
+        currentUserData.let { current ->
+            _userData.tryEmit(current.copy(homeReorderableList = homeReorderableList))
+        }
+    }
+
+    override suspend fun setHomeLastNewsExpanded(isExpanded: Boolean) {
+        currentUserData.let { current ->
+            _userData.tryEmit(current.copy(homeLastNewsExpanded = isExpanded))
         }
     }
 

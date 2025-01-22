@@ -44,7 +44,7 @@ internal class FakePricesRepository @Inject constructor(
 ) : PricesRepository {
 
     override fun getFuelPrice(): Flow<PriceResource?> = flow {
-        val fuelPrice = parser.getFuelPrices(true)
+        val fuelPrice = parser.getFuelPrices()
             .firstOrNull()
             ?.asEntity()
             ?.asExternalModel()

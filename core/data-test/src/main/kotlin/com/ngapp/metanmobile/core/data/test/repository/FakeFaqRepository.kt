@@ -47,7 +47,7 @@ internal class FakeFaqRepository @Inject constructor(
 ) : FaqRepository {
 
     override fun getFaqList(query: FaqResourceQuery): Flow<List<FaqResource>> = flow {
-        val faqList = parser.getFaqList(true)
+        val faqList = parser.getFaqList()
             .map(NetworkFaqResource::asEntity)
             .map(FaqResourceEntity::asExternalModel)
             .applyQueryFilters(query)
