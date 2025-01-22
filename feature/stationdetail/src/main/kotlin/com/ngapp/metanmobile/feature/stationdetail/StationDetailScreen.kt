@@ -43,10 +43,10 @@ import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailContent
 
 @Composable
 fun StationDetailRoute(
+    modifier: Modifier = Modifier,
     stationCode: String? = "",
     onNewsDetailClick: (String) -> Unit,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: StationDetailViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(stationCode) {

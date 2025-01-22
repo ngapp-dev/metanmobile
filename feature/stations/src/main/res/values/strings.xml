@@ -23,12 +23,7 @@
     <!-- Title -->
     <string name="feature_stations_title_station_list">Station List</string>
     <string name="feature_stations_title_stations_map">Station Map</string>
-    <!-- Buttons -->
-    <string name="feature_stations_button_navigate">Navigate</string>
     <!-- Text -->
-    <string name="feature_stations_text_station_attendance">Attendance today</string>
-    <string name="feature_stations_text_operate">Operate</string>
-    <string name="feature_stations_text_not_operate">Not operate</string>
     <string name="feature_stations_text_empty">Station list is empty</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Search stations</string>

@@ -23,7 +23,6 @@ import com.ngapp.metanmobile.core.datastore.model.asHomeContentItem
 import com.ngapp.metanmobile.core.datastore.model.toModel
 import com.ngapp.metanmobile.core.datastore.model.toProto
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
@@ -49,16 +48,6 @@ class MetanMobilePreferencesDataSource @Inject constructor(
                     DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT -> DarkThemeConfig.LIGHT
                     DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 },
-                languageConfig = when (it.languageConfig) {
-                    null,
-                    LanguageConfigProto.LANGUAGE_RU,
-                    LanguageConfigProto.UNRECOGNIZED,
-                    LanguageConfigProto.LANGUAGE_UNSPECIFIED,
-                        -> LanguageConfig.RU
-
-                    LanguageConfigProto.LANGUAGE_BE -> LanguageConfig.BE
-                    LanguageConfigProto.LANGUAGE_EN -> LanguageConfig.EN
-                },
                 shouldHideOnboarding = it.shouldHideOnboarding,
                 newsSortingConfig = it.newsSortingConfig.toModel(),
                 stationSortingConfig = it.stationSortingConfig.toModel(),
@@ -78,18 +67,6 @@ class MetanMobilePreferencesDataSource @Inject constructor(
 
                     DarkThemeConfig.LIGHT -> DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
-                }
-            }
-        }
-    }
-
-    suspend fun setLanguageConfig(languageConfig: LanguageConfig) {
-        userPreferences.updateData {
-            it.copy {
-                this.languageConfig = when (languageConfig) {
-                    LanguageConfig.RU -> LanguageConfigProto.LANGUAGE_RU
-                    LanguageConfig.BE -> LanguageConfigProto.LANGUAGE_BE
-                    LanguageConfig.EN -> LanguageConfigProto.LANGUAGE_EN
                 }
             }
         }

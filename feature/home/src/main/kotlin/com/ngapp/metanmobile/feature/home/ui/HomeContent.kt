@@ -104,14 +104,14 @@ internal fun HomeContent(
                             nearestStation = nearestStation,
                             cngPrice = cngPrice,
                             onStationDetailClick = onStationDetailClick,
-                            reorderableItemModifier = reorderableItemModifier,
+                            modifier = reorderableItemModifier,
                         )
                     }
 
                     CALCULATORS -> {
                         HomeWidgetCalculatorsView(
                             isEditingUi = isEditingUi,
-                            reorderableItemModifier = reorderableItemModifier,
+                            modifier = reorderableItemModifier,
                         )
                     }
 
@@ -121,7 +121,7 @@ internal fun HomeContent(
                                 isEditingUi = isEditingUi,
                                 pinnedFaqItems = pinnedFaqList,
                                 onSeeAllClick = onSeeAllFaqClick,
-                                reorderableItemModifier = reorderableItemModifier,
+                                modifier = reorderableItemModifier,
                             )
                         }
                     }
@@ -132,7 +132,7 @@ internal fun HomeContent(
                                 isEditingUi = isEditingUi,
                                 career = career,
                                 onSeeAllClick = onSeeAllCareersClick,
-                                reorderableItemModifier = reorderableItemModifier,
+                                modifier = reorderableItemModifier,
                             )
                         }
                     }

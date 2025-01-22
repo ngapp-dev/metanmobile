@@ -85,14 +85,13 @@ import com.ngapp.metanmobile.core.ui.util.showClipboardToast
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationInfoRow(
+    modifier: Modifier = Modifier,
     isExpandable: Boolean,
     rowIcon: ImageVector,
     text: String,
     url: String = "",
-    modifier: Modifier = Modifier,
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val iconRotateState by animateFloatAsState(

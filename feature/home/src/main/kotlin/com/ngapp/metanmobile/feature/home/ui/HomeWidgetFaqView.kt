@@ -58,7 +58,7 @@ internal fun HomeWidgetFaqView(
     isEditingUi: Boolean,
     pinnedFaqItems: List<FaqResource>,
     onSeeAllClick: () -> Unit,
-    reorderableItemModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Box {
         Column(
@@ -116,7 +116,7 @@ internal fun HomeWidgetFaqView(
             modifier = Modifier.align(Alignment.TopEnd),
         ) {
             IconButton(
-                modifier = reorderableItemModifier.padding(start = 8.dp, top = 8.dp),
+                modifier = modifier.padding(start = 8.dp, top = 8.dp),
                 onClick = {},
             ) {
                 Icon(

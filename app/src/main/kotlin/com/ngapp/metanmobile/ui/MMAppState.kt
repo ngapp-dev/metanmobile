@@ -43,7 +43,6 @@ import com.ngapp.metanmobile.feature.favorites.navigation.FavoritesNavigation
 import com.ngapp.metanmobile.feature.favorites.navigation.navigateToFavorites
 import com.ngapp.metanmobile.feature.home.navigation.HomeScreenNavigation
 import com.ngapp.metanmobile.feature.home.navigation.navigateToHomeScreen
-import com.ngapp.metanmobile.feature.menu.navigation.MenuNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.NewsNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.navigateToNews
 import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
@@ -195,10 +194,6 @@ class MMAppState(
 
     fun navigateFromOnboardingToHomeScreen() = navController.navigate(HomeScreenNavigation) {
         popUpTo(OnboardingScreenNavigation) { inclusive = true }
-    }
-
-    fun refreshSettingsPage() = navController.navigate(MenuNavigation) {
-        popUpTo(MenuNavigation) { inclusive = true }
     }
 }
 

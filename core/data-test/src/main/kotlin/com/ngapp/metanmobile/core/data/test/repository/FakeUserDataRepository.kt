@@ -21,7 +21,6 @@ import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.datastore.MetanMobilePreferencesDataSource
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
@@ -36,10 +35,6 @@ class FakeUserDataRepository @Inject constructor(
 
     override suspend fun setStationResourceFavorite(stationCode: String, favorite: Boolean) {
         preferencesDataSource.setStationResourceFavorite(stationCode, favorite)
-    }
-
-    override suspend fun setLanguageConfig(languageConfig: LanguageConfig) {
-        preferencesDataSource.setLanguageConfig(languageConfig)
     }
 
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {

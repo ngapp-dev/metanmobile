@@ -25,7 +25,7 @@ import androidx.navigation.navDeepLink
 import com.ngapp.metanmobile.feature.news.list.NewsRoute
 import kotlinx.serialization.Serializable
 
-private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by/"
+private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by"
 
 fun NavController.navigateToNews(navOptions: NavOptions) =
     navigate(route = NewsNavigation, navOptions)

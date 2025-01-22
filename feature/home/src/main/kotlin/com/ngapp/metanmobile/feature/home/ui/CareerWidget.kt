@@ -56,7 +56,7 @@ internal fun CareerWidget(
     isEditingUi: Boolean,
     career: CareerResource,
     onSeeAllClick: () -> Unit,
-    reorderableItemModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Box {
         Column(
@@ -102,7 +102,7 @@ internal fun CareerWidget(
             modifier = Modifier.align(Alignment.TopEnd),
         ) {
             IconButton(
-                modifier = reorderableItemModifier.padding(start = 8.dp, top = 8.dp),
+                modifier = modifier.padding(start = 8.dp, top = 8.dp),
                 onClick = {},
             ) {
                 Icon(

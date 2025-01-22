@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
-import com.ngapp.metanmobile.feature.termsandconditions.TermsAndConditionsRoute
+import com.ngapp.metanmobile.feature.termsandconditions.TermsAndConditionsScreen
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToTermsAndConditions(navOptions: NavOptionsBuilder.() -> Unit = {}) {
@@ -30,7 +30,7 @@ fun NavController.navigateToTermsAndConditions(navOptions: NavOptionsBuilder.() 
 
 fun NavGraphBuilder.termsAndConditionsScreen(onBackClick: () -> Unit) {
     composable<TermsAndConditionsNavigation> {
-        TermsAndConditionsRoute(onBackClick = onBackClick)
+        TermsAndConditionsScreen(onBackClick = onBackClick)
     }
 }
 

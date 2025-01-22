@@ -33,27 +33,30 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
+import com.ngapp.metanmobile.core.data.repository.logLanguageConfigChanged
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
 import com.ngapp.metanmobile.core.designsystem.component.MMMenuTopAppBar
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.util.LanguageHelper
+import com.ngapp.metanmobile.feature.menu.state.SettingsAction
+import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 import com.ngapp.metanmobile.feature.menu.ui.LanguageConfigDialog
 import com.ngapp.metanmobile.feature.menu.ui.LanguageConfigRowItem
 import com.ngapp.metanmobile.feature.menu.ui.LegalRegulationsRowItem
 import com.ngapp.metanmobile.feature.menu.ui.MenuRowItem
 import com.ngapp.metanmobile.feature.menu.ui.ThemeModeConfigDialog
 import com.ngapp.metanmobile.feature.menu.ui.ThemeModeRowItem
-import com.ngapp.metanmobile.feature.menu.state.SettingsAction
-import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 
 @Composable
 internal fun MenuRoute(
@@ -63,7 +66,6 @@ internal fun MenuRoute(
     onAboutPageClick: () -> Unit,
     onLegalRegulationsPageClick: () -> Unit,
     onCareerPageClick: () -> Unit,
-    onRefreshPage: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MenuViewModel = hiltViewModel(),
@@ -80,7 +82,6 @@ internal fun MenuRoute(
         onAboutPageClick = onAboutPageClick,
         onLegalRegulationsPageClick = onLegalRegulationsPageClick,
         onCareerPageClick = onCareerPageClick,
-        onRefreshPage = onRefreshPage,
         onBackClick = onBackClick
     )
 }
@@ -90,7 +91,6 @@ private fun MenuScreen(
     modifier: Modifier,
     uiState: SettingsUiState,
     onAction: (SettingsAction) -> Unit,
-    onRefreshPage: () -> Unit,
     onContactsPageClick: () -> Unit,
     onFaqPageClick: () -> Unit,
     onCalculatorsPageClick: () -> Unit,
@@ -101,6 +101,9 @@ private fun MenuScreen(
 ) {
     var showThemeModeDialog by rememberSaveable { mutableStateOf(false) }
     var showLanguageDialog by rememberSaveable { mutableStateOf(false) }
+    val analyticsHelper = LocalAnalyticsHelper.current
+    val languageHelper = LanguageHelper(LocalContext.current)
+    val currentLanguage = languageHelper.getLanguageCode().uppercase()
 
     if (showThemeModeDialog && uiState is SettingsUiState.Success) {
         ThemeModeConfigDialog(
@@ -111,10 +114,11 @@ private fun MenuScreen(
     }
     if (showLanguageDialog && uiState is SettingsUiState.Success) {
         LanguageConfigDialog(
-            languageConfig = uiState.languageConfig,
+            currentLanguage = currentLanguage,
             onChangeLanguageConfig = {
-                onAction(SettingsAction.UpdateLanguageConfig(it))
-                onRefreshPage()
+                languageHelper.changeLanguage(it)
+                analyticsHelper.logLanguageConfigChanged(it)
+//                onRefreshPage()
             },
             onShowAlertDialog = { showLanguageDialog = it }
         )
@@ -163,7 +167,7 @@ private fun MenuScreen(
                 if (uiState is SettingsUiState.Success) {
                     LanguageConfigRowItem(
                         titleResId = R.string.feature_menu_main_title_app_language,
-                        languageConfig = uiState.languageConfig,
+                        currentLanguage = currentLanguage,
                         onShowAlertDialog = { showLanguageDialog = true }
                     )
                 }
@@ -212,10 +216,7 @@ private fun MenuScreenPreview() {
     MMTheme {
         MenuScreen(
             modifier = Modifier,
-            uiState = SettingsUiState.Success(
-                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
-                languageConfig = LanguageConfig.RU
-            ),
+            uiState = SettingsUiState.Success(darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM),
             onAction = {},
             onContactsPageClick = {},
             onFaqPageClick = {},
@@ -223,7 +224,6 @@ private fun MenuScreenPreview() {
             onAboutPageClick = {},
             onLegalRegulationsPageClick = {},
             onCareerPageClick = {},
-            onRefreshPage = {},
             onBackClick = {}
         )
     }

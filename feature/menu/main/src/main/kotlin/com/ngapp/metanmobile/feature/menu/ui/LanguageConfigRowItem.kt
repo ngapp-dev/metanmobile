@@ -41,13 +41,13 @@ import com.ngapp.metanmobile.feature.menu.R
 internal fun LanguageConfigRowItem(
     modifier: Modifier = Modifier,
     titleResId: Int,
-    languageConfig: LanguageConfig,
+    currentLanguage: String,
     onShowAlertDialog: () -> Unit,
 ) {
-    val languageName = when (languageConfig) {
-        LanguageConfig.RU -> R.string.feature_menu_main_pref_language_russian
-        LanguageConfig.BE -> R.string.feature_menu_main_pref_language_belarusian
-        LanguageConfig.EN -> R.string.feature_menu_main_pref_language_english
+    val languageName = when (currentLanguage) {
+        LanguageConfig.RU.name -> R.string.feature_menu_main_pref_language_russian
+        LanguageConfig.BE.name -> R.string.feature_menu_main_pref_language_belarusian
+        else -> R.string.feature_menu_main_pref_language_english
     }
 
     Row(

@@ -99,7 +99,6 @@ fun MMNavHost(
             onAboutPageClick = navController::navigateToAbout,
             onLegalRegulationsPageClick = navController::navigateToLegalRegulations,
             onCareerPageClick = navController::navigateToCareers,
-            onRefreshPage = appState::refreshSettingsPage,
             onBackClick = navController::navigateUp,
         )
         faqScreen(onBackClick = navController::navigateUp)

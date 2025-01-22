@@ -29,7 +29,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -77,13 +76,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.seconds
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
-@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -304,9 +301,6 @@ private fun UpdateUserConfig(uiState: MainActivityUiState, onReviewShown: () -> 
         Loading -> Unit
         is Success -> {
             val context = LocalContext.current
-            val languageConfig = uiState.userData.languageConfig.name
-            setLanguage(languageConfig, context)
-
             val isReviewShown = uiState.userData.isReviewShown
             val showInAppReviewPrompt = uiState.userData.totalUsageTime > 300_000
             LaunchedEffect(key1 = showInAppReviewPrompt, key2 = isReviewShown) {
@@ -328,15 +322,6 @@ private fun launchInAppReview(context: Context, onReviewShown: () -> Unit) {
             onReviewShown()
         }
     }
-}
-
-private fun setLanguage(language: String, context: Context) {
-    val locale = Locale(language.lowercase())
-    val resources = context.resources
-    val configuration = resources.configuration
-    configuration.setLocale(locale)
-    @Suppress("DEPRECATION")
-    resources.updateConfiguration(configuration, resources.displayMetrics)
 }
 
 /**

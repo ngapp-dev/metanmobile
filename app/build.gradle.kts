@@ -39,6 +39,8 @@ android {
         versionName =
             "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resourceConfigurations += listOf("en", "ru", "be")
     }
 
     buildTypes {

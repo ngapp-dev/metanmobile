@@ -35,10 +35,8 @@ fun NavGraphBuilder.menuScreen(
     onAboutPageClick: () -> Unit,
     onLegalRegulationsPageClick: () -> Unit,
     onCareerPageClick: () -> Unit,
-    onRefreshPage: () -> Unit,
     onBackClick: () -> Unit,
-
-    ) {
+) {
     composable<MenuNavigation> {
         MenuRoute(
             onContactsPageClick = onContactsPageClick,
@@ -47,7 +45,6 @@ fun NavGraphBuilder.menuScreen(
             onAboutPageClick = onAboutPageClick,
             onLegalRegulationsPageClick = onLegalRegulationsPageClick,
             onCareerPageClick = onCareerPageClick,
-            onRefreshPage = onRefreshPage,
             onBackClick = onBackClick,
         )
     }
