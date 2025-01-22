@@ -37,4 +37,7 @@
     <string name="core_designsystem_description_clear_search_icon" translatable="false">Clear search</string>
     <string name="core_designsystem_description_toolbar_more_icon" translatable="false">Toolbar more icon</string>
     <string name="core_designsystem_description_toolbar_title_img" translatable="false">Toolbar title img</string>
+    <string name="core_designsystem_description_car_icon" translatable="false">Car icon</string>
+    <string name="core_designsystem_description_gas_station_icon" translatable="false">Gas icon</string>
+    <string name="core_designsystem_description_back">Navigate back</string>
 </resources>

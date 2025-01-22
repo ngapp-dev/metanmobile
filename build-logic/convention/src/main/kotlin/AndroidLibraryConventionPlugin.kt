@@ -27,7 +27,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -52,8 +51,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 disableUnnecessaryAndroidTests(target)
             }
             dependencies {
-                "androidTestImplementation"(kotlin("test"))
-                "testImplementation"(kotlin("test"))
+                "androidTestImplementation"(libs.findLibrary("kotlin.test").get())
+                "testImplementation"(libs.findLibrary("kotlin.test").get())
 
                 "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
             }

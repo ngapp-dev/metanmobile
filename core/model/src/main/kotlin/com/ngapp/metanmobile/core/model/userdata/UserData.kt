@@ -25,7 +25,6 @@ import com.ngapp.metanmobile.core.model.home.HomeContentItem
 data class UserData(
     val favoriteStationResources: Set<String>,
     val viewedNewsResources: Set<String>,
-    val languageConfig: LanguageConfig,
     val darkThemeConfig: DarkThemeConfig,
     val shouldHideOnboarding: Boolean,
     val newsSortingConfig: NewsSortingConfig,

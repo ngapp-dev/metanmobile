@@ -29,15 +29,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,17 +63,19 @@ import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.home.state.HomeAction
 import com.ngapp.metanmobile.feature.home.state.HomeUiState
 import com.ngapp.metanmobile.feature.home.ui.HomeContent
+import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailBottomSheet
+import kotlinx.coroutines.launch
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 @Composable
 internal fun HomeRoute(
     onNewsClick: () -> Unit,
     onNewsDetailClick: (String) -> Unit,
-    onStationDetailClick: (String) -> Unit,
     onFaqListClick: () -> Unit,
     onCareersClick: () -> Unit,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -91,15 +101,16 @@ internal fun HomeRoute(
         isLastNewsExpended = isLastNewsExpended,
         onNewsClick = onNewsClick,
         onNewsDetailClick = onNewsDetailClick,
-        onStationDetailClick = onStationDetailClick,
         onFaqListClick = onFaqListClick,
         onCareersClick = onCareersClick,
         onCabinetClick = onCabinetClick,
         onSettingsClick = onSettingsClick,
+        onShowBottomBar = onShowBottomBar,
         onAction = viewModel::triggerAction
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -110,20 +121,28 @@ private fun HomeScreen(
     isLastNewsExpended: Boolean,
     onNewsClick: () -> Unit,
     onNewsDetailClick: (String) -> Unit,
-    onStationDetailClick: (String) -> Unit,
     onFaqListClick: () -> Unit,
     onCareersClick: () -> Unit,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onShowBottomBar: (Boolean) -> Unit,
     onAction: (HomeAction) -> Unit,
 ) {
     val isLoading = uiState is HomeUiState.Loading
-
     ReportDrawnWhen { !isSyncing && !isLoading }
+    var showTopAppBar by rememberSaveable { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            skipHiddenState = false,
+            initialValue = SheetValue.Hidden,
+        )
+    )
 
     HomeHeader(
         modifier = modifier,
         isEditingUi = isEditingUi,
+        showTopAppBar = showTopAppBar,
         onCabinetClick = onCabinetClick,
         onSettingsClick = onSettingsClick,
         onAction = onAction,
@@ -136,23 +155,36 @@ private fun HomeScreen(
             when (uiState) {
                 HomeUiState.Loading -> Unit
                 is HomeUiState.Success -> {
-                    HomeContent(
-                        isEditingUi = isEditingUi,
-                        isLastNewsExpended = isLastNewsExpended,
-                        reorderableList = reorderableList,
-                        pinnedNewsList = uiState.pinnedNewsList,
-                        lastNewsList = uiState.lastNewsList,
-                        nearestStation = uiState.nearestStation,
-                        cngPrice = uiState.cngPrice,
-                        pinnedFaqList = uiState.pinnedFaqList,
-                        career = uiState.career,
-                        onShowAllNewsClick = onNewsClick,
-                        onSeeAllFaqClick = onFaqListClick,
-                        onSeeAllCareersClick = onCareersClick,
+                    StationDetailBottomSheet(
+                        stationCode = uiState.nearestStation?.code,
+                        bottomSheetState = bottomSheetScaffoldState,
+                        openFullScreen = true,
+                        onShowTopAppBar = { showTopAppBar = it },
+                        onShowBottomBar = onShowBottomBar,
                         onNewsDetailClick = onNewsDetailClick,
-                        onStationDetailClick = onStationDetailClick,
-                        onAction = onAction,
-                    )
+                    ) {
+                        HomeContent(
+                            isEditingUi = isEditingUi,
+                            isLastNewsExpended = isLastNewsExpended,
+                            reorderableList = reorderableList,
+                            pinnedNewsList = uiState.pinnedNewsList,
+                            lastNewsList = uiState.lastNewsList,
+                            nearestStation = uiState.nearestStation,
+                            cngPrice = uiState.cngPrice,
+                            pinnedFaqList = uiState.pinnedFaqList,
+                            career = uiState.career,
+                            onShowAllNewsClick = onNewsClick,
+                            onSeeAllFaqClick = onFaqListClick,
+                            onSeeAllCareersClick = onCareersClick,
+                            onNewsDetailClick = onNewsDetailClick,
+                            onStationDetailClick = {
+                                showTopAppBar = false
+                                onShowBottomBar(false)
+                                coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
+                            },
+                            onAction = onAction,
+                        )
+                    }
                 }
             }
             AnimatedVisibility(
@@ -181,6 +213,7 @@ private fun HomeScreen(
 private fun HomeHeader(
     modifier: Modifier,
     isEditingUi: Boolean,
+    showTopAppBar: Boolean,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAction: (HomeAction) -> Unit,
@@ -191,11 +224,17 @@ private fun HomeHeader(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
-            MMHomeTopAppBar(
-                onUserClicked = onCabinetClick,
-                onEditClicked = { onAction(HomeAction.EditUi(!isEditingUi)) },
-                onMenuClicked = onSettingsClick
-            )
+            AnimatedVisibility(
+                visible = showTopAppBar,
+                enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
+            ) {
+                MMHomeTopAppBar(
+                    onUserClicked = onCabinetClick,
+                    onEditClicked = { onAction(HomeAction.EditUi(!isEditingUi)) },
+                    onMenuClicked = onSettingsClick
+                )
+            }
         },
         floatingActionButton = {
             AnimatedVisibility(

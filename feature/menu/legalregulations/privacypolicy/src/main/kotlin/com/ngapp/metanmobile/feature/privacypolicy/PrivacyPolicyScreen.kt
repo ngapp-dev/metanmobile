@@ -24,17 +24,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.ReportDrawnWhen
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -44,9 +37,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -60,14 +53,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.util.LanguageHelper
 import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyAction
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
-import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyUiState
 
 private const val urlEn = "https://metan.by/upload/metanmobile/privacypolicy.html"
 private const val urlRu = "https://metan.by/upload/metanmobile/privacypolicy_ru.html"
@@ -78,13 +70,11 @@ internal fun PrivacyPolicyRoute(
     modifier: Modifier = Modifier,
     viewModel: PrivacyPolicyViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isPrivacyOptionsRequired by viewModel.isPrivacyOptionsRequired.collectAsStateWithLifecycle()
 
     PrivacyPolicyScreen(
         modifier = modifier,
         isPrivacyOptionsRequired = isPrivacyOptionsRequired,
-        uiState = uiState,
         onUpdateConsent = { viewModel.triggerAction(PrivacyPolicyAction.UpdateConsent) },
         onBackClick = onBackClick
     )
@@ -95,12 +85,11 @@ internal fun PrivacyPolicyRoute(
 private fun PrivacyPolicyScreen(
     modifier: Modifier,
     isPrivacyOptionsRequired: Boolean,
-    uiState: PrivacyPolicyUiState,
     onUpdateConsent: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val isLoading = uiState is PrivacyPolicyUiState.Loading
-    ReportDrawnWhen { !isLoading }
+    val languageHelper = LanguageHelper(LocalContext.current)
+    val currentLanguage = languageHelper.getLanguageCode().uppercase()
 
     PrivacyPolicyHeader(
         modifier = modifier,
@@ -112,70 +101,48 @@ private fun PrivacyPolicyScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when (uiState) {
-                PrivacyPolicyUiState.Loading -> Unit
-                is PrivacyPolicyUiState.Success -> {
-                    Column {
-                        val url = when (uiState.languageConfig) {
-                            LanguageConfig.RU, LanguageConfig.BE -> urlRu
-                            else -> urlEn
-                        }
-                        var backEnabled by remember { mutableStateOf(false) }
-                        var webView: WebView? = null
-
-                        if (isPrivacyOptionsRequired) {
-                            ConsentChangeLink(onUpdateConsent)
-                        }
-
-                        AndroidView(
-                            modifier = modifier.fillMaxSize(),
-                            factory = { context ->
-                                WebView(context).apply {
-                                    layoutParams = ViewGroup.LayoutParams(
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.MATCH_PARENT
-                                    )
-                                    webViewClient = object : WebViewClient() {
-                                        override fun onPageStarted(
-                                            view: WebView,
-                                            url: String?,
-                                            favicon: Bitmap?,
-                                        ) {
-                                            backEnabled = view.canGoBack()
-                                        }
-                                    }
-                                    settings.javaScriptEnabled = true
-                                    settings.domStorageEnabled = true
-                                    settings.cacheMode = WebSettings.LOAD_NO_CACHE
-
-                                    loadUrl(url)
-                                    webView = this
-                                }
-                            }, update = {
-                                webView = it
-                            })
-
-                        BackHandler(enabled = backEnabled) {
-                            webView?.goBack()
-                        }
-                    }
+            Column {
+                val url = when (currentLanguage) {
+                    LanguageConfig.RU.name, LanguageConfig.BE.name -> urlRu
+                    else -> urlEn
                 }
-            }
-            AnimatedVisibility(
-                visible = isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "Privacy policy screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
+                var backEnabled by remember { mutableStateOf(false) }
+                var webView: WebView? = null
+
+                if (isPrivacyOptionsRequired) {
+                    ConsentChangeLink(onUpdateConsent)
+                }
+
+                AndroidView(
+                    modifier = modifier.fillMaxSize(),
+                    factory = { context ->
+                        WebView(context).apply {
+                            layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                            webViewClient = object : WebViewClient() {
+                                override fun onPageStarted(
+                                    view: WebView,
+                                    url: String?,
+                                    favicon: Bitmap?,
+                                ) {
+                                    backEnabled = view.canGoBack()
+                                }
+                            }
+                            settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
+                            settings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+                            loadUrl(url)
+                            webView = this
+                        }
+                    }, update = {
+                        webView = it
+                    })
+
+                BackHandler(enabled = backEnabled) {
+                    webView?.goBack()
                 }
             }
         }
@@ -236,7 +203,6 @@ private fun PrivacyPolicyPreview() {
         PrivacyPolicyScreen(
             modifier = Modifier,
             isPrivacyOptionsRequired = true,
-            uiState = PrivacyPolicyUiState.Success(languageConfig = LanguageConfig.RU),
             onUpdateConsent = {},
             onBackClick = {},
         )

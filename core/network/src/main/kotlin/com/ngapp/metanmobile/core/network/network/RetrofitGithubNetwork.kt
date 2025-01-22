@@ -38,7 +38,7 @@ private interface RetrofitGithubNetworkApi {
     suspend fun getGithubUser(): NetworkGithubUserResource
 }
 
-private const val GITHUB_BASE_URL = BuildConfig.GITHUB_BASE_URL
+private const val BASE_URL = BuildConfig.GITHUB_BASE_URL
 
 /**
  * [Retrofit] backed [GithubNetworkDataSource]
@@ -51,7 +51,7 @@ internal class RetrofitGithubNetwork @Inject constructor(
 
     private val networkApi = trace("RetrofitGithubNetwork") {
         Retrofit.Builder()
-            .baseUrl(GITHUB_BASE_URL)
+            .baseUrl(BASE_URL)
             // We use callFactory lambda here with dagger.Lazy<Call.Factory>
             // to prevent initializing OkHttp on the main thread.
             .callFactory { okhttpCallFactory.get().newCall(it) }
@@ -62,5 +62,5 @@ internal class RetrofitGithubNetwork @Inject constructor(
             .create(RetrofitGithubNetworkApi::class.java)
     }
 
-    override suspend fun getGithubUser(): NetworkGithubUserResource = networkApi.getGithubUser()
+    override suspend fun getGithubUser() = networkApi.getGithubUser()
 }

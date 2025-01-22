@@ -46,11 +46,6 @@ class OfflineFirstUserDataRepository @Inject constructor(
         )
     }
 
-    override suspend fun setLanguageConfig(languageConfig: LanguageConfig) {
-        preferencesDataSource.setLanguageConfig(languageConfig)
-        analyticsHelper.logLanguageConfigChanged(languageConfig.name)
-    }
-
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         preferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
     }

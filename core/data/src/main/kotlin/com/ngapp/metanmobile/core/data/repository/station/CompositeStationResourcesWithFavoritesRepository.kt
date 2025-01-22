@@ -25,6 +25,7 @@ import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.model.station.mapToUserStationResources
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -58,23 +59,26 @@ class CompositeStationResourcesWithFavoritesRepository @Inject constructor(
                 SortingOrder.DESC -> stationsRepository.getStationResourcesDesc(updatedQuery)
             }
 
-            stationResourcesFlow.flatMapLatest { stationResources ->
-                locationsRepository.getLocationResource()
-                    .onStart { emit(LocationResource.init()) }
-                    .filterNotNull()
-                    .map { location ->
-                        val userStationResources =
-                            stationResources.mapToUserStationResources(userData)
-                        userStationResources.map { userStation ->
-                            val distanceBetween = distanceInKm(
-                                location.latitude,
-                                location.longitude,
-                                userStation.latitude.toDouble(),
-                                userStation.longitude.toDouble(),
-                            )
-                            userStation.copy(distanceBetween = distanceBetween)
-                        }
+            val locationFlow = locationsRepository.getLocationResource()
+                .onStart { emit(LocationResource.init()) }
+                .filterNotNull()
+
+            val stationWithDistanceFlow = stationResourcesFlow.flatMapLatest { stationResources ->
+                locationFlow.map { location ->
+                    stationResources.mapToUserStationResources(userData).map { userStation ->
+                        val distanceBetween = distanceInKm(
+                            location.latitude,
+                            location.longitude,
+                            userStation.latitude.toDouble(),
+                            userStation.longitude.toDouble(),
+                        )
+                        userStation.copy(distanceBetween = distanceBetween)
                     }
+                }
+            }
+
+            combine(stationResourcesFlow, stationWithDistanceFlow) { stationResources, stationWithDistance ->
+                stationWithDistance
             }
         }
     }

@@ -179,6 +179,7 @@ fun MMTextButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.textButtonColors(),
+    contentPadding: PaddingValues = PaddingValues(),
     text: @Composable () -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -188,6 +189,7 @@ fun MMTextButton(
         modifier = modifier,
         enabled = enabled,
         colors = colors,
+        contentPadding = contentPadding,
     ) {
         MMButtonContent(
             text = text,
@@ -249,7 +251,7 @@ fun ButtonWithIcon(
     enable: Boolean = true,
     buttonBackgroundColor: Color,
     fontColor: Color,
-    borderStrokeColor: Color,
+    shape: Shape = MMShapes.large,
 ) {
     Button(
         onClick = { onClick(enable) },
@@ -262,13 +264,12 @@ fun ButtonWithIcon(
             hoveredElevation = 0.dp,
             focusedElevation = 0.dp
         ),
-        shape = MMShapes.large,
+        shape = shape,
         contentPadding = PaddingValues(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonBackgroundColor,
             contentColor = fontColor,
         ),
-        border = BorderStroke(1.dp, borderStrokeColor)
     ) {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -297,5 +298,43 @@ fun ButtonWithIcon(
                 style = MMTypography.titleLarge,
             )
         }
+    }
+}
+
+@Composable
+fun ButtonWithIcon(
+    modifier: Modifier = Modifier,
+    textResId: Int,
+    imageVector: ImageVector? = null,
+    containerColor: Color,
+    contentColor: Color,
+    shape: Shape = MMShapes.extraLarge,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        shape = shape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+        modifier = modifier,
+    ) {
+        if (imageVector != null) {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = "drawable_icons",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(18.dp)
+            )
+        }
+        Text(
+            text = stringResource(textResId),
+            style = MMTypography.bodyMedium,
+            color = contentColor,
+        )
+
     }
 }

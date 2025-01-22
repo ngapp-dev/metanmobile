@@ -26,4 +26,6 @@
     <string name="core_designsystem_button_open_in_browser">Открыть в браузере</string>
     <string name="core_designsystem_button_how_to_get_access">Как получить доступ?</string>
     <string name="core_designsystem_onboarding_button_skip">Пропустить</string>
+    <!-- Description -->
+    <string name="core_designsystem_description_back">Вернуться назад</string>
 </resources>

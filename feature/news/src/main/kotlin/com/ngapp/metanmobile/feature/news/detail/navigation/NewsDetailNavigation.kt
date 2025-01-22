@@ -28,7 +28,7 @@ import kotlinx.serialization.Serializable
 
 @VisibleForTesting
 internal const val NEWS_DETAIL_ID_ARG = "newsId"
-private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by/{$NEWS_DETAIL_ID_ARG}"
+//private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by"
 
 fun NavController.navigateToNewsDetail(
     newsId: String, navOptions: NavOptionsBuilder.() -> Unit = {},
@@ -38,7 +38,7 @@ fun NavController.navigateToNewsDetail(
 
 fun NavGraphBuilder.newsDetailScreen(onBackClick: () -> Unit) {
     composable<NewsDetailNavigation>(
-        deepLinks = listOf(navDeepLink<NewsDetailNavigation>(basePath = DEEP_LINK_URI_PATTERN)),
+//        deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
     ) {
         NewsDetailRoute(onBackClick = onBackClick)
     }

@@ -18,9 +18,7 @@
 package com.ngapp.metanmobile.feature.menu.state
 
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 
 sealed interface SettingsAction {
     data class UpdateDarkThemeConfig(val darkThemeConfig: DarkThemeConfig) : SettingsAction
-    data class UpdateLanguageConfig(val languageConfig: LanguageConfig) : SettingsAction
 }

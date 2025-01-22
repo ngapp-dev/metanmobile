@@ -60,6 +60,9 @@ class FavoritesViewModel @Inject constructor(
     private var _stationForDelete = MutableStateFlow<UserStationResource?>(null)
     val stationForDelete = _stationForDelete.asStateFlow()
 
+    private var _stationCode = MutableStateFlow("")
+    val stationCode = _stationCode.asStateFlow()
+
     val uiState: StateFlow<FavoritesUiState> = favoritesUiState(
         searchQuery = searchQuery,
         userStationsRepository = userStationsRepository,
@@ -82,6 +85,7 @@ class FavoritesViewModel @Inject constructor(
                 onUpdateStationFavorite(action.stationCode, action.favorite)
 
             is FavoritesAction.UpdateStationForDelete -> onUpdateStationForDelete(action.station)
+            is FavoritesAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
         }
     }
 
@@ -113,6 +117,10 @@ class FavoritesViewModel @Inject constructor(
 
     private fun onUpdateStationForDelete(station: UserStationResource) {
         _stationForDelete.value = station
+    }
+
+    private fun onUpdateStationCode(stationCode: String) {
+        _stationCode.value = stationCode
     }
 }
 

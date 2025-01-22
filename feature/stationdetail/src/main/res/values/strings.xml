@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<resources>
+    <!-- Toolbar -->
+    <string name="feature_stationdetail_title_overview">Overview</string>
+    <string name="feature_stationdetail_title_updates">Updates</string>
+    <string name="feature_stationdetail_title_payments">Payments</string>
+    <string name="feature_stationdetail_title_photos">Photos</string>
+    <!-- Buttons -->
+    <string name="feature_stationdetail_button_directions">Directions</string>
+    <string name="feature_stationdetail_button_call">Call</string>
+    <string name="feature_stationdetail_button_save">Save</string>
+    <string name="feature_stationdetail_button_saved">Saved</string>
+    <string name="feature_stationdetail_button_share">Share</string>
+    <!-- Text -->
+    <string name="feature_stationdetail_text_individual_contract">Conclusion of contracts with an individual</string>
+    <string name="feature_stationdetail_text_company_contract">Conclusion of contracts with a legal entity</string>
+    <!-- Description -->
+    <string name="feature_stationdetail_description_share_station">Share this station</string>
+</resources>

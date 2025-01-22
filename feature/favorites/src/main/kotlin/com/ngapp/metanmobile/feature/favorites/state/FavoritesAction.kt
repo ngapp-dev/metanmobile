@@ -28,4 +28,5 @@ sealed interface FavoritesAction {
     data class UpdateSortingConfig(val stationSortingConfig: StationSortingConfig) : FavoritesAction
     data class UpdateStationFavorite(val stationCode: String, val favorite: Boolean) : FavoritesAction
     data class UpdateStationForDelete(val station: UserStationResource) : FavoritesAction
+    data class UpdateStationCode(val stationCode: String) : FavoritesAction
 }

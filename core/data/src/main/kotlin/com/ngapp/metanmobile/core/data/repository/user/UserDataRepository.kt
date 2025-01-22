@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.core.data.repository.user
 
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
@@ -36,11 +35,6 @@ interface UserDataRepository {
      * Updates the favorite status for a station resource
      */
     suspend fun setStationResourceFavorite(stationCode: String, favorite: Boolean)
-
-    /**
-     * Updates the language configuration
-     */
-    suspend fun setLanguageConfig(languageConfig: LanguageConfig)
 
     /**
      * Updates the viewed status for a news resource

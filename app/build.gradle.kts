@@ -39,6 +39,8 @@ android {
         versionName =
             "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resourceConfigurations += listOf("en", "ru", "be")
     }
 
     buildTypes {
@@ -96,6 +98,7 @@ dependencies {
     implementation(projects.feature.news)
     implementation(projects.feature.onboarding)
     implementation(projects.feature.stations)
+    implementation(projects.feature.stationdetail)
 
     // Accompanist
     implementation(libs.accompanist.permissions)

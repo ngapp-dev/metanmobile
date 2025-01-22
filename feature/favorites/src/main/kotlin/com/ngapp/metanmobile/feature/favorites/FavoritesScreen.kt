@@ -41,8 +41,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -78,11 +81,13 @@ import com.ngapp.metanmobile.feature.favorites.state.FavoritesAction
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState
 import com.ngapp.metanmobile.feature.favorites.ui.FavoritesBottomSheetContent
 import com.ngapp.metanmobile.feature.favorites.ui.FavoritesContent
+import com.ngapp.metanmobile.feature.stationdetail.ui.StationDetailBottomSheet
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun FavoritesRoute(
-    onStationDetailClick: (String) -> Unit,
+    onNewsDetailClick: (String) -> Unit,
+    onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
@@ -98,6 +103,7 @@ internal fun FavoritesRoute(
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
     val showBottomSheet by viewModel.showBottomSheet.collectAsStateWithLifecycle()
     val stationForDelete by viewModel.stationForDelete.collectAsStateWithLifecycle()
+    val stationCode by viewModel.stationCode.collectAsStateWithLifecycle()
 
     FavoritesScreen(
         modifier = modifier,
@@ -105,9 +111,11 @@ internal fun FavoritesRoute(
         showDialog = showDialog,
         showBottomSheet = showBottomSheet,
         stationForDelete = stationForDelete,
+        stationCode = stationCode,
         uiState = uiState,
+        onNewsDetailClick = onNewsDetailClick,
+        onShowBottomBar = onShowBottomBar,
         onAction = viewModel::triggerAction,
-        onStationDetailClick = onStationDetailClick,
     )
 }
 
@@ -119,9 +127,11 @@ private fun FavoritesScreen(
     showDialog: Boolean,
     showBottomSheet: Boolean,
     stationForDelete: UserStationResource?,
+    stationCode: String,
     uiState: FavoritesUiState,
+    onNewsDetailClick: (String) -> Unit,
+    onShowBottomBar: (Boolean) -> Unit,
     onAction: (FavoritesAction) -> Unit,
-    onStationDetailClick: (String) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isLoading = uiState is FavoritesUiState.Loading
@@ -130,6 +140,13 @@ private fun FavoritesScreen(
     val itemsAvailable = feedItemsSize(uiState)
     val gridState = rememberLazyGridState()
     val scrollbarState = gridState.scrollbarState(itemsAvailable = itemsAvailable)
+    var showTopAppBar by rememberSaveable { mutableStateOf(true) }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            skipHiddenState = false,
+            initialValue = SheetValue.Hidden,
+        )
+    )
     TrackScrollJank(scrollableState = gridState, stateName = "favoritesScreen:feed")
 
     if (showBottomSheet && stationForDelete != null) {
@@ -162,6 +179,7 @@ private fun FavoritesScreen(
     FavoritesHeader(
         modifier = modifier,
         searchQuery = searchQuery,
+        showTopAppBar = showTopAppBar,
         onAction = onAction,
     ) { padding ->
         Box(
@@ -185,12 +203,27 @@ private fun FavoritesScreen(
 
                     if (uiState.favoriteStationList.isNotEmpty()) {
                         Surface(shadowElevation = 4.dp) {
-                            FavoritesContent(
-                                gridState = gridState,
-                                favoriteStationsList = uiState.favoriteStationList,
-                                onAction = onAction,
-                                onDetailClick = onStationDetailClick,
-                            )
+                            StationDetailBottomSheet(
+                                stationCode = stationCode,
+                                bottomSheetState = bottomSheetScaffoldState,
+                                openFullScreen = true,
+                                onShowTopAppBar = { showTopAppBar = it },
+                                onShowBottomBar = onShowBottomBar,
+                                onNewsDetailClick = onNewsDetailClick,
+                            ) {
+                                FavoritesContent(
+                                    gridState = gridState,
+                                    favoriteStationsList = uiState.favoriteStationList,
+                                    onAction = onAction,
+                                    onDetailClick = {
+                                        onAction(FavoritesAction.UpdateStationCode(it))
+                                        showTopAppBar = false
+                                        onShowBottomBar(false)
+                                        coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
+
+                                    },
+                                )
+                            }
                         }
                     } else {
                         LottieEmptyView(
@@ -247,6 +280,7 @@ private fun feedItemsSize(uiState: FavoritesUiState): Int {
 private fun FavoritesHeader(
     modifier: Modifier,
     searchQuery: String,
+    showTopAppBar: Boolean,
     onAction: (FavoritesAction) -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
@@ -262,24 +296,30 @@ private fun FavoritesHeader(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
-            if (!showSearchMenu) {
-                MMFilterSearchButtonsTopAppBar(
-                    title = title,
-                    onSearchActionClick = { showSearchMenu = true },
-                    onFilterActionClick = { onAction(FavoritesAction.ShowAlertDialog(true)) }
-                )
-            } else {
-                MMFilterSearchFieldTopAppBar(
-                    searchText = searchQuery,
-                    placeholderRes = R.string.feature_favorites_placeholder_search_stations,
-                    onSearchTextChanged = { onAction(FavoritesAction.UpdateSearchQuery(it)) },
-                    onClearClick = { onAction(FavoritesAction.UpdateSearchQuery("")) },
-                    onNavigationClick = {
-                        onAction(FavoritesAction.UpdateSearchQuery(""))
-                        showSearchMenu = false
-                    },
-                    onFilterActionClick = { onAction(FavoritesAction.ShowAlertDialog(true)) }
-                )
+            AnimatedVisibility(
+                visible = showTopAppBar,
+                enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
+            ) {
+                if (!showSearchMenu) {
+                    MMFilterSearchButtonsTopAppBar(
+                        title = title,
+                        onSearchActionClick = { showSearchMenu = true },
+                        onFilterActionClick = { onAction(FavoritesAction.ShowAlertDialog(true)) }
+                    )
+                } else {
+                    MMFilterSearchFieldTopAppBar(
+                        searchText = searchQuery,
+                        placeholderRes = R.string.feature_favorites_placeholder_search_stations,
+                        onSearchTextChanged = { onAction(FavoritesAction.UpdateSearchQuery(it)) },
+                        onClearClick = { onAction(FavoritesAction.UpdateSearchQuery("")) },
+                        onNavigationClick = {
+                            onAction(FavoritesAction.UpdateSearchQuery(""))
+                            showSearchMenu = false
+                        },
+                        onFilterActionClick = { onAction(FavoritesAction.ShowAlertDialog(true)) }
+                    )
+                }
             }
         },
         content = pageContent
@@ -288,7 +328,7 @@ private fun FavoritesHeader(
 
 @PreviewScreenSizes
 @Composable
-private fun FavoritesScreenBottomSheetPreview() {
+private fun FavoritesScreenPreview() {
     MMTheme {
         FavoritesScreen(
             modifier = Modifier,
@@ -296,12 +336,14 @@ private fun FavoritesScreenBottomSheetPreview() {
             showDialog = false,
             showBottomSheet = true,
             stationForDelete = null,
+            stationCode = "",
             uiState = FavoritesUiState.Success(
                 favoriteStationList = listOf(UserStationResource.init()),
                 stationSortingConfig = StationSortingConfig.init(),
             ),
+            onNewsDetailClick = {},
+            onShowBottomBar = {},
             onAction = {},
-            onStationDetailClick = {},
         )
     }
 }

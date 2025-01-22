@@ -26,5 +26,6 @@
     <string name="core_designsystem_button_open_in_browser">Адкрыць у браўзэры</string>
     <string name="core_designsystem_button_how_to_get_access">Як атрымаць доступ?</string>
     <string name="core_designsystem_onboarding_button_skip">Прапусціць</string>
-
+    <!-- Description -->
+    <string name="core_designsystem_description_back">Вярнуцца назад</string>
 </resources>

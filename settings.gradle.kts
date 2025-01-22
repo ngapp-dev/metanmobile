@@ -68,6 +68,7 @@ include(":feature:menu:main")
 include(":feature:news")
 include(":feature:onboarding")
 include(":feature:stations")
+include(":feature:stationdetail")
 
 include(":lint")
 include(":sync:work")

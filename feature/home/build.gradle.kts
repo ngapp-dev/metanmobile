@@ -27,6 +27,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.stationdetail)
+    
     implementation(libs.accompanist.permissions)
 
     testImplementation(libs.hilt.android.testing)
@@ -35,5 +37,6 @@ dependencies {
     testImplementation(projects.core.screenshotTesting)
     testImplementation(libs.roborazzi)
 
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)
 }

@@ -56,6 +56,7 @@
     <string name="core_ui_text_value_byn">%s бел.руб.</string>
     <string name="core_ui_text_cng_price">Цена метана</string>
     <string name="core_ui_text_for_one_meter">За 1 куб. метр</string>
+    <string name="core_ui_text_byn_per_one_meter">%s бел.руб/м<sup>3</sup></string>
     <string name="core_ui_text_value_km">%s км</string>
     <string name="core_ui_text_station_phones">Телефоны</string>
     <string name="core_ui_text_station_payments">Методы оплаты</string>
@@ -95,6 +96,21 @@
     <string name="core_ui_text_share_via">&#160;- Падзяліцца через&#160;</string>
     <string name="core_ui_text_no_experience">Не требуется</string>
     <string name="core_ui_text_place_any">Любое</string>
+    <string name="core_ui_text_copied_to_clipboard">Скопировано в буфер обмера</string>
+    <string name="core_ui_text_open_24_hours">Круглосуточно</string>
+    <string name="core_ui_text_popular_times">Популярное время:</string>
+    <string-array name="core_ui_text_on_day_of_week">
+        <item>Понедельники</item>
+        <item>Вторники</item>
+        <item>Среды</item>
+        <item>Четверги</item>
+        <item>Пятницы</item>
+        <item>Субботы</item>
+        <item>Воскресенья</item>
+    </string-array>
+    <string name="core_ui_text_busy_now">Загруженность сейчас</string>
+    <string name="core_ui_text_based_on_visits">На основе посещений этого места.</string>
+    <string name="core_ui_text_no_news">Новостей пока что нет</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">Время запроса истекло</string>
     <string name="core_ui_no_internet">Упс! Похоже, у вас медленное или отсутствует подключение к Интернету. Пожалуйста, проверьте сетевое соединение и повторите попытку</string>

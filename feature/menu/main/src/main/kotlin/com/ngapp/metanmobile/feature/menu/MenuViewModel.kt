@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.feature.menu.state.SettingsAction
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState.Loading
@@ -40,12 +39,7 @@ class MenuViewModel @Inject constructor(
 ) : ViewModel() {
 
     val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
-        .map { userData ->
-            Success(
-                darkThemeConfig = userData.darkThemeConfig,
-                languageConfig = userData.languageConfig
-            )
-        }
+        .map { userData -> Success(darkThemeConfig = userData.darkThemeConfig) }
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
@@ -55,15 +49,10 @@ class MenuViewModel @Inject constructor(
     fun triggerAction(action: SettingsAction) {
         when (action) {
             is SettingsAction.UpdateDarkThemeConfig -> onUpdateDarkThemeConfig(action.darkThemeConfig)
-            is SettingsAction.UpdateLanguageConfig -> onUpdateLanguageConfig(action.languageConfig)
         }
     }
 
     private fun onUpdateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) = viewModelScope.launch {
         userDataRepository.setDarkThemeConfig(darkThemeConfig)
-    }
-
-    private fun onUpdateLanguageConfig(languageConfig: LanguageConfig) = viewModelScope.launch {
-        userDataRepository.setLanguageConfig(languageConfig)
     }
 }

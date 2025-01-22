@@ -18,12 +18,8 @@
 package com.ngapp.metanmobile.feature.menu.state
 
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 
 sealed interface SettingsUiState {
-    data class Success(
-        val darkThemeConfig: DarkThemeConfig, val languageConfig: LanguageConfig,
-    ) : SettingsUiState
-
+    data class Success(val darkThemeConfig: DarkThemeConfig) : SettingsUiState
     data object Loading : SettingsUiState
 }

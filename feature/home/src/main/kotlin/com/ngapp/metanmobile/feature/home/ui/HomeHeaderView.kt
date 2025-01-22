@@ -61,10 +61,10 @@ internal fun HomeHeaderView(
     isLastNewsExpended: Boolean,
     lastNewsItems: List<UserNewsResource>,
     pinnedNews: List<UserNewsResource>,
+    modifier: Modifier = Modifier,
     onShowAllNewsClick: () -> Unit = {},
     onNewsDetailClick: (String) -> Unit = {},
     onExpandLastNewsClick: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val analyticsHelper = LocalAnalyticsHelper.current
 

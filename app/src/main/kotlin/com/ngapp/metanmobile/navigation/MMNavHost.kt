@@ -41,15 +41,12 @@ import com.ngapp.metanmobile.feature.menu.navigation.navigateToMenu
 import com.ngapp.metanmobile.feature.news.detail.navigation.navigateToNewsDetail
 import com.ngapp.metanmobile.feature.news.detail.navigation.newsDetailScreen
 import com.ngapp.metanmobile.feature.news.list.navigation.newsScreen
-import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
 import com.ngapp.metanmobile.feature.onboarding.navigation.onboardingScreen
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.navigateToPrivacyPolicy
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.privacyPolicyScreen
 import com.ngapp.metanmobile.feature.settings.ui.legalregulations.locationinformation.navigation.locationInformationScreen
 import com.ngapp.metanmobile.feature.settings.ui.legalregulations.locationinformation.navigation.navigateToLocationInformation
-import com.ngapp.metanmobile.feature.stations.detail.navigation.navigateToStationDetail
-import com.ngapp.metanmobile.feature.stations.detail.navigation.stationDetailScreen
-import com.ngapp.metanmobile.feature.stations.list.navigation.stationsScreen
+import com.ngapp.metanmobile.feature.stations.navigation.stationsScreen
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.navigateToTermsAndConditions
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.termsAndConditionsScreen
 import com.ngapp.metanmobile.ui.MMAppState
@@ -65,7 +62,7 @@ import kotlin.reflect.KClass
 @Composable
 fun MMNavHost(
     appState: MMAppState,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: KClass<*>,
 ) {
@@ -79,20 +76,22 @@ fun MMNavHost(
         homeScreen(
             onNewsClick = appState::navigateToNewsListFromHomeScreen,
             onNewsDetailClick = navController::navigateToNewsDetail,
-            onStationDetailClick = navController::navigateToStationDetail,
             onFaqListClick = navController::navigateToFaq,
             onCareersClick = navController::navigateToCareers,
             onCabinetClick = navController::navigateToCabinet,
             onSettingsClick = navController::navigateToMenu,
+            onShowBottomBar = onShowBottomBar,
         )
-        stationsScreen(onStationDetailClick = navController::navigateToStationDetail)
-        newsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
-        favoritesScreen(onStationDetailClick = navController::navigateToStationDetail)
-        newsDetailScreen(onBackClick = navController::navigateUp)
-        stationDetailScreen(
+        stationsScreen(
             onNewsDetailClick = navController::navigateToNewsDetail,
-            onBackClick = navController::navigateUp
+            onShowBottomBar = onShowBottomBar,
         )
+        newsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
+        favoritesScreen(
+            onNewsDetailClick = navController::navigateToNewsDetail,
+            onShowBottomBar = onShowBottomBar,
+        )
+        newsDetailScreen(onBackClick = navController::navigateUp)
         menuScreen(
             onContactsPageClick = navController::navigateToContacts,
             onFaqPageClick = navController::navigateToFaq,
@@ -100,7 +99,6 @@ fun MMNavHost(
             onAboutPageClick = navController::navigateToAbout,
             onLegalRegulationsPageClick = navController::navigateToLegalRegulations,
             onCareerPageClick = navController::navigateToCareers,
-            onRefreshPage = appState::refreshSettingsPage,
             onBackClick = navController::navigateUp,
         )
         faqScreen(onBackClick = navController::navigateUp)

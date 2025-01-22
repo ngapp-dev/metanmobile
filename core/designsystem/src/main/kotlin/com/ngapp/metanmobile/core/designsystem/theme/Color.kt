@@ -25,9 +25,8 @@ import androidx.compose.ui.graphics.luminance
 @Composable
 fun ColorScheme.isLight() = this.background.luminance() > 0.5
 
-val Black = Color(0xFF000000)
+val Black = Color(0xFF1F1F1F)
 val White = Color(0xFFFFFFFF)
-val Transparent = Color(0x00000000)
 val Blue = Color(0xFF009CDE)
 val LightBlue = Color(0xFFDCF5FF)
 val BluePale = Color(0x16009CDE)

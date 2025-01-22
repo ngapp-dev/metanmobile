@@ -15,8 +15,11 @@
  *
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.ngapp.metanmobile.ui
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -40,12 +43,11 @@ import com.ngapp.metanmobile.feature.favorites.navigation.FavoritesNavigation
 import com.ngapp.metanmobile.feature.favorites.navigation.navigateToFavorites
 import com.ngapp.metanmobile.feature.home.navigation.HomeScreenNavigation
 import com.ngapp.metanmobile.feature.home.navigation.navigateToHomeScreen
-import com.ngapp.metanmobile.feature.menu.navigation.MenuNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.NewsNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.navigateToNews
 import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
-import com.ngapp.metanmobile.feature.stations.list.navigation.StationsNavigation
-import com.ngapp.metanmobile.feature.stations.list.navigation.navigateToStations
+import com.ngapp.metanmobile.feature.stations.navigation.StationsNavigation
+import com.ngapp.metanmobile.feature.stations.navigation.navigateToStations
 import com.ngapp.metanmobile.navigation.TopLevelDestination
 import com.ngapp.metanmobile.navigation.TopLevelDestination.FAVORITES
 import com.ngapp.metanmobile.navigation.TopLevelDestination.HOME
@@ -66,7 +68,7 @@ fun rememberMMAppState(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController(),
 ): MMAppState {
-//    NavigationTrackingSideEffect(navController)
+    NavigationTrackingSideEffect(navController)
     return remember(
         navController,
         coroutineScope,
@@ -97,8 +99,7 @@ class MMAppState(
     val currentDestination: NavDestination?
         @Composable get() {
             // Collect the currentBackStackEntryFlow as a state
-            val currentEntry = navController.currentBackStackEntryFlow
-                .collectAsState(initial = null)
+            val currentEntry = navController.currentBackStackEntryFlow.collectAsState(null)
 
             // Fallback to previousDestination if currentEntry is null
             return currentEntry.value?.destination.also { destination ->
@@ -193,10 +194,6 @@ class MMAppState(
 
     fun navigateFromOnboardingToHomeScreen() = navController.navigate(HomeScreenNavigation) {
         popUpTo(OnboardingScreenNavigation) { inclusive = true }
-    }
-
-    fun refreshSettingsPage() = navController.navigate(MenuNavigation) {
-        popUpTo(MenuNavigation) { inclusive = true }
     }
 }
 

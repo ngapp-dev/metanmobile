@@ -30,8 +30,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
+import com.ngapp.metanmobile.core.designsystem.theme.Red
 
 /**
  * Metan Mobile wraps Material 3 [Tab] and shifts text label down.
@@ -82,28 +84,27 @@ fun MMTab(
 fun MMTabRow(
     selectedTabIndex: Int,
     modifier: Modifier = Modifier,
+    indicatorModifier: Modifier = Modifier,
     tabRowIndicatorColor: Color = Blue,
+    indicatorHeight: Dp = 2.dp,
+    divider: @Composable () -> Unit = {},
     tabs: @Composable () -> Unit,
 ) {
     TabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = modifier,
         containerColor = Color.Transparent,
-        divider = {},
+        divider = divider,
         indicator = { tabPositions ->
             TabRowDefaults.SecondaryIndicator(
                 color = tabRowIndicatorColor,
-                height = 2.dp,
-                modifier = Modifier
-                    .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .padding(horizontal = 16.dp)
-                    .offset(y = (-5).dp)
+                height = indicatorHeight,
+                modifier = indicatorModifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
             )
         },
         tabs = tabs,
     )
 }
-
 object MMTabDefaults {
     val TabTopPadding = 7.dp
 }

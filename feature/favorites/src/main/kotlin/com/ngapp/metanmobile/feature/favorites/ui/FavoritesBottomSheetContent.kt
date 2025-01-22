@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.component.ButtonWithIcon
+import com.ngapp.metanmobile.core.designsystem.component.MMTextButton
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
@@ -79,7 +79,7 @@ internal fun FavoritesBottomSheetContent(
                     style = MMTypography.headlineMedium
                 )
             }
-            TextButton(
+            MMTextButton(
                 onClick = onCancel,
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -90,20 +90,21 @@ internal fun FavoritesBottomSheetContent(
                     end = 10.dp,
                     bottom = 0.dp
                 ),
-            ) {
-                Icon(
-                    imageVector = MMIcons.CancelFilled,
-                    contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                    tint = Blue
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(
-                    text = stringResource(id = CoreUiR.string.core_ui_button_cancel),
-                    textAlign = TextAlign.End,
-                    style = MMTypography.titleLarge
-                )
-            }
+                text = {
+                    Icon(
+                        imageVector = MMIcons.CancelFilled,
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        tint = Blue
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(
+                        text = stringResource(id = CoreUiR.string.core_ui_button_cancel),
+                        textAlign = TextAlign.End,
+                        style = MMTypography.titleLarge,
+                    )
+                }
+            )
         }
 
         Spacer(
@@ -133,7 +134,6 @@ internal fun FavoritesBottomSheetContent(
             textResId = R.string.feature_favorites_text_approve_remove,
             buttonBackgroundColor = Blue,
             fontColor = White,
-            borderStrokeColor = Blue,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(

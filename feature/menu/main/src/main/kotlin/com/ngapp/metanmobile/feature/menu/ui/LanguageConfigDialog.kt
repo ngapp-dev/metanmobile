@@ -46,8 +46,8 @@ import com.ngapp.metanmobile.feature.menu.R
 @Composable
 internal fun LanguageConfigDialog(
     modifier: Modifier = Modifier,
-    languageConfig: LanguageConfig,
-    onChangeLanguageConfig: (languageConfig: LanguageConfig) -> Unit,
+    currentLanguage: String,
+    onChangeLanguageConfig: (selectedLanguage: String) -> Unit,
     onShowAlertDialog: (Boolean) -> Unit,
 ) {
     AlertDialog(
@@ -62,25 +62,25 @@ internal fun LanguageConfigDialog(
             Column(Modifier.selectableGroup()) {
                 LanguageDialogChooserRow(
                     text = stringResource(R.string.feature_menu_main_pref_language_russian),
-                    selected = languageConfig == LanguageConfig.RU,
+                    selected = currentLanguage == LanguageConfig.RU.name,
                     onClick = {
-                        onChangeLanguageConfig(LanguageConfig.RU)
+                        onChangeLanguageConfig(LanguageConfig.RU.name)
                         onShowAlertDialog(false)
                     },
                 )
                 LanguageDialogChooserRow(
                     text = stringResource(R.string.feature_menu_main_pref_language_belarusian),
-                    selected = languageConfig == LanguageConfig.BE,
+                    selected = currentLanguage == LanguageConfig.BE.name,
                     onClick = {
-                        onChangeLanguageConfig(LanguageConfig.BE)
+                        onChangeLanguageConfig(LanguageConfig.BE.name)
                         onShowAlertDialog(false)
                     },
                 )
                 LanguageDialogChooserRow(
                     text = stringResource(R.string.feature_menu_main_pref_language_english),
-                    selected = languageConfig == LanguageConfig.EN,
+                    selected = currentLanguage == LanguageConfig.EN.name,
                     onClick = {
-                        onChangeLanguageConfig(LanguageConfig.EN)
+                        onChangeLanguageConfig(LanguageConfig.EN.name)
                         onShowAlertDialog(false)
                     },
                 )

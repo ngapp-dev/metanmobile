@@ -22,9 +22,19 @@ import android.graphics.Typeface
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
@@ -38,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.Red
-import com.ngapp.metanmobile.core.designsystem.theme.Transparent
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.designsystem.theme.textColor
 import kotlinx.coroutines.delay
@@ -61,7 +70,7 @@ fun SimpleHorizontalBarChartView(
     height: Dp,
     titleColor: Color = MMColors.textColor,
     valueColor: Color = White,
-    backgroundColor: Color = Transparent,
+    backgroundColor: Color = Color.Transparent,
     topStartRadius: Dp = 0.dp,
     topEndRadius: Dp = 0.dp,
     bottomStartRadius: Dp = 0.dp,

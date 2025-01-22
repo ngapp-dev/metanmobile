@@ -22,20 +22,15 @@ import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
 import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyAction
-import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyUiState
-import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyUiState.Loading
-import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class PrivacyPolicyViewModel @Inject constructor(
-    userDataRepository: UserDataRepository,
     private val consentHelper: ConsentHelper,
 ) : ViewModel() {
 
@@ -46,14 +41,6 @@ class PrivacyPolicyViewModel @Inject constructor(
         started = WhileSubscribed(5_000),
         initialValue = false
     )
-
-    val uiState: StateFlow<PrivacyPolicyUiState> = userDataRepository.userData
-        .map { userData -> Success(languageConfig = userData.languageConfig) }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileSubscribed(5_000),
-            initialValue = Loading,
-        )
 
     fun triggerAction(action: PrivacyPolicyAction) {
         when (action) {

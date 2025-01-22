@@ -44,6 +44,7 @@ dependencies {
     api(projects.core.designsystem)
     api(projects.core.model)
 
+    implementation(libs.androidx.activity.compose)
     implementation(libs.accompanist.permissions)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.appcompat)
@@ -53,5 +54,6 @@ dependencies {
     implementation(libs.coil.kt)
     implementation(libs.coil.kt.compose)
 
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)
 }

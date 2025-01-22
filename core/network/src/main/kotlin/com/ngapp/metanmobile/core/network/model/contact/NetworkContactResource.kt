@@ -1,6 +1,6 @@
 /*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
- *
+ * Copyright 2025 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at

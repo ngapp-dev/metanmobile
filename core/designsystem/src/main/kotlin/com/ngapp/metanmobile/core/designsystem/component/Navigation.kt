@@ -17,6 +17,9 @@
 
 package com.ngapp.metanmobile.core.designsystem.component
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +44,9 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemCo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -197,6 +202,7 @@ fun MMNavigationSuiteScaffold(
     navigationSuiteItems: NiaNavigationSuiteScope.() -> Unit,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
+    showBottomBar: Boolean,
     adsContent: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -223,7 +229,6 @@ fun MMNavigationSuiteScaffold(
             unselectedTextColor = MMNavigationDefaults.navigationContentColor(),
         ),
     )
-
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             NiaNavigationSuiteScope(
@@ -231,7 +236,7 @@ fun MMNavigationSuiteScaffold(
                 navigationSuiteItemColors = navigationSuiteItemColors,
             ).run(navigationSuiteItems)
         },
-        layoutType = layoutType,
+        layoutType = if (showBottomBar) layoutType else NavigationSuiteType.None,
         containerColor = Color.Transparent,
         navigationSuiteColors = NavigationSuiteDefaults.colors(
             navigationBarContainerColor = MMNavigationDefaults.navigationContainerColor(),
@@ -244,14 +249,16 @@ fun MMNavigationSuiteScaffold(
             Box(modifier = Modifier.weight(1f)) {
                 content()
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.onSurface)
-            ) {
-                adsContent()
+            if (showBottomBar) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.onSurface)
+                ) {
+                    adsContent()
+                }
+                MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
             }
-            MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
         }
     }
 }

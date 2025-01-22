@@ -22,7 +22,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import com.ngapp.metanmobile.core.ui.util.PermissionsManager
 import com.ngapp.metanmobile.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
 
@@ -34,11 +33,11 @@ fun NavController.navigateToHomeScreen(navOptions: NavOptions) =
 fun NavGraphBuilder.homeScreen(
     onNewsClick: () -> Unit,
     onNewsDetailClick: (String) -> Unit,
-    onStationDetailClick: (String) -> Unit,
     onFaqListClick: () -> Unit,
     onCareersClick: () -> Unit,
     onCabinetClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onShowBottomBar: (Boolean) -> Unit,
 ) {
     composable<HomeScreenNavigation>(
         deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN })
@@ -46,11 +45,11 @@ fun NavGraphBuilder.homeScreen(
         HomeRoute(
             onNewsClick = onNewsClick,
             onNewsDetailClick = onNewsDetailClick,
-            onStationDetailClick = onStationDetailClick,
             onFaqListClick = onFaqListClick,
             onCareersClick = onCareersClick,
             onCabinetClick = onCabinetClick,
-            onSettingsClick = onSettingsClick
+            onSettingsClick = onSettingsClick,
+            onShowBottomBar = onShowBottomBar,
         )
     }
 }
