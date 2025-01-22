@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.feature.menu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras.Empty.map
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
@@ -40,7 +39,7 @@ class MenuViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
-    val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.us PreerData
+    val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
         .map { userData -> Success(darkThemeConfig = userData.darkThemeConfig) }
         .stateIn(
             scope = viewModelScope,
