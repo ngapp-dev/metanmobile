@@ -31,9 +31,14 @@ The application architecture is based with respect to [Now in Android](https://d
 ## Screenshots
 
 <p align="center">
-  <img src="docs/images/home.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
-  <img src="docs/images/stations_map.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
-  <img src="docs/images/news.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
+  <img src="docs/images/phone1.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone2.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone3.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone4.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone5.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone6.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone7.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone8.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
 </p>
 
 ## Libraries used
