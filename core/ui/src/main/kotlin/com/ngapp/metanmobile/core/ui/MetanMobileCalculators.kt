@@ -43,7 +43,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
@@ -51,8 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -210,7 +207,6 @@ private fun CalculatorPaybackPage() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun CalculatorMileageEnterValueView(onCalculate: (Triple<String, String, Boolean>) -> Unit) {
     val context = LocalContext.current
@@ -245,9 +241,7 @@ private fun CalculatorMileageEnterValueView(onCalculate: (Triple<String, String,
             style = MMTypography.displaySmall,
         )
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Enter fuel amount" },
+            modifier = Modifier.fillMaxWidth(),
             value = fuelAmount,
             onValueChange = { fuelAmount = it },
             placeholder = {
@@ -294,7 +288,6 @@ private fun CalculatorMileageEnterValueView(onCalculate: (Triple<String, String,
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun CalculatorPaybackEnterValueView(
     onCalculateClick: (String, String, String, String, Boolean) -> Unit,
@@ -315,9 +308,7 @@ private fun CalculatorPaybackEnterValueView(
             style = MMTypography.displaySmall,
         )
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Enter fuel price" },
+            modifier = Modifier.fillMaxWidth(),
             value = fuelPrice,
             onValueChange = { fuelPrice = it },
             placeholder = {
@@ -345,9 +336,7 @@ private fun CalculatorPaybackEnterValueView(
             style = MMTypography.displaySmall
         )
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Enter additional costs" },
+            modifier = Modifier.fillMaxWidth(),
             value = additionalCosts,
             onValueChange = { additionalCosts = it },
             placeholder = {
@@ -375,9 +364,7 @@ private fun CalculatorPaybackEnterValueView(
             style = MMTypography.displaySmall,
         )
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Enter estimated mileage" },
+            modifier = Modifier.fillMaxWidth(),
             value = estimatedMileage,
             onValueChange = { estimatedMileage = it },
             placeholder = {
@@ -405,9 +392,7 @@ private fun CalculatorPaybackEnterValueView(
             style = MMTypography.displaySmall,
         )
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Enter vehicle consumption" },
+            modifier = Modifier.fillMaxWidth(),
             value = fuelConsumption,
             onValueChange = { fuelConsumption = it },
             placeholder = {

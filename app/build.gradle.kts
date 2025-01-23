@@ -48,8 +48,8 @@ android {
             applicationIdSuffix = MMBuildType.DEBUG.applicationIdSuffix
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             applicationIdSuffix = MMBuildType.RELEASE.applicationIdSuffix
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
             signingConfig = signingConfigs.named("debug").get()
@@ -104,6 +104,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)

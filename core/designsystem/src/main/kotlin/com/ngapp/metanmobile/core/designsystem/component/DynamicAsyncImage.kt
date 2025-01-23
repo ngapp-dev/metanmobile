@@ -96,9 +96,10 @@ fun DynamicAsyncImage(
 @Composable
 fun MMAsyncImage(
     imageUrl: String?,
+    contentDescription: String,
     imageSize: Dp = 140.dp,
     placeholder: Painter = painterResource(R.drawable.core_designsystem_logo_solid_mono_invert),
-    ) {
+) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
@@ -107,7 +108,7 @@ fun MMAsyncImage(
         placeholder = placeholder,
         error = placeholder,
         contentScale = ContentScale.Crop,
-        contentDescription = null,
+        contentDescription = contentDescription,
         modifier = Modifier
             .size(imageSize)
             .clip(CircleShape)

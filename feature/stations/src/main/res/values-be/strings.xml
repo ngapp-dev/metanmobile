@@ -23,12 +23,7 @@
     <!-- Title -->
     <string name="feature_stations_title_stations_map">Карта станцый</string>
     <string name="feature_stations_title_station_list">Спіс станцый</string>
-    <!-- Buttons -->
-    <string name="feature_stations_button_navigate">Пракласці маршрут</string>
     <!-- Text -->
-    <string name="feature_stations_text_station_attendance">Наведвальнасць сёння</string>
-    <string name="feature_stations_text_operate">Працуе</string>
-    <string name="feature_stations_text_not_operate">Не працуе</string>
     <string name="feature_stations_text_empty">Спіс Станцый пусты</string>
     <!-- Placeholder -->
     <string name="feature_stations_placeholder_search_stations">Пошук станцый</string>

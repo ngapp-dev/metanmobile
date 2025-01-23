@@ -79,7 +79,7 @@ internal fun HomeWidgetCalculatorsView(
             ) {
                 Icon(
                     imageVector = MMIcons.DragHandle,
-                    contentDescription = stringResource(CoreUiR.string.core_ui_description_reorder_drag_handle_icon),
+                    contentDescription = "Calculators widget ${stringResource(CoreUiR.string.core_ui_description_reorder_drag_handle_icon)}",
                     tint = White,
                 )
             }

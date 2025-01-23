@@ -43,3 +43,6 @@
 -keep class com.ngapp.metanmobile.core.datastore.UserPreferences { *; }
 -keep class com.ngapp.metanmobile.core.datastore.* { *; }
 -keepclassmembers class com.ngapp.metanmobile.core.datastore.UserPreferences { public *; }
+
+-keep class com.google.android.gms.** { *; }
+-dontwarn android.media.AudioTrack$StreamEventCallback

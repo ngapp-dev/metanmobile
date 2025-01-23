@@ -96,9 +96,7 @@ private fun LegalRegulationsScreen(
                 ItemPageRow(
                     title = R.string.feature_menu_legalregulations_main_title_software_licence,
                     onPageItemClick = {
-                        context.startActivity(
-                            Intent(context, OssLicensesMenuActivity::class.java)
-                        )
+                        context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
                     },
                 )
                 MMDivider(modifier = Modifier.padding(horizontal = 16.dp))

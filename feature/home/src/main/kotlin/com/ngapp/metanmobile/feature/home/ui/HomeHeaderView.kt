@@ -141,7 +141,7 @@ internal fun HomeHeaderView(
                 Icon(
                     modifier = Modifier.rotate(iconRotateState),
                     imageVector = MMIcons.ExpandMore,
-                    contentDescription = stringResource(CoreUiR.string.core_ui_description_reorder_drag_handle_icon),
+                    contentDescription = stringResource(CoreUiR.string.core_ui_description_expand_news_icon),
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }

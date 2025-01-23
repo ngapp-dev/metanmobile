@@ -38,10 +38,10 @@ class LanguageHelper(val context: Context) {
     fun getLanguageCode(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.getSystemService(LocaleManager::class.java).applicationLocales[0]?.toLanguageTag()
-                ?.split("-")?.first() ?: "en"
+                ?.split("-")?.first() ?: "ru"
         } else {
             AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag()?.split("-")?.first()
-                ?: "en"
+                ?: "ru"
         }
     }
 }

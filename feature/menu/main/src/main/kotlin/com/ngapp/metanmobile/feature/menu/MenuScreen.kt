@@ -118,7 +118,6 @@ private fun MenuScreen(
             onChangeLanguageConfig = {
                 languageHelper.changeLanguage(it)
                 analyticsHelper.logLanguageConfigChanged(it)
-//                onRefreshPage()
             },
             onShowAlertDialog = { showLanguageDialog = it }
         )

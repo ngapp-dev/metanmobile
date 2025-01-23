@@ -100,7 +100,13 @@ fun StationsSortAndFilterConfigDialog(
                                 role = Role.Checkbox,
                                 onClick = { cngCheckedState = !cngCheckedState },
                             )
-                            .semantics { this.contentDescription = "$cngCheckedState CNG" },
+                            .semantics {
+                                contentDescription = if (cngCheckedState) {
+                                    "CNG is selected"
+                                } else {
+                                    "CNG is not selected"
+                                }
+                            },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
@@ -124,7 +130,13 @@ fun StationsSortAndFilterConfigDialog(
                                 role = Role.Checkbox,
                                 onClick = { clfsCheckedState = !clfsCheckedState },
                             )
-                            .semantics { contentDescription = "$clfsCheckedState CLFS" },
+                            .semantics {
+                                contentDescription = if (clfsCheckedState) {
+                                    "CLFS is selected"
+                                } else {
+                                    "CLFS is not selected"
+                                }
+                            },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
@@ -202,7 +214,7 @@ private fun SortTypesRadioGroup(
                         role = Role.RadioButton,
                         onClick = { setSelected(item) },
                     )
-                    .semantics { contentDescription = stationSortingTypeText },
+                    .semantics { contentDescription = "$stationSortingTypeText is selected" },
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
