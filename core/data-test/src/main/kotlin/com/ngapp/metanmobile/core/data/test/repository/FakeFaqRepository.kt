@@ -26,7 +26,6 @@ import com.ngapp.metanmobile.core.data.repository.faq.FaqResourceQuery
 import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.asExternalModel
 import com.ngapp.metanmobile.core.model.faq.FaqResource
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher

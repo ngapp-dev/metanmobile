@@ -15,11 +15,8 @@
  *
  */
 
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.ngapp.metanmobile.ui
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState

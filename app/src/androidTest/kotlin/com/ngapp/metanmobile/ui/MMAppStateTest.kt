@@ -27,7 +27,6 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
 import androidx.navigation.testing.TestNavHostController
-import com.ngapp.metanmobile.core.data.repository.news.CompositeUserNewsResourceRepository
 import com.ngapp.metanmobile.core.data.test.repository.FakeCompositeUserNewsResourceRepository
 import com.ngapp.metanmobile.core.testing.repository.TestNewsRepository
 import com.ngapp.metanmobile.core.testing.repository.TestUserDataRepository

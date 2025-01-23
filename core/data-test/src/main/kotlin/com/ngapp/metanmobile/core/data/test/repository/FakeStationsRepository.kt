@@ -21,7 +21,6 @@ import com.ngapp.metanmobile.core.common.network.Dispatcher
 import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.station.asEntity
-import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationResourceQuery
 import com.ngapp.metanmobile.core.data.repository.station.StationsRepository
 import com.ngapp.metanmobile.core.database.model.station.StationResourceEntity
@@ -29,7 +28,6 @@ import com.ngapp.metanmobile.core.database.model.station.asExternalModel
 import com.ngapp.metanmobile.core.model.station.StationResource
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.model.userdata.StationSortingType
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher

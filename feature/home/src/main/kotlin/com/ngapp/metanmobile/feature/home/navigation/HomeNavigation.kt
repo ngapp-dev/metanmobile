@@ -20,8 +20,8 @@ package com.ngapp.metanmobile.feature.home.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
 
@@ -39,7 +39,7 @@ fun NavGraphBuilder.homeScreen(
     onSettingsClick: () -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
 ) {
-    composable<HomeScreenNavigation>(
+    slideInLeftComposable<HomeScreenNavigation>(
         deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN })
     ) {
         HomeRoute(

@@ -18,8 +18,6 @@
 package com.ngapp.metanmobile.core.data.repository.news
 
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
-import com.ngapp.metanmobile.core.model.userdata.NewsSortingType
-import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
 
 interface UserNewsResourceRepository {

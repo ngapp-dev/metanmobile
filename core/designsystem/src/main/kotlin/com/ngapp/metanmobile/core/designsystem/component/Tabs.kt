@@ -18,7 +18,6 @@
 package com.ngapp.metanmobile.core.designsystem.component
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -33,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
-import com.ngapp.metanmobile.core.designsystem.theme.Red
 
 /**
  * Metan Mobile wraps Material 3 [Tab] and shifts text label down.

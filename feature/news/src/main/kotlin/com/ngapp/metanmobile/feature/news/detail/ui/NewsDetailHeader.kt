@@ -41,7 +41,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.ui.util.dateFormatted
 import com.ngapp.metanmobile.feature.news.R
-import kotlinx.datetime.Clock
 
 @Composable
 internal fun NewsDetailHeader(news: NewsResource) {

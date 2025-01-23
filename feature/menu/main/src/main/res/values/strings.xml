@@ -17,7 +17,7 @@
 
 <resources>
     <string name="feature_menu_main_pref_language_russian" translatable="false">Русский</string>
-    <string name="feature_menu_main_pref_language_belarusian" translatable="false">Беларускі</string>
+    <string name="feature_menu_main_pref_language_belarusian" translatable="false">Беларуская</string>
     <string name="feature_menu_main_pref_language_english" translatable="false">English</string>
     <!-- Toolbar -->
     <string name="feature_menu_main_toolbar_title">Menu</string>

@@ -19,18 +19,15 @@ package com.ngapp.metanmobile.feature.news.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.data.repository.news.NewsResourceQuery
 import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepository
-import com.ngapp.metanmobile.core.data.repository.station.StationResourceQuery
-import com.ngapp.metanmobile.core.data.repository.station.StationResourcesWithFavoritesRepository
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.feature.news.list.state.NewsAction
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState
-import com.ngapp.metanmobile.feature.news.list.state.NewsUiState.Success
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState.Loading
+import com.ngapp.metanmobile.feature.news.list.state.NewsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

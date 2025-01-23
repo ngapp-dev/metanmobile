@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.samples.apps.nowinandroid
+package com.ngapp.metanmobile
 
 import android.Manifest.permission
 import android.os.Build.VERSION.SDK_INT

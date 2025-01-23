@@ -21,7 +21,6 @@ import com.ngapp.metanmobile.core.common.network.Dispatcher
 import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository
-import com.ngapp.metanmobile.core.data.repository.station.StationsRepository
 import com.ngapp.metanmobile.core.model.githubuser.GithubUserResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

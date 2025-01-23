@@ -19,13 +19,11 @@ package com.ngapp.metanmobile.core.data.repository.user
 
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.data.repository.logDarkThemeConfigChanged
-import com.ngapp.metanmobile.core.data.repository.logLanguageConfigChanged
 import com.ngapp.metanmobile.core.data.repository.logOnboardingStateChanged
 import com.ngapp.metanmobile.core.data.repository.logStationResourceFavoriteToggled
 import com.ngapp.metanmobile.core.datastore.MetanMobilePreferencesDataSource
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
-import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData

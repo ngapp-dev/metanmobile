@@ -44,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.common.util.fromStringToListFloat
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
-import com.ngapp.metanmobile.core.designsystem.theme.Gray250
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.textColor

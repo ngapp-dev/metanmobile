@@ -15,12 +15,12 @@
  *
  */
 
-package com.ngapp.metanmobile.feature.settings.ui.legalregulations.locationinformation.navigation
+package com.ngapp.metanmobile.feature.locationinformation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.locationinformation.LocationInformationScreen
 import kotlinx.serialization.Serializable
 
@@ -29,7 +29,7 @@ fun NavController.navigateToLocationInformation(navOptions: NavOptionsBuilder.()
 }
 
 fun NavGraphBuilder.locationInformationScreen(onBackClick: () -> Unit) {
-    composable<LocationInformationNavigation> {
+    slideInLeftComposable<LocationInformationNavigation> {
         LocationInformationScreen(onBackClick = onBackClick)
     }
 }

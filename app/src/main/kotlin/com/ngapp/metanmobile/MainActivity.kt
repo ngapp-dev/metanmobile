@@ -22,6 +22,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -82,7 +83,7 @@ import kotlin.time.Duration.Companion.seconds
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     /**
      * Lazily inject [JankStats], which is used to track jank throughout the app.

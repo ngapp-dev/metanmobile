@@ -20,7 +20,7 @@ package com.ngapp.metanmobile.feature.menu.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.menu.MenuRoute
 import kotlinx.serialization.Serializable
 
@@ -37,7 +37,7 @@ fun NavGraphBuilder.menuScreen(
     onCareerPageClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    composable<MenuNavigation> {
+    slideInLeftComposable<MenuNavigation> {
         MenuRoute(
             onContactsPageClick = onContactsPageClick,
             onFaqPageClick = onFaqPageClick,

@@ -20,7 +20,7 @@ package com.ngapp.metanmobile.feature.favorites.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.favorites.FavoritesRoute
 import kotlinx.serialization.Serializable
 
@@ -30,7 +30,7 @@ fun NavGraphBuilder.favoritesScreen(
     onNewsDetailClick: (String) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
 ) {
-    composable<FavoritesNavigation> {
+    slideInLeftComposable<FavoritesNavigation> {
         FavoritesRoute(onNewsDetailClick, onShowBottomBar)
     }
 }

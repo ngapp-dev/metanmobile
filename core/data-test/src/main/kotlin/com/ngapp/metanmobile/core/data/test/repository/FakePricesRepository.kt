@@ -24,7 +24,6 @@ import com.ngapp.metanmobile.core.data.model.price.asEntity
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
 import com.ngapp.metanmobile.core.database.model.price.asExternalModel
 import com.ngapp.metanmobile.core.model.price.PriceResource
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

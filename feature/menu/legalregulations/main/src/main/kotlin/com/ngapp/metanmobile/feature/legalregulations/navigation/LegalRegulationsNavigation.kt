@@ -20,7 +20,7 @@ package com.ngapp.metanmobile.feature.legalregulations.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.legalregulations.LegalRegulationsRoute
 import kotlinx.serialization.Serializable
 
@@ -34,7 +34,7 @@ fun NavGraphBuilder.legalRegulationsScreen(
     onLocationInformationPageClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    composable<LegalRegulationsNavigation> {
+    slideInLeftComposable<LegalRegulationsNavigation> {
         LegalRegulationsRoute(
             onTermsAndConditionsPageClick = onTermsAndConditionsPageClick,
             onPrivacyPolicyPageClick = onPrivacyPolicyPageClick,
