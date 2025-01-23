@@ -121,6 +121,7 @@ internal fun StationsRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StationsScreen(
     modifier: Modifier,
