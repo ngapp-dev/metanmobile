@@ -206,7 +206,6 @@ private fun FavoritesScreen(
                             StationDetailBottomSheet(
                                 stationCode = stationCode,
                                 bottomSheetState = bottomSheetScaffoldState,
-                                openFullScreen = true,
                                 onShowTopAppBar = { showTopAppBar = it },
                                 onShowBottomBar = onShowBottomBar,
                                 onNewsDetailClick = onNewsDetailClick,

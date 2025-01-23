@@ -298,7 +298,7 @@ fun StationBusyHours(
         initialPage = currentDayOfWeek,
     )
 
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -400,20 +400,28 @@ fun StationBusyHours(
             }
         }
         HorizontalPager(
-            modifier = Modifier.padding(top = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 24.dp),
             state = pagerState,
             verticalAlignment = Alignment.Top,
         ) { selectedPage ->
             Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .height(height = 88.dp)
-                    .widthIn(0.dp, 420.dp)
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                SimpleVerticalBarChartView(
-                    data = createCharItems(currentDayOfWeek, selectedPage, stationDetail)
-                )
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .height(height = 88.dp)
+                        .widthIn(0.dp, 420.dp)
+                ) {
+                    SimpleVerticalBarChartView(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        data = createCharItems(currentDayOfWeek, selectedPage, stationDetail)
+                    )
+                }
             }
         }
 

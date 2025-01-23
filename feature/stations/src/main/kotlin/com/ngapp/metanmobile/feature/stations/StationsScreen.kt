@@ -228,7 +228,6 @@ private fun StationsScreen(
                                         StationDetailBottomSheet(
                                             stationCode = stationCode,
                                             bottomSheetState = listBottomSheetScaffoldState,
-                                            openFullScreen = true,
                                             onShowTopAppBar = { showTopAppBar = it },
                                             onShowBottomBar = onShowBottomBar,
                                             onNewsDetailClick = onNewsDetailClick,

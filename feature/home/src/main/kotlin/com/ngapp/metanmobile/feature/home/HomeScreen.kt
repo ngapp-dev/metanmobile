@@ -158,7 +158,6 @@ private fun HomeScreen(
                     StationDetailBottomSheet(
                         stationCode = uiState.nearestStation?.code,
                         bottomSheetState = bottomSheetScaffoldState,
-                        openFullScreen = true,
                         onShowTopAppBar = { showTopAppBar = it },
                         onShowBottomBar = onShowBottomBar,
                         onNewsDetailClick = onNewsDetailClick,
