@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.androidx.appcompat)
     api(libs.google.services.ads)
+    implementation(libs.androidx.navigation.compose)
 //    api(libs.google.messaging.platform)
     implementation(libs.androidx.browser)
     implementation(libs.coil.kt)

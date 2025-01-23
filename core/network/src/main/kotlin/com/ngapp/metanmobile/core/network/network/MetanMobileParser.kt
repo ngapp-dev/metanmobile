@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.core.network.network
 
 import com.ngapp.metanmobile.core.network.BuildConfig
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
-import com.ngapp.metanmobile.core.network.di.NetworkModule
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import com.ngapp.metanmobile.core.network.model.career.asNetworkCareerResource
 import com.ngapp.metanmobile.core.network.model.contact.NetworkContactResource

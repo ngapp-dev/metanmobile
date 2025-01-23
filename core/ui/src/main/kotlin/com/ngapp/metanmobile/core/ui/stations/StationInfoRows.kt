@@ -20,7 +20,6 @@ package com.ngapp.metanmobile.core.ui.stations
 import android.net.Uri
 import android.webkit.URLUtil
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -161,7 +160,6 @@ fun StationInfoRow(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationWorkTimeRow(
     rowIcon: ImageVector,
@@ -231,13 +229,12 @@ fun StationWorkTimeRow(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StationInfoListRow(
+    modifier: Modifier = Modifier,
     isClickable: Boolean = true,
     rowIcon: ImageVector,
     text: String,
-    modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current

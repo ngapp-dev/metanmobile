@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.core.database.util
 
 import androidx.room.TypeConverter
 import kotlinx.datetime.Instant
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class InstantConverter {

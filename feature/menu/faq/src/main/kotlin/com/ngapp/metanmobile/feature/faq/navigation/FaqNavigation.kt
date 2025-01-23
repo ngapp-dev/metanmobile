@@ -20,8 +20,8 @@ package com.ngapp.metanmobile.feature.faq.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.faq.FaqRoute
 import kotlinx.serialization.Serializable
 
@@ -32,7 +32,7 @@ fun NavController.navigateToFaq(navOptions: NavOptionsBuilder.() -> Unit = {}) {
 }
 
 fun NavGraphBuilder.faqScreen(onBackClick: () -> Unit) {
-    composable<FaqNavigation>(
+    slideInLeftComposable<FaqNavigation>(
         deepLinks = listOf(navDeepLink<FaqNavigation>(basePath = DEEP_LINK_URI_PATTERN)),
     ) {
         FaqRoute(onBackClick = onBackClick)

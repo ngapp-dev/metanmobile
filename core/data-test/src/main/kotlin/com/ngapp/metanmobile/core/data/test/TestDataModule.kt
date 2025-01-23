@@ -23,11 +23,9 @@ import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
 import com.ngapp.metanmobile.core.data.repository.faq.FaqRepository
 import com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
-import com.ngapp.metanmobile.core.data.repository.news.CompositeUserNewsResourceRepository
 import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
 import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepository
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
-import com.ngapp.metanmobile.core.data.repository.station.CompositeStationResourcesWithFavoritesRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationResourcesWithFavoritesRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationsRepository
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository

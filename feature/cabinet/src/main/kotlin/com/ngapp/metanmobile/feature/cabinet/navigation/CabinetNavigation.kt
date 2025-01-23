@@ -20,7 +20,7 @@ package com.ngapp.metanmobile.feature.cabinet.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.cabinet.CabinetRoute
 import kotlinx.serialization.Serializable
 
@@ -31,7 +31,7 @@ fun NavController.navigateToCabinet(
 }
 
 fun NavGraphBuilder.cabinetScreen(onBackClick: () -> Unit) {
-    composable<CabinetNavigation> {
+    slideInLeftComposable<CabinetNavigation> {
         CabinetRoute(onBackClick = onBackClick)
     }
 }

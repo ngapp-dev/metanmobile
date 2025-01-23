@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.core.designsystem.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -96,9 +95,10 @@ fun DynamicAsyncImage(
 @Composable
 fun MMAsyncImage(
     imageUrl: String?,
+    contentDescription: String,
     imageSize: Dp = 140.dp,
     placeholder: Painter = painterResource(R.drawable.core_designsystem_logo_solid_mono_invert),
-    ) {
+) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(imageUrl)
@@ -107,7 +107,7 @@ fun MMAsyncImage(
         placeholder = placeholder,
         error = placeholder,
         contentScale = ContentScale.Crop,
-        contentDescription = null,
+        contentDescription = contentDescription,
         modifier = Modifier
             .size(imageSize)
             .clip(CircleShape)

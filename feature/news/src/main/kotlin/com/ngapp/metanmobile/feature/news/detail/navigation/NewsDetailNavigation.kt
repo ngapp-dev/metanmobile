@@ -21,8 +21,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.news.detail.NewsDetailRoute
 import kotlinx.serialization.Serializable
 
@@ -37,7 +36,7 @@ fun NavController.navigateToNewsDetail(
 }
 
 fun NavGraphBuilder.newsDetailScreen(onBackClick: () -> Unit) {
-    composable<NewsDetailNavigation>(
+    slideInLeftComposable<NewsDetailNavigation>(
 //        deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
     ) {
         NewsDetailRoute(onBackClick = onBackClick)

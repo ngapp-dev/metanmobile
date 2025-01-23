@@ -120,6 +120,7 @@
     <string name="core_ui_description_station_list_img" translatable="false">News list img</string>
     <string name="core_ui_description_settings_arrow_icon" translatable="false">Settings Arrow Icon</string>
     <string name="core_ui_description_reorder_drag_handle_icon" translatable="false">Reorder drag handle Icon</string>
+    <string name="core_ui_description_expand_news_icon" translatable="false">Expand news Icon</string>
     <string name="core_ui_description_attendance" translatable="false">Question Icon</string>
     <!-- Errors -->
     <string name="core_ui_the_request_timed_out">The request timed out</string>

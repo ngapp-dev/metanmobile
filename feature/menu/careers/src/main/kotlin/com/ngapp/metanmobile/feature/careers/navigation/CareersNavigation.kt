@@ -20,8 +20,8 @@ package com.ngapp.metanmobile.feature.careers.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.careers.CareersRoute
 import kotlinx.serialization.Serializable
 
@@ -32,7 +32,7 @@ fun NavController.navigateToCareers(navOptions: NavOptionsBuilder.() -> Unit = {
 }
 
 fun NavGraphBuilder.careersScreen(onBackClick: () -> Unit) {
-    composable<CareersNavigation>(
+    slideInLeftComposable<CareersNavigation>(
         deepLinks = listOf(navDeepLink<CareersNavigation>(basePath = DEEP_LINK_URI_PATTERN)),
     ) {
         CareersRoute(onBackClick = onBackClick)

@@ -187,9 +187,9 @@ private enum class MenuTabs(val titleResId: Int) {
     PHOTOS(R.string.feature_stationdetail_title_photos),
 }
 
-private fun Modifier.notificationDot(): Modifier = composed {
+private fun Modifier.notificationDot(): Modifier {
     val tertiaryColor = Green
-    drawWithContent {
+    return this.drawWithContent {
         drawContent()
         drawCircle(
             tertiaryColor,

@@ -111,7 +111,11 @@ private fun AboutScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        MMAsyncImage(imageUrl = uiState.githubUser?.avatarUrl)
+                        MMAsyncImage(
+                            imageUrl = uiState.githubUser?.avatarUrl,
+                            contentDescription = uiState.githubUser?.name
+                                ?: stringResource(R.string.feature_menu_about_text_ngapps_dev),
+                        )
                         Spacer(Modifier.height(18.dp))
                         Text(
                             text = stringResource(R.string.feature_menu_about_text_developed_by),

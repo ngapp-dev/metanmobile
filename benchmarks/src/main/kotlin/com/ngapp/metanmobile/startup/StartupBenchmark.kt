@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.samples.apps.nowinandroid.startup
+package com.ngapp.metanmobile.startup
 
 import androidx.benchmark.macro.BaselineProfileMode.Disable
 import androidx.benchmark.macro.BaselineProfileMode.Require
@@ -24,7 +24,7 @@ import androidx.benchmark.macro.StartupMode.COLD
 import androidx.benchmark.macro.StartupTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.google.samples.apps.nowinandroid.PACKAGE_NAME
+import com.ngapp.metanmobile.PACKAGE_NAME
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

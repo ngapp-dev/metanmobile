@@ -24,7 +24,6 @@ import com.ngapp.metanmobile.core.data.model.contact.asEntity
 import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
 import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
 import com.ngapp.metanmobile.core.model.contact.ContactResource
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

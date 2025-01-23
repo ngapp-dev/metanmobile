@@ -107,7 +107,7 @@ internal fun CareerWidget(
             ) {
                 Icon(
                     imageVector = MMIcons.DragHandle,
-                    contentDescription = stringResource(R.string.core_ui_description_reorder_drag_handle_icon),
+                    contentDescription = "Career widget ${stringResource(R.string.core_ui_description_reorder_drag_handle_icon)}",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

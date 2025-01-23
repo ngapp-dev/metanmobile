@@ -46,7 +46,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
@@ -169,7 +168,6 @@ internal fun MMApp(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun DestinationScaffold(
     appState: MMAppState,
@@ -208,9 +206,9 @@ private fun DestinationScaffold(
 private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
     this?.hierarchy?.any { it.hasRoute(route) } ?: false
 
-private fun Modifier.notificationDot(): Modifier = composed {
+private fun Modifier.notificationDot(): Modifier {
     val tertiaryColor = Green
-    drawWithContent {
+    return this.drawWithContent {
         drawContent()
         drawCircle(
             tertiaryColor,

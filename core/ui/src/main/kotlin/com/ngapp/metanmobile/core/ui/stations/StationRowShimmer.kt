@@ -18,45 +18,23 @@
 package com.ngapp.metanmobile.core.ui.stations
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.ngapp.metanmobile.core.designsystem.component.ProgressIndicatorSmall
-import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
-import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
-import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
-import com.ngapp.metanmobile.core.ui.R
 import com.ngapp.metanmobile.core.ui.ShimmerEffect
-import java.util.Locale
 
 @Composable
 fun StationRowShimmer(modifier: Modifier = Modifier) {

@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.core.ui
 
 import android.content.Context
 import android.content.Intent
-import com.ngapp.metanmobile.core.common.network.di.ApplicationScope
 import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import dagger.hilt.android.qualifiers.ApplicationContext

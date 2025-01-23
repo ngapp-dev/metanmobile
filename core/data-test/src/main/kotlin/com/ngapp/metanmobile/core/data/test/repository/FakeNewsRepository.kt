@@ -28,7 +28,6 @@ import com.ngapp.metanmobile.core.database.model.news.asExternalModel
 import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingType
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
-import com.ngapp.metanmobile.core.network.demo.DemoMetanMobileParser
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import kotlinx.coroutines.CoroutineDispatcher

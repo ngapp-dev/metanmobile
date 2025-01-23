@@ -15,12 +15,12 @@
  *
  */
 
-package com.google.samples.apps.nowinandroid.baselineprofile
+package com.ngapp.metanmobile.baselineprofile
 
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.benchmark.macro.junit4.BaselineProfileRule
-import com.google.samples.apps.nowinandroid.PACKAGE_NAME
-import com.google.samples.apps.nowinandroid.startActivityAndAllowNotifications
+import com.ngapp.metanmobile.PACKAGE_NAME
+import com.ngapp.metanmobile.startActivityAndAllowNotifications
 import org.junit.Rule
 import org.junit.Test
 

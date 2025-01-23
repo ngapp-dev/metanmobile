@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.feature.menu
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -118,7 +119,6 @@ private fun MenuScreen(
             onChangeLanguageConfig = {
                 languageHelper.changeLanguage(it)
                 analyticsHelper.logLanguageConfigChanged(it)
-//                onRefreshPage()
             },
             onShowAlertDialog = { showLanguageDialog = it }
         )
@@ -164,12 +164,14 @@ private fun MenuScreen(
                     )
                 }
                 MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                if (uiState is SettingsUiState.Success) {
-                    LanguageConfigRowItem(
-                        titleResId = R.string.feature_menu_main_title_app_language,
-                        currentLanguage = currentLanguage,
-                        onShowAlertDialog = { showLanguageDialog = true }
-                    )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (uiState is SettingsUiState.Success) {
+                        LanguageConfigRowItem(
+                            titleResId = R.string.feature_menu_main_title_app_language,
+                            currentLanguage = currentLanguage,
+                            onShowAlertDialog = { showLanguageDialog = true }
+                        )
+                    }
                 }
                 MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 MenuRowItem(

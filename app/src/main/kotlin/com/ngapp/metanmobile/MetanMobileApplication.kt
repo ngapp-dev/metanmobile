@@ -18,7 +18,6 @@
 package com.ngapp.metanmobile
 
 import android.app.Application
-import androidx.startup.AppInitializer
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.ngapp.metanmobile.sync.initializers.Sync

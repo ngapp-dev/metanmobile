@@ -49,7 +49,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
-import com.ngapp.metanmobile.core.designsystem.theme.Gray300
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import kotlinx.coroutines.launch
 

@@ -17,13 +17,12 @@
 
 package com.ngapp.metanmobile
 
+import com.android.SdkConstants
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
-import com.android.SdkConstants
 import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -38,12 +37,12 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.internal.extensions.stdlib.capitalized
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
 import java.io.File
-import java.nio.file.Files
 import javax.inject.Inject
 
 abstract class GenerateBadgingTask : DefaultTask() {
@@ -107,7 +106,7 @@ abstract class CheckBadgingTask : DefaultTask() {
     }
 }
 
-private fun String.capitalized() = replaceFirstChar {
+private fun String.capitalizedStr() = replaceFirstChar {
     if (it.isLowerCase()) it.titlecase() else it.toString()
 }
 
@@ -118,7 +117,7 @@ fun Project.configureBadgingTasks(
     // Registers a callback to be called, when a new variant is configured
     componentsExtension.onVariants { variant ->
         // Registers a new task to verify the app bundle.
-        val capitalizedVariantName = variant.name.capitalized()
+        val capitalizedVariantName = variant.name.capitalizedStr()
         val generateBadgingTaskName = "generate${capitalizedVariantName}Badging"
         val generateBadging =
             tasks.register<GenerateBadgingTask>(generateBadgingTaskName) {

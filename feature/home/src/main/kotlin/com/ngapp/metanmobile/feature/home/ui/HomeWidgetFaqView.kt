@@ -121,7 +121,7 @@ internal fun HomeWidgetFaqView(
             ) {
                 Icon(
                     imageVector = MMIcons.DragHandle,
-                    contentDescription = stringResource(CoreUiR.string.core_ui_description_reorder_drag_handle_icon),
+                    contentDescription = "Faq widget${stringResource(CoreUiR.string.core_ui_description_reorder_drag_handle_icon)}",
                     tint = White
                 )
             }

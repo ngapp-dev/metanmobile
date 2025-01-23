@@ -19,7 +19,6 @@ package com.ngapp.metanmobile.feature.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig

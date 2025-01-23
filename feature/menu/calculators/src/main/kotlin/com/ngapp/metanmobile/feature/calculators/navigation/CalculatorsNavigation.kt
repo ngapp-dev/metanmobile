@@ -20,7 +20,7 @@ package com.ngapp.metanmobile.feature.calculators.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.calculators.CalculatorsRoute
 import kotlinx.serialization.Serializable
 
@@ -29,7 +29,7 @@ fun NavController.navigateToCalculators(navOptions: NavOptionsBuilder.() -> Unit
 }
 
 fun NavGraphBuilder.calculatorsScreen(onBackClick: () -> Unit, ) {
-    composable<CalculatorsNavigation> {
+    slideInLeftComposable<CalculatorsNavigation> {
         CalculatorsRoute(onBackClick = onBackClick)
     }
 }

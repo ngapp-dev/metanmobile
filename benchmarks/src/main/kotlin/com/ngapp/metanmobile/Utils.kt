@@ -15,7 +15,7 @@
  *
  */
 
-package com.google.samples.apps.nowinandroid
+package com.ngapp.metanmobile
 
 import androidx.test.uiautomator.BySelector
 import androidx.test.uiautomator.Direction

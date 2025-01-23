@@ -20,8 +20,8 @@ package com.ngapp.metanmobile.feature.stations.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.stations.StationsRoute
 import kotlinx.serialization.Serializable
 
@@ -34,7 +34,7 @@ fun NavGraphBuilder.stationsScreen(
     onNewsDetailClick: (String) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
 ) {
-    composable<StationsNavigation>(
+    slideInLeftComposable<StationsNavigation>(
         deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
     ) {
         StationsRoute(onNewsDetailClick, onShowBottomBar)

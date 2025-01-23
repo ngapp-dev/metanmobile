@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.Gray400
@@ -109,7 +111,14 @@ private fun LanguageDialogChooserRow(
                 selected = selected,
                 role = Role.RadioButton,
                 onClick = onClick,
-            ),
+            )
+            .semantics {
+                contentDescription = if (selected) {
+                    "$text selected"
+                } else {
+                    "$text not selected"
+                }
+            },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
