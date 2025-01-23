@@ -47,7 +47,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -68,7 +67,6 @@ import com.ngapp.metanmobile.core.designsystem.component.MetanMobileBackground
 import com.ngapp.metanmobile.core.designsystem.component.MetanMobileGradientBackground
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.LocalGradientColors
-import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
 import com.ngapp.metanmobile.navigation.MMNavHost
 import kotlin.reflect.KClass
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
