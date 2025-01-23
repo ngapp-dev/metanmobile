@@ -22,10 +22,11 @@ import androidx.lifecycle.viewModelScope
 import com.ngapp.metanmobile.MainActivityUiState.Loading
 import com.ngapp.metanmobile.MainActivityUiState.Success
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
-import com.ngapp.metanmobile.core.model.home.HomeContentItem.CAREER
 import com.ngapp.metanmobile.core.model.home.HomeContentItem.CALCULATORS
-import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.CAREER
 import com.ngapp.metanmobile.core.model.home.HomeContentItem.FAQ
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
+import com.ngapp.metanmobile.core.model.station.StationType
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -108,9 +109,15 @@ class MainActivityViewModel @Inject constructor(
                     )
                 }
             }
+            viewModelScope.launch {
+                userDataRepository.setStationSortingConfig(
+                    userData.stationSortingConfig.copy(
+                        activeStationTypes = listOf(StationType.CNG, StationType.CLFS)
+                    )
+                )
+            }
         }
     }
-
 }
 
 sealed interface MainActivityUiState {

@@ -105,15 +105,15 @@ private fun stationDetailUiState(
     fuelPricesRepository: PricesRepository,
 ): Flow<StationDetailUiState> {
 
-    val stationFlow: Flow<UserStationResource> = userStationsRepository.observeAll(
+    val stationFlow = userStationsRepository.observeAll(
         query = StationResourceQuery(filterStationCodes = setOf(stationCode))
-    ).map { it.first() }
+    ).map { it.firstOrNull() }
 
     val fuelPriceFlow = fuelPricesRepository.getFuelPrice()
 
     val relatedNewsFlow = stationFlow.flatMapLatest { station ->
         userNewsResourceRepository.observeAll(
-            query = NewsResourceQuery(filterNewsByStationTitle = station.title)
+            query = NewsResourceQuery(filterNewsByStationTitle = station?.title)
         )
     }
 

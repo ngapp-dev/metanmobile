@@ -23,6 +23,7 @@
     <string name="core_ui_button_apply">Применить</string>
     <string name="core_ui_button_cancel">Отмена</string>
     <string name="core_ui_button_name">Имени</string>
+    <string name="core_ui_button_distance">Дистанция</string>
     <string name="core_ui_button_date">Дате</string>
     <string name="core_ui_button_descending">По убыванию</string>
     <string name="core_ui_button_ascending">По возрастанию</string>

@@ -170,6 +170,18 @@ private fun StationsScreen(
             when (uiState) {
                 StationsUiState.Loading -> Unit
                 is StationsUiState.Success -> {
+                    if (showDialog) {
+                        StationsSortAndFilterConfigDialog(
+                            stationSortingConfig = uiState.stationSortingConfig,
+                            onConfirmClick = {
+                                onAction(StationsAction.UpdateSortingConfig(it))
+                                coroutineScope.launch { gridState.animateScrollToItem(0) }
+                            },
+                            onShowAlertDialog = {
+                                onAction(StationsAction.ShowAlertDialog(it))
+                            }
+                        )
+                    }
                     if (uiState.stationList.isNotEmpty()) {
                         Column {
                             val tabsName =
@@ -210,19 +222,6 @@ private fun StationsScreen(
                                 targetState = selectedIndex,
                                 label = "stationsScreen",
                             ) { page ->
-                                if (showDialog) {
-                                    StationsSortAndFilterConfigDialog(
-                                        stationSortingConfig = uiState.stationSortingConfig,
-                                        onConfirmClick = {
-                                            onAction(StationsAction.UpdateSortingConfig(it))
-                                            coroutineScope.launch { gridState.animateScrollToItem(0) }
-                                        },
-                                        onShowAlertDialog = {
-                                            onAction(StationsAction.ShowAlertDialog(it))
-                                        }
-                                    )
-                                }
-
                                 when (StationTabs.entries[page]) {
                                     LIST -> {
                                         StationDetailBottomSheet(

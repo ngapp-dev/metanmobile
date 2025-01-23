@@ -24,6 +24,7 @@
     <string name="core_ui_button_apply">Apply</string>
     <string name="core_ui_button_cancel">Cancel</string>
     <string name="core_ui_button_name">Name</string>
+    <string name="core_ui_button_distance">Distance</string>
     <string name="core_ui_button_date">Date</string>
     <string name="core_ui_button_descending">Descending</string>
     <string name="core_ui_button_ascending">Ascending</string>

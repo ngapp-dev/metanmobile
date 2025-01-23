@@ -153,7 +153,7 @@ internal fun MMApp(
         windowAdaptiveInfo = windowAdaptiveInfo,
         adsContent = {
             if (consentState.canShowAds) {
-                MainBannerAd()
+//                MainBannerAd()
             }
         },
         showBottomBar = currentTopLevelDestination != null && showBottomBar,

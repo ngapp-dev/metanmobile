@@ -23,7 +23,7 @@ import com.ngapp.metanmobile.core.model.station.UserStationResource
 
 sealed interface StationDetailUiState {
     data class Success(
-        val stationDetail: UserStationResource,
+        val stationDetail: UserStationResource?,
         val cngPrice: PriceResource?,
         val relatedNewsList: List<UserNewsResource>,
     ) : StationDetailUiState
