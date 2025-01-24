@@ -23,7 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -35,7 +35,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
@@ -44,8 +43,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
+import com.ngapp.metanmobile.core.designsystem.component.MMScrollableTabRow
 import com.ngapp.metanmobile.core.designsystem.component.MMTab
-import com.ngapp.metanmobile.core.designsystem.component.MMTabRow
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
@@ -64,6 +63,7 @@ import com.ngapp.metanmobile.feature.stationdetail.ui.MenuTabs.OVERVIEW
 import com.ngapp.metanmobile.feature.stationdetail.ui.MenuTabs.PAYMENTS
 import com.ngapp.metanmobile.feature.stationdetail.ui.MenuTabs.PHOTOS
 import com.ngapp.metanmobile.feature.stationdetail.ui.MenuTabs.UPDATES
+import com.ngapp.metanmobile.feature.stationdetail.ui.MenuTabs.ABOUT
 
 
 @Composable
@@ -132,18 +132,14 @@ internal fun StationDetailContent(
             Column {
                 val tabsName = rememberSaveable { MenuTabs.entries.map { it.titleResId } }
                 var selectedIndex by rememberSaveable { mutableIntStateOf(OVERVIEW.ordinal) }
-                MMTabRow(
+                MMScrollableTabRow(
                     selectedTabIndex = selectedIndex,
                     indicatorHeight = 3.dp,
+                    edgePadding = 0.dp,
+                    modifier = Modifier.fillMaxWidth(),
                     indicatorModifier = Modifier
-                        .clip(RoundedCornerShape(topStart = 1.dp, topEnd = 1.dp))
-                        .offset(y = (-2).dp),
-                    divider = {
-                        MMDivider(
-                            thickness = 2.dp,
-                            color = MMColors.dividerColor
-                        )
-                    }
+                        .clip(RoundedCornerShape(topStart = 1.dp, topEnd = 1.dp)),
+                    divider = {},
                 ) {
                     tabsName.forEachIndexed { index, stringResourceId ->
                         val extraModifier = if (index == UPDATES.ordinal) {
@@ -164,6 +160,11 @@ internal fun StationDetailContent(
                         )
                     }
                 }
+                MMDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 2.dp,
+                    color = MMColors.dividerColor
+                )
                 Crossfade(
                     targetState = selectedIndex,
                     label = "contentMenu",
@@ -173,6 +174,7 @@ internal fun StationDetailContent(
                         UPDATES -> StationDetailUpdates(relatedNewsList, onNewsDetailClick)
                         PAYMENTS -> StationDetailPayments(stationDetail)
                         PHOTOS -> StationDetailPhotos(stationDetail.detailPicture)
+                        ABOUT -> StationDetailAbout()
                     }
                 }
             }
@@ -185,6 +187,7 @@ private enum class MenuTabs(val titleResId: Int) {
     UPDATES(R.string.feature_stationdetail_title_updates),
     PAYMENTS(R.string.feature_stationdetail_title_payments),
     PHOTOS(R.string.feature_stationdetail_title_photos),
+    ABOUT(R.string.feature_stationdetail_title_about),
 }
 
 private fun Modifier.notificationDot(): Modifier {

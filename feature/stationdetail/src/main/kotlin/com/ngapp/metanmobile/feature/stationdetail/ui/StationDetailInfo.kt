@@ -145,3 +145,14 @@ internal fun StationDetailPhotos(
         )
     }
 }
+
+@Composable
+internal fun StationDetailAbout(modifier: Modifier = Modifier) {
+    Column(modifier.padding(vertical = 12.dp)) {
+        StationInfoRow(
+            isExpandable = false,
+            rowIcon = MMIcons.QuestionFilled,
+            text = stringResource(R.string.feature_stationdetail_text_cng_about),
+        )
+    }
+}

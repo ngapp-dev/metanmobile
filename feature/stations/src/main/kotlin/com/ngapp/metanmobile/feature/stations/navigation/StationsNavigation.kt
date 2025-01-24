@@ -25,7 +25,7 @@ import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.stations.StationsRoute
 import kotlinx.serialization.Serializable
 
-private const val DEEP_LINK_URI_PATTERN = "https://metan.by/ecogas-map/"
+private const val DEEP_LINK_URI_PATTERN = "https://metan.by/ecogas-map"
 
 fun NavController.navigateToStations(navOptions: NavOptions) =
     navigate(route = StationsNavigation, navOptions)

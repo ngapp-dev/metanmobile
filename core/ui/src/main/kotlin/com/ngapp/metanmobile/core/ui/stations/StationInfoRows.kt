@@ -123,7 +123,8 @@ fun StationInfoRow(
                     .weight(1f)
                     .combinedClickable(
                         onLongClick = {
-                            clipboardManager.setText(AnnotatedString(text))
+                            val link = url.ifEmpty { text }
+                            clipboardManager.setText(AnnotatedString(link))
                             context.showClipboardToast()
                         },
                         onClick = {
@@ -389,7 +390,6 @@ fun StationBusyHours(
                             .shadow(8.dp)
                             .background(MMColors.surface)
                             .padding(16.dp)
-
                     ) {
                         Text(
                             text = stringResource(R.string.core_ui_text_based_on_visits),

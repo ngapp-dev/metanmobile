@@ -21,6 +21,7 @@
     <string name="feature_stationdetail_title_updates">Updates</string>
     <string name="feature_stationdetail_title_payments">Payments</string>
     <string name="feature_stationdetail_title_photos">Photos</string>
+    <string name="feature_stationdetail_title_about">About</string>
     <!-- Buttons -->
     <string name="feature_stationdetail_button_directions">Directions</string>
     <string name="feature_stationdetail_button_call">Call</string>
@@ -30,6 +31,7 @@
     <!-- Text -->
     <string name="feature_stationdetail_text_individual_contract">Conclusion of contracts with an individual</string>
     <string name="feature_stationdetail_text_company_contract">Conclusion of contracts with a legal entity</string>
+    <string name="feature_stationdetail_text_cng_about">CNG Station - Compressed natural gas filling station</string>
     <!-- Description -->
     <string name="feature_stationdetail_description_share_station">Share this station</string>
 </resources>

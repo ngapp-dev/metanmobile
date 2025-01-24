@@ -45,6 +45,7 @@
         android:theme="@style/Theme.MM.Splash"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
+
         <profileable
             android:shell="true"
             tools:targetApi="q" />
@@ -72,6 +73,7 @@
 
         <activity
             android:name="com.ngapp.metanmobile.MainActivity"
+            android:configChanges="uiMode"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
