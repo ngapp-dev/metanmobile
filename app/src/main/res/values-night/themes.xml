@@ -23,6 +23,7 @@
     <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
         <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+        <item name="windowSplashScreenBackground">@color/c_blue_pale</item>
     </style>
 
 </resources>

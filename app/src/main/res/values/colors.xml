@@ -18,4 +18,5 @@
 
 <resources>
     <color name="c_blue">#FF009CDE</color>
+    <color name="c_blue_pale">#16009CDE</color>
 </resources>

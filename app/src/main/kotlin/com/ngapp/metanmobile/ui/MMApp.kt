@@ -67,6 +67,7 @@ import com.ngapp.metanmobile.core.designsystem.component.MetanMobileBackground
 import com.ngapp.metanmobile.core.designsystem.component.MetanMobileGradientBackground
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.LocalGradientColors
+import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
 import com.ngapp.metanmobile.navigation.MMNavHost
 import kotlin.reflect.KClass
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
@@ -151,7 +152,7 @@ internal fun MMApp(
         windowAdaptiveInfo = windowAdaptiveInfo,
         adsContent = {
             if (consentState.canShowAds) {
-//                MainBannerAd()
+                MainBannerAd()
             }
         },
         showBottomBar = currentTopLevelDestination != null && showBottomBar,
