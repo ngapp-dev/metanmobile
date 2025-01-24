@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.designsystem.component
 
-import androidx.collection.emptyDoubleList
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
