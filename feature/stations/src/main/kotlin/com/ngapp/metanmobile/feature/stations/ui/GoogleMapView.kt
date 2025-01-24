@@ -73,7 +73,7 @@ internal fun GoogleMapView(
         mutableStateOf(
             MapUiSettings(
                 compassEnabled = false,
-                zoomControlsEnabled = true,
+                zoomControlsEnabled = false,
                 myLocationButtonEnabled = false
             )
         )
