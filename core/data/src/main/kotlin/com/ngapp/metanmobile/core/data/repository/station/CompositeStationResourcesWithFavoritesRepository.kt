@@ -25,7 +25,6 @@ import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.model.station.mapToUserStationResources
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -49,14 +48,11 @@ class CompositeStationResourcesWithFavoritesRepository @Inject constructor(
      */
     override fun observeAll(query: StationResourceQuery): Flow<List<UserStationResource>> {
         return userDataRepository.userData.flatMapLatest { userData ->
-            val updatedQuery = query.copy(
-                sortingType = userData.stationSortingConfig.sortingType,
-                filterStationTypes = userData.stationSortingConfig.activeStationTypes.toSet(),
-            )
+            val sortingOrderQuery = query.copy(sortingType = userData.stationSortingConfig.sortingType)
 
             val stationResourcesFlow = when (userData.stationSortingConfig.sortingOrder) {
-                SortingOrder.ASC -> stationsRepository.getStationResourcesAsc(updatedQuery)
-                SortingOrder.DESC -> stationsRepository.getStationResourcesDesc(updatedQuery)
+                SortingOrder.ASC -> stationsRepository.getStationResourcesAsc(sortingOrderQuery)
+                SortingOrder.DESC -> stationsRepository.getStationResourcesDesc(sortingOrderQuery)
             }
 
             val locationFlow = locationsRepository.getLocationResource()
@@ -77,9 +73,11 @@ class CompositeStationResourcesWithFavoritesRepository @Inject constructor(
                 }
             }
 
-            combine(stationResourcesFlow, stationWithDistanceFlow) { stationResources, stationWithDistance ->
-                stationWithDistance
-            }
+//            val sortedStationsFlow = when (sortingOrderQuery.sortingType) {
+//                StationSortingType.DISTANCE -> stationWithDistanceFlow.map { it.sortedBy { it.distanceBetween } }
+//                StationSortingType.STATION_NAME -> stationWithDistanceFlow.map { it.sortedBy { it.title } }
+//            }
+            stationWithDistanceFlow
         }
     }
 

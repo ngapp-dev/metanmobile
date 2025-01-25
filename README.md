@@ -1,7 +1,7 @@
 ![Android Gradle Plugin](https://img.shields.io/badge/gradle-8.7.3-brightgreen?logo=gradle)
 ![kotlin-version](https://img.shields.io/badge/kotlin-2.1.0-blue?logo=kotlin)
 
-![Metan Mobile](docs/images/logo_long.jpg "Metan Mobile")
+![Metan Mobile](docs/images/play_graphic.png "Metan Mobile")
 
 <a href="https://play.google.com/store/apps/details?id=com.ngapp.metanmobile"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a>
 
@@ -31,9 +31,14 @@ The application architecture is based with respect to [Now in Android](https://d
 ## Screenshots
 
 <p align="center">
-  <img src="docs/images/home.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
-  <img src="docs/images/stations_map.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
-  <img src="docs/images/news.png" alt="Metan Mobile" title="Metan Mobile" width="30%" />
+  <img src="docs/images/phone1.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone2.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone3.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone4.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone5.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone6.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone7.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
+  <img src="docs/images/phone8.png" alt="Metan Mobile" title="Metan Mobile" width="24%" />
 </p>
 
 ## Libraries used

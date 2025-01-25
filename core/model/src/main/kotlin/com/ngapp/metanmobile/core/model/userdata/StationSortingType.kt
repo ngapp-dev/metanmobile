@@ -18,6 +18,6 @@
 package com.ngapp.metanmobile.core.model.userdata
 
 enum class StationSortingType {
-//    DISTANCE,
     STATION_NAME,
+//    DISTANCE,
 }

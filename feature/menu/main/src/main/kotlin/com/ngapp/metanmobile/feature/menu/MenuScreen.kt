@@ -172,8 +172,8 @@ private fun MenuScreen(
                             onShowAlertDialog = { showLanguageDialog = true }
                         )
                     }
+                    MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
-                MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 MenuRowItem(
                     title = R.string.feature_menu_main_title_about,
                     onPageItemClick = onAboutPageClick,

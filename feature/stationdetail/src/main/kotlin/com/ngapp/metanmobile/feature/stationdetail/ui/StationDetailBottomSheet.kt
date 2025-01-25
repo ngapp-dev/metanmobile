@@ -53,7 +53,6 @@ import kotlinx.coroutines.launch
 fun StationDetailBottomSheet(
     stationCode: String?,
     bottomSheetState: BottomSheetScaffoldState,
-    openFullScreen: Boolean = false,
     onShowTopAppBar: (Boolean) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
     onNewsDetailClick: (String) -> Unit,
@@ -102,7 +101,7 @@ fun StationDetailBottomSheet(
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetState,
-        sheetPeekHeight = if (openFullScreen) screenHeight.dp else (screenHeight * 0.4).dp,
+        sheetPeekHeight = (screenHeight * 0.4).dp,
         sheetShape = RoundedCornerShape(
             topStart = roundedCornerShape,
             topEnd = roundedCornerShape,

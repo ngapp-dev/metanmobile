@@ -22,19 +22,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,8 +48,6 @@ import com.ngapp.metanmobile.core.designsystem.theme.Blue
 import com.ngapp.metanmobile.core.designsystem.theme.Gray400
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.Red700
-import com.ngapp.metanmobile.core.designsystem.theme.White
-import com.ngapp.metanmobile.core.model.station.StationType
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingType
@@ -66,9 +60,6 @@ fun StationsSortAndFilterConfigDialog(
     onShowAlertDialog: (Boolean) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-
-    var cngCheckedState by remember { mutableStateOf(StationType.CNG in stationSortingConfig.activeStationTypes) }
-    var clfsCheckedState by remember { mutableStateOf(StationType.CLFS in stationSortingConfig.activeStationTypes) }
 
     var selectedSortingType by rememberSaveable { mutableStateOf(stationSortingConfig.sortingType) }
     var selectedSortingOrder by rememberSaveable { mutableStateOf(stationSortingConfig.sortingOrder) }
@@ -85,75 +76,6 @@ fun StationsSortAndFilterConfigDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.core_ui_text_items_display),
-                    style = MMTypography.titleLarge
-                )
-                Row(
-                    modifier = Modifier.offset((-12).dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .selectable(
-                                selected = cngCheckedState,
-                                role = Role.Checkbox,
-                                onClick = { cngCheckedState = !cngCheckedState },
-                            )
-                            .semantics {
-                                contentDescription = if (cngCheckedState) {
-                                    "CNG is selected"
-                                } else {
-                                    "CNG is not selected"
-                                }
-                            },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = cngCheckedState,
-                            onCheckedChange = { cngCheckedState = it },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = Blue,
-                                uncheckedColor = Blue,
-                                checkmarkColor = White,
-                            ),
-                        )
-                        Text(
-                            text = stringResource(R.string.core_ui_text_agnks),
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .selectable(
-                                selected = clfsCheckedState,
-                                role = Role.Checkbox,
-                                onClick = { clfsCheckedState = !clfsCheckedState },
-                            )
-                            .semantics {
-                                contentDescription = if (clfsCheckedState) {
-                                    "CLFS is selected"
-                                } else {
-                                    "CLFS is not selected"
-                                }
-                            },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = clfsCheckedState,
-                            onCheckedChange = { clfsCheckedState = it },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = Blue,
-                                uncheckedColor = Blue,
-                                checkmarkColor = White,
-                            ),
-                        )
-                        Text(
-                            text = stringResource(R.string.core_ui_text_clfs),
-                            modifier = Modifier.padding(horizontal = 4.dp)
-                        )
-                    }
-                }
                 Text(
                     text = stringResource(R.string.core_ui_text_sort_by),
                     style = MMTypography.titleLarge
@@ -178,10 +100,6 @@ fun StationsSortAndFilterConfigDialog(
                         stationSortingConfig.copy(
                             sortingType = selectedSortingType,
                             sortingOrder = selectedSortingOrder,
-                            activeStationTypes = listOfNotNull(
-                                if (cngCheckedState) StationType.CNG else null,
-                                if (clfsCheckedState) StationType.CLFS else null
-                            )
                         )
                     )
                     onShowAlertDialog(false)

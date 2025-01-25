@@ -23,6 +23,7 @@
     <string name="core_ui_button_apply">Применить</string>
     <string name="core_ui_button_cancel">Отмена</string>
     <string name="core_ui_button_name">Имени</string>
+    <string name="core_ui_button_distance">Дистанция</string>
     <string name="core_ui_button_date">Дате</string>
     <string name="core_ui_button_descending">По убыванию</string>
     <string name="core_ui_button_ascending">По возрастанию</string>
@@ -56,7 +57,7 @@
     <string name="core_ui_text_value_byn">%s бел.руб.</string>
     <string name="core_ui_text_cng_price">Цена метана</string>
     <string name="core_ui_text_for_one_meter">За 1 куб. метр</string>
-    <string name="core_ui_text_byn_per_one_meter">%s бел.руб/м<sup>3</sup></string>
+    <string name="core_ui_text_byn_per_one_meter">%s бел.руб/м³</string>
     <string name="core_ui_text_value_km">%s км</string>
     <string name="core_ui_text_station_phones">Телефоны</string>
     <string name="core_ui_text_station_payments">Методы оплаты</string>

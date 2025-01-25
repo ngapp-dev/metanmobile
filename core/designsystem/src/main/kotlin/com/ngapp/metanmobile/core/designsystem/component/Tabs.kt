@@ -19,8 +19,10 @@ package com.ngapp.metanmobile.core.designsystem.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -61,7 +63,7 @@ fun MMTab(
             ProvideTextStyle(
                 value = style,
                 content = {
-                    Box(modifier = Modifier.padding(top = MMTabDefaults.TabTopPadding)) {
+                    Box(modifier = Modifier.padding(top = MMTabDefaults.TabTopPadding).wrapContentWidth()) {
                         text()
                     }
                 },
@@ -103,6 +105,43 @@ fun MMTabRow(
         tabs = tabs,
     )
 }
+
+/**
+ * Metan Mobile scrollable tab row. Wraps Material 3 [ScrollableTabRow].
+ *
+ * @param selectedTabIndex The index of the currently selected tab.
+ * @param modifier Modifier to be applied to the tab row.
+ * @param tabs The tabs inside this tab row. Typically this will be multiple [MMTab]s. Each element
+ * inside this lambda will be measured and placed evenly across the row, each taking up equal space.
+ */
+@Composable
+fun MMScrollableTabRow(
+    selectedTabIndex: Int,
+    modifier: Modifier = Modifier,
+    indicatorModifier: Modifier = Modifier,
+    edgePadding: Dp = TabRowDefaults.ScrollableTabRowEdgeStartPadding,
+    tabRowIndicatorColor: Color = Blue,
+    indicatorHeight: Dp = 2.dp,
+    divider: @Composable () -> Unit = {},
+    tabs: @Composable () -> Unit,
+) {
+    ScrollableTabRow(
+        selectedTabIndex = selectedTabIndex,
+        modifier = modifier,
+        edgePadding = edgePadding,
+        containerColor = Color.Transparent,
+        divider = divider,
+        indicator = { tabPositions ->
+            TabRowDefaults.SecondaryIndicator(
+                color = tabRowIndicatorColor,
+                height = indicatorHeight,
+                modifier = indicatorModifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
+            )
+        },
+        tabs = tabs,
+    )
+}
+
 object MMTabDefaults {
     val TabTopPadding = 7.dp
 }

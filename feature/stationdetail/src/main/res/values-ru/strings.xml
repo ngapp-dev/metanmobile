@@ -21,12 +21,14 @@
     <string name="feature_stationdetail_title_updates">Новости</string>
     <string name="feature_stationdetail_title_payments">Оплата</string>
     <string name="feature_stationdetail_title_photos">Фото</string>
+    <string name="feature_stationdetail_title_about">Описание</string>
     <!-- Buttons -->
     <string name="feature_stationdetail_button_directions">Маршрут</string>
     <string name="feature_stationdetail_button_call">Вызов</string>
     <string name="feature_stationdetail_button_save">Сохранить</string>
     <string name="feature_stationdetail_button_saved">Сохранено</string>
     <string name="feature_stationdetail_button_share">Поделиться</string>
+    <string name="feature_stationdetail_text_cng_about">АГНКС - Автомобильная газонаполнительная компрессорная станция</string>
     <!-- Text -->
     <string name="feature_stationdetail_text_individual_contract">Заключение договоров с физическим лицом</string>
     <string name="feature_stationdetail_text_company_contract">Заключение договоров с юридическим лицом</string>

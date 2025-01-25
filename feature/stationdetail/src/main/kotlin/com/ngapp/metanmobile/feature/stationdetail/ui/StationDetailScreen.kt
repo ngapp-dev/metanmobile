@@ -63,15 +63,17 @@ fun NewStationDetailScreen(
         }
 
         is StationDetailUiState.Success -> {
-            Column(modifier) {
-                StationDetailContent(
-                    stationDetail = uiState.stationDetail,
-                    cngPrice = uiState.cngPrice,
-                    relatedNewsList = uiState.relatedNewsList,
-                    onAction = onAction,
-                    onNewsDetailClick = onNewsDetailClick,
-                    onBackClick = onBackClick,
-                )
+            if (uiState.stationDetail != null) {
+                Column(modifier) {
+                    StationDetailContent(
+                        stationDetail = uiState.stationDetail,
+                        cngPrice = uiState.cngPrice,
+                        relatedNewsList = uiState.relatedNewsList,
+                        onAction = onAction,
+                        onNewsDetailClick = onNewsDetailClick,
+                        onBackClick = onBackClick,
+                    )
+                }
             }
         }
     }

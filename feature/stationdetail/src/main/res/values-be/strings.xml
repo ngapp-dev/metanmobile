@@ -22,6 +22,7 @@
     <string name="feature_stationdetail_title_updates">Навіны</string>
     <string name="feature_stationdetail_title_payments">Аплата</string>
     <string name="feature_stationdetail_title_photos">Фота</string>
+    <string name="feature_stationdetail_title_about">Апісанне</string>
     <!-- Buttons -->
     <string name="feature_stationdetail_button_directions">Маршрут</string>
     <string name="feature_stationdetail_button_call">Выклік</string>
@@ -31,6 +32,7 @@
     <!-- Text -->
     <string name="feature_stationdetail_text_individual_contract">Заключэнне дагавораў з фізічнай асобай</string>
     <string name="feature_stationdetail_text_company_contract">Заключэнне дагавораў з юрыдычнай асобай</string>
+    <string name="feature_stationdetail_text_cng_about">АГНКС - Аўтамабільная газанапаўняльная кампрэсарная станцыя</string>
     <!-- Description -->
     <string name="feature_stationdetail_description_share_station">Падзяліцца гэтай станцыяй</string>
 </resources>

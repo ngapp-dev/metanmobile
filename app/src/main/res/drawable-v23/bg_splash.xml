@@ -16,9 +16,17 @@
   -->
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:angle="90"
+                android:endColor="#FF009CDE"
+                android:startColor="#FF09AF84" />
+        </shape>
+    </item>
     <item
         android:width="108dp"
-        android:height="96dp"
+        android:height="108dp"
         android:drawable="@drawable/ic_launcher_foreground"
         android:gravity="center" />
 </layer-list>

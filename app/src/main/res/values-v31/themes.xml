@@ -32,6 +32,6 @@
     <style name="Theme.MM.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="windowSplashScreenAnimatedIcon">@drawable/bg_splash_12</item>
         <item name="postSplashScreenTheme">@style/Theme.MM</item>
+        <item name="windowSplashScreenBackground">@color/c_blue</item>
     </style>
-
 </resources>

@@ -24,6 +24,7 @@
     <string name="core_ui_button_apply">Apply</string>
     <string name="core_ui_button_cancel">Cancel</string>
     <string name="core_ui_button_name">Name</string>
+    <string name="core_ui_button_distance">Distance</string>
     <string name="core_ui_button_date">Date</string>
     <string name="core_ui_button_descending">Descending</string>
     <string name="core_ui_button_ascending">Ascending</string>
@@ -57,7 +58,7 @@
     <string name="core_ui_text_value_byn">%s BYN</string>
     <string name="core_ui_text_cng_price">CNG price</string>
     <string name="core_ui_text_for_one_meter">For 1 sq. m</string>
-    <string name="core_ui_text_byn_per_one_meter">%s BYN/m<sup>3</sup></string>
+    <string name="core_ui_text_byn_per_one_meter">%s BYN/m³</string>
     <string name="core_ui_text_value_km">%s KM</string>
     <string name="core_ui_text_station_phones">Phones</string>
     <string name="core_ui_text_station_payments">Payments</string>
