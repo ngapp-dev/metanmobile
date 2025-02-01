@@ -183,6 +183,11 @@ private fun MenuScreen(
                     title = R.string.feature_menu_main_title_legal_regulations,
                     onPageItemClick = onLegalRegulationsPageClick
                 )
+                MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                MenuRowItem(
+                    title = R.string.feature_menu_main_title_subscription,
+                    onPageItemClick = {},
+                )
             }
         }
     }

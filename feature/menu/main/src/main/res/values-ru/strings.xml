@@ -32,4 +32,5 @@
     <string name="feature_menu_main_title_contacts">Контакты</string>
     <string name="feature_menu_main_title_calculators">Калькуляторы</string>
     <string name="feature_menu_main_title_career">Вакансии</string>
+    <string name="feature_menu_main_title_subscription">Подписка</string>
 </resources>
