@@ -16,10 +16,10 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.ngapp.metanmobile.configureGradleManagedDevices
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
 import com.ngapp.metanmobile.configureBadgingTasks
+import com.ngapp.metanmobile.configureGradleManagedDevices
 import com.ngapp.metanmobile.configureKotlinAndroid
 import com.ngapp.metanmobile.configurePrintApksTask
 import com.ngapp.metanmobile.libs
