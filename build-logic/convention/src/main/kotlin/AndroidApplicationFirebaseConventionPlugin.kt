@@ -36,7 +36,6 @@ class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
                 val bom = libs.findLibrary("firebase-bom").get()
                 "implementation"(platform(bom))
                 "implementation"(libs.findLibrary("firebase.analytics").get())
-                "implementation"(libs.findLibrary("firebase.crashlytics").get())
                 "implementation"(libs.findLibrary("firebase.performance").get()) {
                     /*
                     Exclusion of protobuf / protolite dependencies is necessary as the
@@ -47,6 +46,7 @@ class AndroidApplicationFirebaseConventionPlugin : Plugin<Project> {
                     exclude(group = "com.google.protobuf", module = "protobuf-javalite")
                     exclude(group = "com.google.firebase", module = "protolite-well-known-types")
                 }
+                "implementation"(libs.findLibrary("firebase.crashlytics").get())
             }
 
             extensions.configure<ApplicationExtension> {
