@@ -27,6 +27,7 @@ class AndroidLibraryJacocoConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jacoco")
+
             val androidExtension = extensions.getByType<LibraryExtension>()
 
             androidExtension.buildTypes.configureEach {
