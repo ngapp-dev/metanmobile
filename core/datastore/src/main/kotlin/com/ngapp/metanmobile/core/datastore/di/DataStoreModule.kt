@@ -26,7 +26,6 @@ import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.common.network.di.ApplicationScope
 import com.ngapp.metanmobile.core.datastore.UserPreferences
 import com.ngapp.metanmobile.core.datastore.UserPreferencesSerializer
-import com.ngapp.metanmobile.core.datastore.pref.CacheManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,9 +53,4 @@ object DataStoreModule {
         ) {
             context.dataStoreFile("user_preferences.pb")
         }
-
-    @Provides
-    @Singleton
-    internal fun provideCacheManager(@ApplicationContext context: Context): CacheManager =
-        CacheManager(context)
 }
