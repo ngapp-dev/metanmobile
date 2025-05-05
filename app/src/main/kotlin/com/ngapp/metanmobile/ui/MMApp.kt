@@ -143,9 +143,9 @@ internal fun MMApp(
                     },
                     label = { Text(stringResource(destination.iconTextId)) },
                     modifier =
-                    Modifier
-                        .testTag("MMNavItem")
-                        .then(if (hasUnread) Modifier.notificationDot() else Modifier),
+                        Modifier
+                            .testTag("MMNavItem")
+                            .then(if (hasUnread) Modifier.notificationDot() else Modifier),
                 )
             }
         },
@@ -187,9 +187,7 @@ private fun DestinationScaffold(
                 .fillMaxSize()
                 .padding(padding)
                 .consumeWindowInsets(padding)
-                .windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
-                ),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         ) {
             Box(modifier = Modifier.consumeWindowInsets(WindowInsets(0, 0, 0, 0))) {
                 MMNavHost(

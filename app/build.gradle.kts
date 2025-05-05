@@ -48,10 +48,13 @@ android {
             applicationIdSuffix = MMBuildType.DEBUG.applicationIdSuffix
         }
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             applicationIdSuffix = MMBuildType.RELEASE.applicationIdSuffix
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.named("debug").get()
 //            baselineProfile.automaticGenerationDuringBuild = true
         }

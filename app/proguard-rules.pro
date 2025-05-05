@@ -46,3 +46,51 @@
 
 -keep class com.google.android.gms.** { *; }
 -dontwarn android.media.AudioTrack$StreamEventCallback
+
+# Jetpack Compose
+-keep class androidx.compose.** { *; }
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable <methods>;
+}
+-dontwarn androidx.compose.**
+
+# Hilt (Dependency Injection)
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class com.google.dagger.** { *; }
+-keepclassmembers class * {
+    @dagger.hilt.android.lifecycle.HiltViewModel <init>(...);
+}
+-dontwarn dagger.hilt.**
+
+# Kotlin Coroutines
+-keepclassmembers class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
+
+# Coil (Image loading)
+-keep class coil.** { *; }
+-dontwarn coil.**
+
+
+# Hilt и Hilt Worker
+-keep class ** extends androidx.work.Worker { *; }
+-keep class ** extends androidx.work.CoroutineWorker { *; }
+
+-keepclassmembers class * {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+
+# Dagger/Hilt annotations and entry points
+-keep class dagger.hilt.EntryPoint { *; }
+-keep class dagger.Module { *; }
+-keep @dagger.hilt.InstallIn class * { *; }
+-keep @dagger.Module class * { *; }
+
+# WorkManager Workers (в том числе наследование и reflection)
+-keep class com.ngapp.metanmobile.sync.workers.** extends androidx.work.Worker { *; }
+-keep class com.ngapp.metanmobile.sync.workers.** extends androidx.work.CoroutineWorker { *; }
+
+# Конструкторы
+-keepclassmembers class com.ngapp.metanmobile.sync.workers.** {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
