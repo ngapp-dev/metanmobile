@@ -1,4 +1,4 @@
-![Android Gradle Plugin](https://img.shields.io/badge/gradle-8.9.2-brightgreen?logo=gradle)
+![Android Gradle Plugin](https://img.shields.io/badge/gradle-8.12.2-brightgreen?logo=gradle)
 ![kotlin-version](https://img.shields.io/badge/kotlin-2.1.20-blue?logo=kotlin)
 
 ![Metan Mobile](docs/images/play_graphic.png "Metan Mobile")
