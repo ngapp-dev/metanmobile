@@ -18,22 +18,22 @@
 package com.ngapp.metanmobile.feature.news.detail
 
 import androidx.activity.compose.ReportDrawnWhen
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMNavShareButtonsTopAppBar
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
@@ -68,6 +68,16 @@ private fun NewsDetailScreen(
     ReportDrawnWhen { uiState is NewsDetailUiState.Loading }
 
     when (uiState) {
+        NewsDetailUiState.Loading -> {
+            AnimatedVisibility(
+                visible = true,
+                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+            ) {
+                MMLinearWavyProgressIndicator()
+            }
+        }
+
         is NewsDetailUiState.Success -> {
             Column(modifier) {
                 MMNavShareButtonsTopAppBar(
@@ -75,20 +85,6 @@ private fun NewsDetailScreen(
                     onShareActionClick = { onAction(NewsDetailAction.ShareNews(uiState.news)) }
                 )
                 NewsDetailContent(news = uiState.news)
-            }
-        }
-
-        NewsDetailUiState.Loading -> {
-            val loadingContentDescription = "News detail screen loading wheel"
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-            ) {
-                MMOverlayLoadingWheel(
-                    modifier = Modifier.align(Alignment.Center),
-                    contentDesc = loadingContentDescription,
-                )
             }
         }
     }

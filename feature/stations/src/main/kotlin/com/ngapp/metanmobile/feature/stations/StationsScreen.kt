@@ -65,7 +65,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchFieldTopAppBar
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMTab
 import com.ngapp.metanmobile.core.designsystem.component.MMTabRow
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.DraggableScrollbar
@@ -163,11 +163,18 @@ private fun StationsScreen(
         showTopAppBar = showTopAppBar,
         onAction = onAction,
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            AnimatedVisibility(
+                visible = isSyncing || isLoading,
+                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+            ) {
+                MMLinearWavyProgressIndicator()
+            }
             when (uiState) {
                 StationsUiState.Loading -> Unit
                 is StationsUiState.Success -> {
@@ -239,7 +246,11 @@ private fun StationsScreen(
                                                     stationsList = uiState.stationList,
                                                     onAction = onAction,
                                                     onDetailClick = {
-                                                        onAction(StationsAction.UpdateStationCode(it))
+                                                        onAction(
+                                                            StationsAction.UpdateStationCode(
+                                                                it
+                                                            )
+                                                        )
                                                         showTopAppBar = false
                                                         onShowBottomBar(false)
                                                         coroutineScope.launch { listBottomSheetScaffoldState.bottomSheetState.expand() }
@@ -297,7 +308,6 @@ private fun StationsScreen(
                     }
                 }
             }
-            LoadingState(isSyncing = isSyncing, isLoading = isLoading)
         }
     }
 }
@@ -305,30 +315,6 @@ private fun StationsScreen(
 private enum class StationTabs(val titleResId: Int) {
     LIST(R.string.feature_stations_title_station_list),
     MAP(R.string.feature_stations_title_stations_map)
-}
-
-@Composable
-private fun LoadingState(
-    isSyncing: Boolean,
-    isLoading: Boolean,
-) {
-    AnimatedVisibility(
-        visible = isSyncing || isLoading,
-        enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-        exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-    ) {
-        val loadingContentDescription = "Stations list loading wheel"
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-        ) {
-            MMOverlayLoadingWheel(
-                modifier = Modifier.align(Alignment.Center),
-                contentDesc = loadingContentDescription,
-            )
-        }
-    }
 }
 
 private fun feedItemsSize(uiState: StationsUiState): Int {

@@ -28,10 +28,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,19 +39,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMCabinetTopAppBar
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.lottie.LottieErrorView
@@ -98,11 +95,18 @@ private fun CabinetScreen(
         onBackClick = onBackClick,
     ) { padding ->
 
-        Box(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            AnimatedVisibility(
+                visible = uiState.isLoading,
+                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+            ) {
+                MMLinearWavyProgressIndicator()
+            }
             if (!uiState.isLoading) {
                 AndroidView(
                     factory = { context ->
@@ -147,23 +151,6 @@ private fun CabinetScreen(
                     paddingValues = padding,
                     action = { webView?.loadUrl(url) }
                 )
-            }
-            AnimatedVisibility(
-                visible = uiState.isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "Favorites screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
-                }
             }
         }
     }
