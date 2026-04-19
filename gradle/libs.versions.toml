@@ -1,10 +1,10 @@
 [versions]
-androidCompileSdk = "35"
+androidCompileSdk = "36"
 androidMinSdk = "23"
-androidTargetSdk = "35"
+androidTargetSdk = "36"
 versionMajor = "2"
 versionMinor = "2"
-versionPatch = "19"
+versionPatch = "20"
 applicationId = "com.ngapp.metanmobile"
 
 accompanist = "0.37.3"
