@@ -25,12 +25,10 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -53,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMAsyncImage
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
@@ -95,11 +93,18 @@ private fun AboutScreen(
         onBackClick = onBackClick
     ) { padding ->
 
-        Box(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            AnimatedVisibility(
+                visible = isSyncing || isLoading,
+                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+            ) {
+                MMLinearWavyProgressIndicator()
+            }
             when (uiState) {
                 is AboutUiState.Loading -> Unit
                 is AboutUiState.Success -> {
@@ -150,23 +155,6 @@ private fun AboutScreen(
                             style = MMTypography.headlineMedium,
                         )
                     }
-                }
-            }
-            AnimatedVisibility(
-                visible = isSyncing || isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "About screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
                 }
             }
         }

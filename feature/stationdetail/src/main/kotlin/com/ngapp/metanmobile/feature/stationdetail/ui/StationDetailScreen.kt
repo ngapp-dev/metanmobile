@@ -18,16 +18,16 @@
 package com.ngapp.metanmobile.feature.stationdetail.ui
 
 import androidx.activity.compose.ReportDrawnWhen
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.compose.ui.unit.dp
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
 import com.ngapp.metanmobile.core.model.price.PriceResource
@@ -47,32 +47,28 @@ fun NewStationDetailScreen(
     val isLoading = uiState == StationDetailUiState.Loading
     ReportDrawnWhen { isLoading }
 
-    when (uiState) {
-        StationDetailUiState.Loading -> {
-            val loadingContentDescription = "Station detail screen loading wheel"
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-            ) {
-                MMOverlayLoadingWheel(
-                    modifier = Modifier.align(Alignment.Center),
-                    contentDesc = loadingContentDescription,
-                )
-            }
+    Column {
+        AnimatedVisibility(
+            visible = isLoading,
+            enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+        ) {
+            MMLinearWavyProgressIndicator()
         }
-
-        is StationDetailUiState.Success -> {
-            if (uiState.stationDetail != null) {
-                Column(modifier) {
-                    StationDetailContent(
-                        stationDetail = uiState.stationDetail,
-                        cngPrice = uiState.cngPrice,
-                        relatedNewsList = uiState.relatedNewsList,
-                        onAction = onAction,
-                        onNewsDetailClick = onNewsDetailClick,
-                        onBackClick = onBackClick,
-                    )
+        when (uiState) {
+            StationDetailUiState.Loading -> Unit
+            is StationDetailUiState.Success -> {
+                if (uiState.stationDetail != null) {
+                    Column(modifier) {
+                        StationDetailContent(
+                            stationDetail = uiState.stationDetail,
+                            cngPrice = uiState.cngPrice,
+                            relatedNewsList = uiState.relatedNewsList,
+                            onAction = onAction,
+                            onNewsDetailClick = onNewsDetailClick,
+                            onBackClick = onBackClick,
+                        )
+                    }
                 }
             }
         }

@@ -19,6 +19,8 @@ package com.ngapp.metanmobile.core.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
@@ -96,6 +98,7 @@ val MMShapes: Shapes
 val MMTypography: Typography
     @Composable get() = MaterialTheme.typography
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MMTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -117,7 +120,7 @@ fun MMTheme(
     }
 
     CompositionLocalProvider(LocalGradientColors provides defaultGradientColors) {
-        MaterialTheme(
+        MaterialExpressiveTheme(
             colorScheme = colorScheme,
             typography = typography,
             shapes = Shapes,

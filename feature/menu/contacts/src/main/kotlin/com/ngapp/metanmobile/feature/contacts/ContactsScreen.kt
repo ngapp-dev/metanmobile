@@ -23,11 +23,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -35,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -45,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
@@ -88,7 +85,19 @@ private fun ContactsScreen(
         onBackClick = onBackClick
     ) { padding ->
 
-        Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+        )
+        {
+            AnimatedVisibility(
+                visible = isSyncing || isLoading,
+                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+            ) {
+                MMLinearWavyProgressIndicator()
+            }
             when (uiState) {
                 ContactsUiState.Loading -> Unit
                 is ContactsUiState.Success -> {
@@ -119,23 +128,6 @@ private fun ContactsScreen(
                         )
                     }
                 }
-            }
-        }
-        AnimatedVisibility(
-            visible = isSyncing || isLoading,
-            enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-        ) {
-            val loadingContentDescription = "Contacts screen loading wheel"
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-            ) {
-                MMOverlayLoadingWheel(
-                    modifier = Modifier.align(Alignment.Center),
-                    contentDesc = loadingContentDescription,
-                )
             }
         }
     }

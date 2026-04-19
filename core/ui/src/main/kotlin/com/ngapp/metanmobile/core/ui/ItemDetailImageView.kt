@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,9 +34,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import com.ngapp.metanmobile.core.designsystem.component.MMCircularWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.ui.lottie.LottieLoadingView
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ItemDetailImageView(
     modifier: Modifier = Modifier,
@@ -56,7 +60,7 @@ fun ItemDetailImageView(
         contentAlignment = Alignment.Center
     ) {
         if (state is AsyncImagePainter.State.Loading) {
-            LottieLoadingView()
+            MMCircularWavyProgressIndicator()
         }
         Image(
             painter = painter,

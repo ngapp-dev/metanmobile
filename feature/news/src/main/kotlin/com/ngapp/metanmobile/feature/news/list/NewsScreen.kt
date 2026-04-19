@@ -25,11 +25,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -57,7 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchFieldTopAppBar
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.scrollbarState
@@ -128,53 +128,45 @@ private fun NewsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when (uiState) {
-                NewsUiState.Loading -> Unit
-                is NewsUiState.Success -> {
-                    if (showDialog) {
-                        NewsSortingConfigDialog(
-                            newsSortingConfig = uiState.newsSortingConfig,
-                            onConfirmClick = {
-                                onAction(NewsAction.UpdateSortingConfig(it))
-                                coroutineScope.launch { gridState.animateScrollToItem(0) }
-                            },
-                            onShowAlertDialog = { onAction(NewsAction.ShowAlertDialog(it)) }
-                        )
-                    }
-                    if (uiState.newsList.isNotEmpty() || uiState.pinnedNewsList.isNotEmpty()) {
-                        Surface(shadowElevation = 4.dp) {
-                            NewsContent(
-                                gridState = gridState,
-                                newsList = uiState.newsList,
-                                pinnedNewsList = uiState.pinnedNewsList,
-                                onDetailClick = onDetailClick,
+            Column {
+                AnimatedVisibility(
+                    visible = isSyncing || isLoading,
+                    enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+                ) {
+                    MMLinearWavyProgressIndicator()
+                }
+                when (uiState) {
+                    NewsUiState.Loading -> Unit
+                    is NewsUiState.Success -> {
+                        if (showDialog) {
+                            NewsSortingConfigDialog(
+                                newsSortingConfig = uiState.newsSortingConfig,
+                                onConfirmClick = {
+                                    onAction(NewsAction.UpdateSortingConfig(it))
+                                    coroutineScope.launch { gridState.animateScrollToItem(0) }
+                                },
+                                onShowAlertDialog = { onAction(NewsAction.ShowAlertDialog(it)) }
                             )
                         }
-                    } else {
-                        LottieEmptyView(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_news_text_empty)
-                        )
+                        if (uiState.newsList.isNotEmpty() || uiState.pinnedNewsList.isNotEmpty()) {
+                            Surface(shadowElevation = 4.dp) {
+                                NewsContent(
+                                    gridState = gridState,
+                                    newsList = uiState.newsList,
+                                    pinnedNewsList = uiState.pinnedNewsList,
+                                    onDetailClick = onDetailClick,
+                                )
+                            }
+                        } else {
+                            LottieEmptyView(
+                                modifier = modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                message = stringResource(R.string.feature_news_text_empty)
+                            )
+                        }
                     }
-                }
-            }
-            AnimatedVisibility(
-                visible = isSyncing || isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "News screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
                 }
             }
             gridState.DraggableScrollbar(

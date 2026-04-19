@@ -25,6 +25,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -64,7 +65,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchFieldTopAppBar
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.scrollbarState
@@ -187,68 +188,60 @@ private fun FavoritesScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when (uiState) {
-                FavoritesUiState.Loading -> Unit
-                is FavoritesUiState.Success -> {
-                    if (showDialog) {
-                        StationsSortAndFilterConfigDialog(
-                            stationSortingConfig = uiState.stationSortingConfig,
-                            onConfirmClick = {
-                                onAction(FavoritesAction.UpdateSortingConfig(it))
-                                coroutineScope.launch { gridState.animateScrollToItem(0) }
-                            },
-                            onShowAlertDialog = { onAction(FavoritesAction.ShowAlertDialog(it)) }
-                        )
-                    }
-
-                    if (uiState.favoriteStationList.isNotEmpty()) {
-                        Surface(shadowElevation = 4.dp) {
-                            StationDetailBottomSheet(
-                                stationCode = stationCode,
-                                bottomSheetState = bottomSheetScaffoldState,
-                                onShowTopAppBar = { showTopAppBar = it },
-                                onShowBottomBar = onShowBottomBar,
-                                onNewsDetailClick = onNewsDetailClick,
-                            ) {
-                                FavoritesContent(
-                                    gridState = gridState,
-                                    favoriteStationsList = uiState.favoriteStationList,
-                                    onAction = onAction,
-                                    onDetailClick = {
-                                        onAction(FavoritesAction.UpdateStationCode(it))
-                                        showTopAppBar = false
-                                        onShowBottomBar(false)
-                                        coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
-
-                                    },
-                                )
-                            }
-                        }
-                    } else {
-                        LottieEmptyView(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_favorites_text_empty)
-                        )
-                    }
-                }
-            }
-            AnimatedVisibility(
-                visible = isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "Favorites screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+            Column {
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
                 ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
+                    MMLinearWavyProgressIndicator()
+                }
+                when (uiState) {
+                    FavoritesUiState.Loading -> Unit
+                    is FavoritesUiState.Success -> {
+                        if (showDialog) {
+                            StationsSortAndFilterConfigDialog(
+                                stationSortingConfig = uiState.stationSortingConfig,
+                                onConfirmClick = {
+                                    onAction(FavoritesAction.UpdateSortingConfig(it))
+                                    coroutineScope.launch { gridState.animateScrollToItem(0) }
+                                },
+                                onShowAlertDialog = { onAction(FavoritesAction.ShowAlertDialog(it)) }
+                            )
+                        }
+
+                        if (uiState.favoriteStationList.isNotEmpty()) {
+                            Surface(shadowElevation = 4.dp) {
+                                StationDetailBottomSheet(
+                                    stationCode = stationCode,
+                                    bottomSheetState = bottomSheetScaffoldState,
+                                    onShowTopAppBar = { showTopAppBar = it },
+                                    onShowBottomBar = onShowBottomBar,
+                                    onNewsDetailClick = onNewsDetailClick,
+                                ) {
+                                    FavoritesContent(
+                                        gridState = gridState,
+                                        favoriteStationsList = uiState.favoriteStationList,
+                                        onAction = onAction,
+                                        onDetailClick = {
+                                            onAction(FavoritesAction.UpdateStationCode(it))
+                                            showTopAppBar = false
+                                            onShowBottomBar(false)
+                                            coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
+
+                                        },
+                                    )
+                                }
+                            }
+                        } else {
+                            LottieEmptyView(
+                                modifier = modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                message = stringResource(R.string.feature_favorites_text_empty)
+                            )
+                        }
+                    }
                 }
             }
             gridState.DraggableScrollbar(

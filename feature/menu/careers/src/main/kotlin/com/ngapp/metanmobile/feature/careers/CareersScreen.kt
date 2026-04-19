@@ -25,11 +25,11 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -48,7 +48,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ngapp.metanmobile.core.designsystem.component.MMOverlayLoadingWheel
+import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.rememberDraggableScroller
@@ -101,40 +101,32 @@ private fun CareersScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when (uiState) {
-                CareersUiState.Loading -> Unit
-                is CareersUiState.Success -> {
-                    if (uiState.careers.isNotEmpty()) {
-                        CareersContent(
-                            modifier = modifier,
-                            staggeredGridState = staggeredGridState,
-                            careers = uiState.careers,
-                        )
-                    } else {
-                        LottieEmptyView(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_menu_careers_text_empty)
-                        )
-                    }
-                }
-            }
-            AnimatedVisibility(
-                visible = isSyncing || isLoading,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                val loadingContentDescription = "Career screen loading wheel"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
+            Column {
+                AnimatedVisibility(
+                    visible = isSyncing || isLoading,
+                    enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
                 ) {
-                    MMOverlayLoadingWheel(
-                        modifier = Modifier.align(Alignment.Center),
-                        contentDesc = loadingContentDescription,
-                    )
+                    MMLinearWavyProgressIndicator()
+                }
+                when (uiState) {
+                    CareersUiState.Loading -> Unit
+                    is CareersUiState.Success -> {
+                        if (uiState.careers.isNotEmpty()) {
+                            CareersContent(
+                                modifier = modifier,
+                                staggeredGridState = staggeredGridState,
+                                careers = uiState.careers,
+                            )
+                        } else {
+                            LottieEmptyView(
+                                modifier = modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                message = stringResource(R.string.feature_menu_careers_text_empty)
+                            )
+                        }
+                    }
                 }
             }
             staggeredGridState.DraggableScrollbar(
