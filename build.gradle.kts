@@ -20,12 +20,6 @@ buildscript {
         google()
         mavenCentral()
     }
-
-    dependencies {
-        classpath(libs.google.oss.licenses.plugin) {
-            exclude(group = "com.google.protobuf")
-        }
-    }
 }
 
 plugins {
@@ -45,5 +39,5 @@ plugins {
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.room) apply false
-    alias(libs.plugins.module.graph) apply true
+    alias(libs.plugins.spotless) apply true
 }

@@ -17,10 +17,9 @@
 
 package com.ngapp.metanmobile
 
-import com.android.SdkConstants
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.Aapt2
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.BaseExtension
 import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -36,13 +35,11 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.gradle.process.ExecOperations
-import java.io.File
 import javax.inject.Inject
 
 abstract class GenerateBadgingTask : DefaultTask() {
@@ -111,35 +108,25 @@ private fun String.capitalizedStr() = replaceFirstChar {
 }
 
 fun Project.configureBadgingTasks(
-    baseExtension: BaseExtension,
     componentsExtension: ApplicationAndroidComponentsExtension,
 ) {
     // Registers a callback to be called, when a new variant is configured
     componentsExtension.onVariants { variant ->
         // Registers a new task to verify the app bundle.
-        val capitalizedVariantName = variant.name.capitalizedStr()
+        val capitalizedVariantName = variant.name.capitalized()
         val generateBadgingTaskName = "generate${capitalizedVariantName}Badging"
         val generateBadging =
             tasks.register<GenerateBadgingTask>(generateBadgingTaskName) {
                 apk = variant.artifacts.get(SingleArtifact.APK_FROM_BUNDLE)
-
-                aapt2Executable = File(
-                    baseExtension.sdkDirectory,
-                    "${SdkConstants.FD_BUILD_TOOLS}/" +
-                            "${baseExtension.buildToolsVersion}/" +
-                            SdkConstants.FN_AAPT2,
-                )
-
-
+                aapt2Executable = componentsExtension.sdkComponents.aapt2.flatMap(Aapt2::executable)
                 badging = project.layout.buildDirectory.file(
                     "outputs/apk_from_bundle/${variant.name}/${variant.name}-badging.txt",
                 )
-
             }
 
         val updateBadgingTaskName = "update${capitalizedVariantName}Badging"
         tasks.register<Copy>(updateBadgingTaskName) {
-            from(generateBadging.get().badging)
+            from(generateBadging.map(GenerateBadgingTask::badging))
             into(project.layout.projectDirectory)
         }
 
@@ -147,12 +134,11 @@ fun Project.configureBadgingTasks(
         tasks.register<CheckBadgingTask>(checkBadgingTaskName) {
             goldenBadging = project.layout.projectDirectory.file("${variant.name}-badging.txt")
 
-            generatedBadging = generateBadging.get().badging
+            generatedBadging.set(generateBadging.flatMap(GenerateBadgingTask::badging))
 
             this.updateBadgingTaskName = updateBadgingTaskName
 
             output = project.layout.buildDirectory.dir("intermediates/$checkBadgingTaskName")
-
         }
     }
 }
