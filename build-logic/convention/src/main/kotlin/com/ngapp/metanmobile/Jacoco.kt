@@ -21,6 +21,8 @@ import com.android.build.api.artifact.ScopedArtifact
 import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.api.variant.ScopedArtifacts
 import com.android.build.api.variant.SourceDirectories
+import com.android.build.api.dsl.BuildType
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFile
@@ -35,6 +37,7 @@ import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import java.util.Locale
+import org.gradle.api.NamedDomainObjectContainer
 
 private val coverageExclusions = listOf(
     // Android
@@ -60,8 +63,14 @@ private fun String.capitalize() = replaceFirstChar {
  * tests on CI using a different Github Action or an external device farm.
  */
 internal fun Project.configureJacoco(
+    commonExtension: CommonExtension,
     androidComponentsExtension: AndroidComponentsExtension<*, *, *>,
 ) {
+    commonExtension.buildTypes.named("debug") {
+        enableAndroidTestCoverage = true
+        enableUnitTestCoverage = true
+    }
+
     configure<JacocoPluginExtension> {
         toolVersion = libs.findVersion("jacoco").get().toString()
     }

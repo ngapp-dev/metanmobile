@@ -15,7 +15,7 @@
  *
  */
 
-import com.android.build.gradle.TestExtension
+import com.android.build.api.dsl.TestExtension
 import com.ngapp.metanmobile.configureGradleManagedDevices
 import com.ngapp.metanmobile.configureKotlinAndroid
 import com.ngapp.metanmobile.libs
@@ -28,7 +28,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.test")
-            apply(plugin = "org.jetbrains.kotlin.android")
+//            apply(plugin = "org.jetbrains.kotlin.android")
 
             extensions.configure<TestExtension> {
                 configureKotlinAndroid(this)

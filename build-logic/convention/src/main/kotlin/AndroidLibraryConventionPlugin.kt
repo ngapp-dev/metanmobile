@@ -16,7 +16,7 @@
  */
 
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.ngapp.metanmobile.configureGradleManagedDevices
 import com.ngapp.metanmobile.configureKotlinAndroid
 import com.ngapp.metanmobile.configurePrintApksTask
@@ -32,19 +32,23 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "com.android.library")
-            apply(plugin = "org.jetbrains.kotlin.android")
+//            apply(plugin = "org.jetbrains.kotlin.android")
             apply(plugin = "metanmobile.android.lint")
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk =
+                testOptions.targetSdk =
+                    libs.findVersion("androidTargetSdk").get().toString().toInt()
+                lint.targetSdk =
                     libs.findVersion("androidTargetSdk").get().toString().toInt()
                 defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 testOptions.animationsDisabled = true
                 configureGradleManagedDevices(this)
                 // The resource prefix is derived from the module name,
                 // so resources inside ":core:module1" must be prefixed with "core_module1_"
-                resourcePrefix = path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_").lowercase() + "_"
+                resourcePrefix =
+                    path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_")
+                        .lowercase() + "_"
             }
             extensions.configure<LibraryAndroidComponentsExtension> {
                 configurePrintApksTask(this)
