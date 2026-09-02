@@ -95,6 +95,10 @@
     <string name="core_ui_text_recent_offers">Recent offers</string>
     <string name="core_ui_text_google_service_unavailable">Google services unavailable</string>
     <string name="core_ui_text_permission_denied">Permission was denied</string>
+    <string name="core_ui_title_location_rationale">Location access</string>
+    <string name="core_ui_text_location_rationale">The app uses your location to show the distance to each station on the map and in the list. It\'s only used while you\'re in the app and isn\'t shared anywhere.</string>
+    <string name="core_ui_button_open_settings">Open settings</string>
+    <string name="core_ui_button_decline_anyway">Dismiss</string>
     <string name="core_ui_text_share_via">&#160;- Share via&#160;</string>
     <string name="core_ui_text_no_experience">Not required</string>
     <string name="core_ui_text_place_any">Any</string>

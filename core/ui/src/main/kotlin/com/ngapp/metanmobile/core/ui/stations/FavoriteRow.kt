@@ -154,22 +154,20 @@ fun FavoriteRow(
                             )
                         }
                     }
+                } else if (favoriteStation.distanceBetween == null) {
+                    ProgressIndicatorSmall(modifier = Modifier.padding(vertical = 4.dp))
                 } else {
-                    if (favoriteStation.distanceBetween == 0.0) {
-                        ProgressIndicatorSmall(modifier = Modifier.padding(vertical = 4.dp))
-                    } else {
-                        val km =
-                            String.format(
-                                Locale.getDefault(), "%.1f", favoriteStation.distanceBetween
-                            )
-                                .replace('.', ',')
-                        Text(
-                            text = stringResource(id = CoreUiR.string.core_ui_text_value_km, km),
-                            maxLines = 1,
-                            overflow = TextOverflow.Visible,
-                            style = MMTypography.bodySmall
+                    val km =
+                        String.format(
+                            Locale.getDefault(), "%.1f", favoriteStation.distanceBetween
                         )
-                    }
+                            .replace('.', ',')
+                    Text(
+                        text = stringResource(id = CoreUiR.string.core_ui_text_value_km, km),
+                        maxLines = 1,
+                        overflow = TextOverflow.Visible,
+                        style = MMTypography.bodySmall
+                    )
                 }
             }
         }

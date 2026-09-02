@@ -84,7 +84,7 @@ internal fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val permissionsState = LocalPermissionsState.current
-    LaunchedEffect(permissionsState) {
+    LaunchedEffect(permissionsState.hasLocationPermissions) {
         if (permissionsState.hasLocationPermissions) {
             viewModel.triggerAction(HomeAction.UpdateLocation(true))
         }

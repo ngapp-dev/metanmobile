@@ -501,8 +501,13 @@ private fun getCalculatorMileageResult(
         Pair(context.getString(R.string.core_ui_text_ai92), 2.36),
         Pair(context.getString(R.string.core_ui_text_lpg), 1.32),
     )
-    val fuelRates = when (selectedCarType) {
-        carTypes[0] -> listOf(
+    // selectedCarType is a translated label saved (rememberSaveable) before whatever language is
+    // active now — a language switch recreates the Activity, carTypes gets relabeled, and the old
+    // saved string no longer matches any of them. Fall back to the first car type instead of
+    // silently matching nothing, which used to return an empty result list and crash the chart.
+    val carTypeIndex = carTypes.indexOf(selectedCarType).takeIf { it >= 0 } ?: 0
+    val fuelRates = when (carTypeIndex) {
+        0 -> listOf(
             Triple(
                 context.getString(R.string.core_ui_text_cng),
                 8.7,
@@ -530,7 +535,7 @@ private fun getCalculatorMileageResult(
             )
         )
 
-        carTypes[1] -> listOf(
+        1 -> listOf(
             Triple(
                 context.getString(R.string.core_ui_text_cng),
                 18.0,
@@ -558,7 +563,7 @@ private fun getCalculatorMileageResult(
             )
         )
 
-        carTypes[2] -> listOf(
+        2 -> listOf(
             Triple(
                 context.getString(R.string.core_ui_text_cng),
                 32.0,

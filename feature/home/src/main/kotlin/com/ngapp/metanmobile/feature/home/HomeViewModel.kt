@@ -197,7 +197,12 @@ private fun homeUiState(
         val pinnedFaqList = flows[4] as List<FaqResource>
         val careersList = flows[5] as List<CareerResource>
 
-        val nearestStation = stationsList.minByOrNull { it.distanceBetween }
+        // distanceBetween is null when we don't know the user's location yet — pick among the
+        // ones we can actually compare, falling back to just the first station so the widget has
+        // something to show (its own permission/location UI covers the "no distance" case).
+        val nearestStation = stationsList.filter { it.distanceBetween != null }
+            .minByOrNull { it.distanceBetween!! }
+            ?: stationsList.firstOrNull()
 
         Success(
             pinnedNewsList = pinnedNewsList,

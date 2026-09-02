@@ -77,7 +77,7 @@ val textColorLight = White
 val textColorDark = Black
 
 val permissionButtonLight = Gray200
-val permissionButtonDark = Gray800
+val permissionButtonDark = Gray600
 
 val ColorScheme.textColor: Color
     @Composable get() = if (isLight()) textColorDark else textColorLight

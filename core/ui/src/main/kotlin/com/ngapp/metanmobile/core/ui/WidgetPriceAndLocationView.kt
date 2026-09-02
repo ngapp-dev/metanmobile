@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
+import com.ngapp.metanmobile.core.designsystem.component.ProgressIndicatorSmall
 import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.model.price.PriceResource
@@ -130,19 +132,36 @@ fun RightWidgetView(
     val uriHandler = LocalUriHandler.current
     val isGoogleServicesAvailable = remember { isGoogleServicesAvailable(context) }
     val analyticsHelper = LocalAnalyticsHelper.current
+    // Only a real "nearest station with a known distance" is worth opening — while location is
+    // missing/loading, nearestStation is just whatever station happened to be picked as a
+    // fallback (see HomeViewModel), tapping the card shouldn't jump into that random station.
+    val hasRealNearestStation =
+        permissionsState.hasLocationPermissions && nearestStation.distanceBetween != null
 
     Box(
         contentAlignment = Alignment.CenterStart,
         modifier = modifier
             .clip(MMShapes.large)
             .background(MaterialTheme.colorScheme.onBackground)
-            .clickable {
+            .clickable(enabled = hasRealNearestStation) {
                 analyticsHelper.logStationResourceOpened(stationCode = nearestStation.code)
                 onStationDetailClick(nearestStation.code)
             },
     ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-            if (permissionsState.hasLocationPermissions) {
+            if (permissionsState.hasLocationPermissions && nearestStation.distanceBetween == null) {
+                // Permission granted, location just hasn't arrived yet — data-layer already
+                // retries fetching it in the background, this just needs to update once the
+                // Flow it's reading from gets a real value.
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    ProgressIndicatorSmall()
+                }
+            } else if (permissionsState.hasLocationPermissions) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -184,14 +203,14 @@ fun RightWidgetView(
             } else if (!isGoogleServicesAvailable) {
                 RequestPermissionOrGoogleServices(
                     modifier = Modifier,
-                    titleText = R.string.core_ui_text_google_service_unavailable,
+                    subtitle = R.string.core_ui_text_google_service_unavailable,
                     buttonText = R.string.core_ui_button_google_service_update,
                     onClick = { uriHandler.openUri("market://details?id=com.google.android.gms") }
                 )
             } else {
                 RequestPermissionOrGoogleServices(
                     modifier = Modifier,
-                    titleText = R.string.core_ui_text_permission_denied,
+                    subtitle = subtitle,
                     buttonText = R.string.core_ui_button_permission_request,
                     onClick = { permissionsState.requestPermissions() }
                 )

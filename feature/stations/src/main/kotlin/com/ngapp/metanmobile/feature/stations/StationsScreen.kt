@@ -96,7 +96,7 @@ internal fun StationsRoute(
     viewModel: StationsViewModel = hiltViewModel(),
 ) {
     val permissionsState = LocalPermissionsState.current
-    LaunchedEffect(permissionsState) {
+    LaunchedEffect(permissionsState.hasLocationPermissions) {
         if (permissionsState.hasLocationPermissions) {
             viewModel.triggerAction(StationsAction.UpdateLocation(true))
         }

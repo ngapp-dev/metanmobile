@@ -20,17 +20,14 @@ package com.ngapp.metanmobile.core.data.repository.station
 import com.ngapp.metanmobile.core.common.util.distanceInKm
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
-import com.ngapp.metanmobile.core.model.location.LocationResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.model.station.mapToUserStationResources
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 /**
@@ -56,18 +53,20 @@ class CompositeStationResourcesWithFavoritesRepository @Inject constructor(
             }
 
             val locationFlow = locationsRepository.getLocationResource()
-                .onStart { emit(LocationResource.init()) }
-                .filterNotNull()
 
             val stationWithDistanceFlow = stationResourcesFlow.flatMapLatest { stationResources ->
                 locationFlow.map { location ->
                     stationResources.mapToUserStationResources(userData).map { userStation ->
-                        val distanceBetween = distanceInKm(
-                            location.latitude,
-                            location.longitude,
-                            userStation.latitude.toDouble(),
-                            userStation.longitude.toDouble(),
-                        )
+                        // null location = we don't know the user's position yet — leave
+                        // distanceBetween null too, rather than faking a number.
+                        val distanceBetween = location?.let {
+                            distanceInKm(
+                                it.latitude,
+                                it.longitude,
+                                userStation.latitude.toDouble(),
+                                userStation.longitude.toDouble(),
+                            )
+                        }
                         userStation.copy(distanceBetween = distanceBetween)
                     }
                 }

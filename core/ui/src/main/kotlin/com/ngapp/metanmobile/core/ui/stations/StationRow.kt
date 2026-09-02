@@ -153,20 +153,21 @@ fun StationRow(
                             )
                         }
                     }
+                } else if (station.distanceBetween == null) {
+                    // Permission granted, location just hasn't arrived yet — data-layer already
+                    // retries fetching it in the background, this just needs to update once the
+                    // Flow it's reading from gets a real value.
+                    ProgressIndicatorSmall()
                 } else {
-                    if (station.distanceBetween == 0.0) {
-                        ProgressIndicatorSmall()
-                    } else {
-                        val km =
-                            String.format(Locale.getDefault(), "%.1f", station.distanceBetween)
-                                .replace('.', ',')
-                        Text(
-                            text = stringResource(id = R.string.core_ui_text_value_km, km),
-                            maxLines = 1,
-                            overflow = TextOverflow.Visible,
-                            style = MMTypography.bodySmall
-                        )
-                    }
+                    val km =
+                        String.format(Locale.getDefault(), "%.1f", station.distanceBetween)
+                            .replace('.', ',')
+                    Text(
+                        text = stringResource(id = R.string.core_ui_text_value_km, km),
+                        maxLines = 1,
+                        overflow = TextOverflow.Visible,
+                        style = MMTypography.bodySmall
+                    )
                 }
             }
         }

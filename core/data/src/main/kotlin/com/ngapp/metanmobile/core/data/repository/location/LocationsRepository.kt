@@ -25,7 +25,8 @@ interface LocationsRepository {
 
     fun getLocationResources(): Flow<List<LocationResource>>
 
-    fun getLocationResource(): Flow<LocationResource>
+    /** Emits `null` while the user's location isn't known yet (see [updateLocation]). */
+    fun getLocationResource(): Flow<LocationResource?>
 
     suspend fun getLocationData(): Location?
 
