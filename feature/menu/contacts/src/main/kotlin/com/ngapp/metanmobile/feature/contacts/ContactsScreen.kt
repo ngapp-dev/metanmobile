@@ -60,12 +60,15 @@ internal fun ContactsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
 
     ContactsScreen(
         modifier = modifier,
         uiState = uiState,
         isSyncing = isSyncing,
-        onBackClick = onBackClick
+        syncFailed = syncFailed,
+        onBackClick = onBackClick,
+        onRetryClick = viewModel::retrySync,
     )
 }
 
@@ -74,7 +77,9 @@ private fun ContactsScreen(
     modifier: Modifier,
     uiState: ContactsUiState,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     onBackClick: () -> Unit,
+    onRetryClick: () -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
     val isLoading = uiState is ContactsUiState.Loading
@@ -124,7 +129,9 @@ private fun ContactsScreen(
                             modifier = modifier
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_menu_contacts_text_empty)
+                            message = stringResource(R.string.feature_menu_contacts_text_empty),
+                            canRetry = syncFailed,
+                            onClickRetry = onRetryClick,
                         )
                     }
                 }
@@ -162,6 +169,7 @@ private fun ContactsScreenPreview() {
             modifier = Modifier,
             uiState = ContactsUiState.Success(ContactResource.init()),
             isSyncing = false,
+            syncFailed = false,
             onBackClick = {}
         )
     }

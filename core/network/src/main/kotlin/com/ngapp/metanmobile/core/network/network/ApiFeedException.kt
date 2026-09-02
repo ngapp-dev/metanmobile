@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
+ * Copyright 2026 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,12 @@
  *
  */
 
-package com.ngapp.metanmobile.core.sync.test
+package com.ngapp.metanmobile.core.network.network
 
-import com.ngapp.metanmobile.core.data.util.SyncManager
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
-
-internal class NeverSyncingSyncManager @Inject constructor() : SyncManager {
-    override val isSyncing: Flow<Boolean> = flowOf(false)
-    override val syncFailed: Flow<Boolean> = flowOf(false)
-    override fun requestSync() = Unit
-}
+/**
+ * Thrown when the Metan Ecogas API responds successfully (HTTP 200) but reports that the
+ * requested feed could not be refreshed on the server and it has no cached data to fall back on
+ * (empty `data` with a non-null `error`). This lets a genuinely failed feed refresh be treated as
+ * a sync failure instead of silently looking like "there is no content".
+ */
+class ApiFeedException(message: String) : Exception(message)

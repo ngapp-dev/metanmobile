@@ -73,7 +73,17 @@ private const val BASE_URL = BuildConfig.METAN_ECOGAS_API
 @Serializable
 private data class NetworkResponse<T>(
     val data: T,
+    val error: String? = null,
 )
+
+/**
+ * Returns [NetworkResponse.data] unless the server reports the feed as failed
+ * ([NetworkResponse.error] non-null) AND has no cached items to fall back on. In that case there
+ * is genuinely nothing to show, so it is surfaced as a failure rather than silently looking like
+ * "there is no content".
+ */
+private fun <T> NetworkResponse<List<T>>.dataOrThrow(): List<T> =
+    data.ifEmpty { if (error != null) throw ApiFeedException(error) else data }
 
 /**
  * [Retrofit] backed [MetanEcogasNetworkDataSource]
@@ -97,20 +107,20 @@ internal class RetrofitMetanEcogasNetwork @Inject constructor(
             .create(RetrofitMetanEcogasNetworkApi::class.java)
     }
 
-    override suspend fun getStations(): List<NetworkStationResource> = networkApi.getStations().data
+    override suspend fun getStations(): List<NetworkStationResource> = networkApi.getStations().dataOrThrow()
     override suspend fun getStation(stationCode: String): NetworkStationResource =
         networkApi.getStation(stationCode).data
 
     override suspend fun getFuelPrices(): List<NetworkPriceResource> =
-        networkApi.getFuelPrices().data
+        networkApi.getFuelPrices().dataOrThrow()
 
-    override suspend fun getFaqList(): List<NetworkFaqResource> = networkApi.getFaqList().data
-    override suspend fun getContacts(): List<NetworkContactResource> = networkApi.getContacts().data
-    override suspend fun getNewsList(): List<NetworkNewsResource> = networkApi.getNewsList().data
+    override suspend fun getFaqList(): List<NetworkFaqResource> = networkApi.getFaqList().dataOrThrow()
+    override suspend fun getContacts(): List<NetworkContactResource> = networkApi.getContacts().dataOrThrow()
+    override suspend fun getNewsList(): List<NetworkNewsResource> = networkApi.getNewsList().dataOrThrow()
     override suspend fun getNews(newsId: String): NetworkNewsResource =
         networkApi.getNews(newsId).data
 
     override suspend fun getCareerList(): List<NetworkCareerResource> =
-        networkApi.getCareerList().data
+        networkApi.getCareerList().dataOrThrow()
 
 }

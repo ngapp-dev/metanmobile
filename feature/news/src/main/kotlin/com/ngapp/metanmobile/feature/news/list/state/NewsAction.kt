@@ -23,4 +23,5 @@ sealed interface NewsAction {
     data class ShowAlertDialog(val showDialog: Boolean) : NewsAction
     data class UpdateSearchQuery(val input: String) : NewsAction
     data class UpdateSortingConfig(val newsSortingConfig: NewsSortingConfig) : NewsAction
+    data object RetrySync : NewsAction
 }

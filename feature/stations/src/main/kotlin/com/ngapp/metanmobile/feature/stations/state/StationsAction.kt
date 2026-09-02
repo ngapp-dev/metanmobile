@@ -27,4 +27,5 @@ sealed interface StationsAction {
     data class UpdateStationCode(val stationCode: String) : StationsAction
     data class UpdateStationFavorite(val stationCode: String, val favorite: Boolean) :
         StationsAction
+    data object RetrySync : StationsAction
 }

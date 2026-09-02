@@ -33,7 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ContactsViewModel @Inject constructor(
     contactsRepository: ContactsRepository,
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
 ) : ViewModel() {
 
     val uiState: StateFlow<ContactsUiState> = contactsRepository.getContactResource()
@@ -50,4 +50,13 @@ class ContactsViewModel @Inject constructor(
             started = WhileSubscribed(5_000),
             initialValue = false,
         )
+
+    val syncFailed = syncManager.syncFailed
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    fun retrySync() = syncManager.requestSync()
 }

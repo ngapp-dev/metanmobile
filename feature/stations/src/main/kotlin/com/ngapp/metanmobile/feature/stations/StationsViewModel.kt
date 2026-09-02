@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StationsViewModel @Inject constructor(
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     private val locationsRepository: LocationsRepository,
     private val userDataRepository: UserDataRepository,
@@ -77,6 +77,12 @@ class StationsViewModel @Inject constructor(
             initialValue = false,
         )
 
+    val syncFailed = syncManager.syncFailed
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
 
     fun triggerAction(action: StationsAction) {
         when (action) {
@@ -87,6 +93,7 @@ class StationsViewModel @Inject constructor(
             is StationsAction.UpdateStationCode -> onUpdateStationCode(action.stationCode)
             is StationsAction.UpdateStationFavorite ->
                 onUpdateStationFavorite(action.stationCode, action.favorite)
+            StationsAction.RetrySync -> syncManager.requestSync()
         }
     }
 

@@ -27,7 +27,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
@@ -49,15 +51,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMHomeTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.theme.Green
+import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.lottie.LottieEmptyView
 import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.home.state.HomeAction
 import com.ngapp.metanmobile.feature.home.state.HomeUiState
@@ -88,6 +93,7 @@ internal fun HomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val reorderableList by viewModel.reorderableList.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
     val isEditingUi by viewModel.isEditing.collectAsStateWithLifecycle()
     val isLastNewsExpended by viewModel.isLastNewsExpanded.collectAsStateWithLifecycle()
 
@@ -96,6 +102,7 @@ internal fun HomeRoute(
         uiState = uiState,
         reorderableList = reorderableList,
         isSyncing = isSyncing,
+        syncFailed = syncFailed,
         isEditingUi = isEditingUi,
         isLastNewsExpended = isLastNewsExpended,
         onNewsClick = onNewsClick,
@@ -116,6 +123,7 @@ private fun HomeScreen(
     uiState: HomeUiState,
     reorderableList: List<HomeContentItem>,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     isEditingUi: Boolean,
     isLastNewsExpended: Boolean,
     onNewsClick: () -> Unit,
@@ -161,34 +169,45 @@ private fun HomeScreen(
             when (uiState) {
                 HomeUiState.Loading -> Unit
                 is HomeUiState.Success -> {
-                    StationDetailBottomSheet(
-                        stationCode = uiState.nearestStation?.code,
-                        bottomSheetState = bottomSheetScaffoldState,
-                        onShowTopAppBar = { showTopAppBar = it },
-                        onShowBottomBar = onShowBottomBar,
-                        onNewsDetailClick = onNewsDetailClick,
-                    ) {
-                        HomeContent(
-                            isEditingUi = isEditingUi,
-                            isLastNewsExpended = isLastNewsExpended,
-                            reorderableList = reorderableList,
-                            pinnedNewsList = uiState.pinnedNewsList,
-                            lastNewsList = uiState.lastNewsList,
-                            nearestStation = uiState.nearestStation,
-                            cngPrice = uiState.cngPrice,
-                            pinnedFaqList = uiState.pinnedFaqList,
-                            career = uiState.career,
-                            onShowAllNewsClick = onNewsClick,
-                            onSeeAllFaqClick = onFaqListClick,
-                            onSeeAllCareersClick = onCareersClick,
-                            onNewsDetailClick = onNewsDetailClick,
-                            onStationDetailClick = {
-                                showTopAppBar = false
-                                onShowBottomBar(false)
-                                coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
-                            },
-                            onAction = onAction,
+                    if (uiState.isEmpty() && syncFailed) {
+                        LottieEmptyView(
+                            modifier = modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            message = stringResource(R.string.feature_home_text_empty),
+                            canRetry = true,
+                            onClickRetry = { onAction(HomeAction.RetrySync) },
                         )
+                    } else {
+                        StationDetailBottomSheet(
+                            stationCode = uiState.nearestStation?.code,
+                            bottomSheetState = bottomSheetScaffoldState,
+                            onShowTopAppBar = { showTopAppBar = it },
+                            onShowBottomBar = onShowBottomBar,
+                            onNewsDetailClick = onNewsDetailClick,
+                        ) {
+                            HomeContent(
+                                isEditingUi = isEditingUi,
+                                isLastNewsExpended = isLastNewsExpended,
+                                reorderableList = reorderableList,
+                                pinnedNewsList = uiState.pinnedNewsList,
+                                lastNewsList = uiState.lastNewsList,
+                                nearestStation = uiState.nearestStation,
+                                cngPrice = uiState.cngPrice,
+                                pinnedFaqList = uiState.pinnedFaqList,
+                                career = uiState.career,
+                                onShowAllNewsClick = onNewsClick,
+                                onSeeAllFaqClick = onFaqListClick,
+                                onSeeAllCareersClick = onCareersClick,
+                                onNewsDetailClick = onNewsDetailClick,
+                                onStationDetailClick = {
+                                    showTopAppBar = false
+                                    onShowBottomBar(false)
+                                    coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
+                                },
+                                onAction = onAction,
+                            )
+                        }
                     }
                 }
             }
@@ -196,6 +215,14 @@ private fun HomeScreen(
     }
     TrackScreenViewEvent(screenName = "HomeScreen")
 }
+
+private fun HomeUiState.Success.isEmpty(): Boolean =
+    pinnedNewsList.isEmpty() &&
+        lastNewsList.isEmpty() &&
+        cngPrice == null &&
+        nearestStation == null &&
+        pinnedFaqList.isEmpty() &&
+        career == null
 
 @Composable
 private fun HomeHeader(
@@ -248,4 +275,36 @@ private fun HomeHeader(
         floatingActionButtonPosition = FabPosition.Center,
         content = pageContent
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@PreviewScreenSizes
+@Composable
+private fun HomeScreenSyncFailedPreview() {
+    MMTheme {
+        HomeScreen(
+            modifier = Modifier,
+            uiState = HomeUiState.Success(
+                pinnedNewsList = emptyList(),
+                lastNewsList = emptyList(),
+                cngPrice = null,
+                nearestStation = null,
+                pinnedFaqList = emptyList(),
+                career = null,
+            ),
+            reorderableList = emptyList(),
+            isSyncing = false,
+            syncFailed = true,
+            isEditingUi = false,
+            isLastNewsExpended = false,
+            onNewsClick = {},
+            onNewsDetailClick = {},
+            onFaqListClick = {},
+            onCareersClick = {},
+            onCabinetClick = {},
+            onSettingsClick = {},
+            onShowBottomBar = {},
+            onAction = {},
+        )
+    }
 }

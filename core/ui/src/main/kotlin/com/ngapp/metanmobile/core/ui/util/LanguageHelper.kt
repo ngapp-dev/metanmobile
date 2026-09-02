@@ -23,6 +23,7 @@ import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import java.util.Locale
 
 class LanguageHelper(val context: Context) {
 
@@ -35,13 +36,18 @@ class LanguageHelper(val context: Context) {
         }
     }
 
+    /**
+     * Returns the language actually in effect: the explicit per-app override once the user has
+     * picked one, otherwise the device's current locale. An empty per-app locale list means
+     * "follow the system language" (the default until the user ever opens the language picker),
+     * so falling back to a hardcoded language here would misreport what is really on screen.
+     */
     fun getLanguageCode(): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.getSystemService(LocaleManager::class.java).applicationLocales[0]?.toLanguageTag()
-                ?.split("-")?.first() ?: "ru"
+        val appLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java).applicationLocales[0]
         } else {
-            AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag()?.split("-")?.first()
-                ?: "ru"
+            AppCompatDelegate.getApplicationLocales()[0]
         }
+        return (appLocale ?: Locale.getDefault()).toLanguageTag().split("-").first()
     }
 }

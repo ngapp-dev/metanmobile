@@ -20,4 +20,5 @@
     <!-- Text -->
     <string name="feature_home_text_hello_user">Прывітаю вас!</string>
     <string name="feature_home_text_today_date">Сёння, %s</string>
+    <string name="feature_home_text_empty">Пакуль няма даных</string>
 </resources>

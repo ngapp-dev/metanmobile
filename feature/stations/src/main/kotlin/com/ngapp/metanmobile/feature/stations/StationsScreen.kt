@@ -104,6 +104,7 @@ internal fun StationsRoute(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
     val stationCode by viewModel.stationCode.collectAsStateWithLifecycle()
@@ -111,6 +112,7 @@ internal fun StationsRoute(
     StationsScreen(
         modifier = modifier,
         isSyncing = isSyncing,
+        syncFailed = syncFailed,
         searchQuery = searchQuery,
         showDialog = showDialog,
         stationCode = stationCode,
@@ -126,6 +128,7 @@ internal fun StationsRoute(
 private fun StationsScreen(
     modifier: Modifier,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     searchQuery: String,
     showDialog: Boolean,
     stationCode: String,
@@ -303,7 +306,9 @@ private fun StationsScreen(
                             modifier = modifier
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_stations_text_empty)
+                            message = stringResource(R.string.feature_stations_text_empty),
+                            canRetry = syncFailed,
+                            onClickRetry = { onAction(StationsAction.RetrySync) },
                         )
                     }
                 }

@@ -58,12 +58,15 @@ internal fun FaqRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
 
     FaqScreen(
         modifier = modifier,
         isSyncing = isSyncing,
+        syncFailed = syncFailed,
         uiState = uiState,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onRetryClick = viewModel::retrySync,
     )
 }
 
@@ -71,8 +74,10 @@ internal fun FaqRoute(
 private fun FaqScreen(
     modifier: Modifier,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     uiState: FaqUiState,
     onBackClick: () -> Unit,
+    onRetryClick: () -> Unit = {},
 ) {
     val isLoading = uiState is FaqUiState.Loading
     ReportDrawnWhen { !isSyncing && !isLoading }
@@ -106,7 +111,9 @@ private fun FaqScreen(
                             modifier = modifier
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_menu_faq_text_empty)
+                            message = stringResource(R.string.feature_menu_faq_text_empty),
+                            canRetry = syncFailed,
+                            onClickRetry = onRetryClick,
                         )
                     }
                 }
@@ -144,6 +151,7 @@ private fun FaqScreenPreview() {
         FaqScreen(
             modifier = Modifier,
             isSyncing = false,
+            syncFailed = false,
             uiState = FaqUiState.Success(faqList = listOf(FaqResource.init())),
             onBackClick = {},
         )

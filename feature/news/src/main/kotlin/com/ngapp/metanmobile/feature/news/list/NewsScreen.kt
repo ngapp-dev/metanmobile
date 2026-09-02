@@ -83,12 +83,14 @@ internal fun NewsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
 
     NewsScreen(
         modifier = modifier,
         isSyncing = isSyncing,
+        syncFailed = syncFailed,
         uiState = uiState,
         searchQuery = searchQuery,
         showDialog = showDialog,
@@ -101,6 +103,7 @@ internal fun NewsRoute(
 private fun NewsScreen(
     modifier: Modifier,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     searchQuery: String,
     showDialog: Boolean,
     uiState: NewsUiState,
@@ -163,7 +166,9 @@ private fun NewsScreen(
                                 modifier = modifier
                                     .fillMaxSize()
                                     .verticalScroll(rememberScrollState()),
-                                message = stringResource(R.string.feature_news_text_empty)
+                                message = stringResource(R.string.feature_news_text_empty),
+                                canRetry = syncFailed,
+                                onClickRetry = { onAction(NewsAction.RetrySync) },
                             )
                         }
                     }
@@ -247,6 +252,7 @@ private fun NewsScreenPreview() {
         NewsScreen(
             modifier = Modifier,
             isSyncing = false,
+            syncFailed = true,
             uiState = NewsUiState.Success(
                 pinnedNewsList = emptyList(),
                 newsList = emptyList(),

@@ -54,7 +54,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     fuelPricesRepository: PricesRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
@@ -78,6 +78,13 @@ class HomeViewModel @Inject constructor(
         )
 
     val isSyncing = syncManager.isSyncing
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    val syncFailed = syncManager.syncFailed
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
@@ -111,6 +118,7 @@ class HomeViewModel @Inject constructor(
             is HomeAction.SaveUi -> onSaveUi()
             is HomeAction.ReorderList -> onReorderList(action.newOrder)
             is HomeAction.ExpandLastNews -> onExpandLastNews(action.expand)
+            HomeAction.RetrySync -> syncManager.requestSync()
         }
     }
 

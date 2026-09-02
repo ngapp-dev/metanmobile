@@ -20,4 +20,5 @@
     <!-- Text -->
     <string name="feature_home_text_hello_user">Hello here!</string>
     <string name="feature_home_text_today_date">Today, %s</string>
+    <string name="feature_home_text_empty">No data yet</string>
 </resources>

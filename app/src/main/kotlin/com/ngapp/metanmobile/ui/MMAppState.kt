@@ -17,6 +17,7 @@
 
 package com.ngapp.metanmobile.ui
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -36,13 +37,17 @@ import com.ngapp.metanmobile.core.data.repository.news.UserNewsResourceRepositor
 import com.ngapp.metanmobile.core.data.util.NetworkMonitor
 import com.ngapp.metanmobile.core.data.util.TimeZoneMonitor
 import com.ngapp.metanmobile.core.ui.TrackDisposableJank
+import com.ngapp.metanmobile.feature.careers.navigation.navigateToCareers
+import com.ngapp.metanmobile.feature.faq.navigation.navigateToFaq
 import com.ngapp.metanmobile.feature.favorites.navigation.FavoritesNavigation
 import com.ngapp.metanmobile.feature.favorites.navigation.navigateToFavorites
 import com.ngapp.metanmobile.feature.home.navigation.HomeScreenNavigation
 import com.ngapp.metanmobile.feature.home.navigation.navigateToHomeScreen
+import com.ngapp.metanmobile.feature.news.detail.navigation.navigateToNewsDetail
 import com.ngapp.metanmobile.feature.news.list.navigation.NewsNavigation
 import com.ngapp.metanmobile.feature.news.list.navigation.navigateToNews
 import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavigation
+import com.ngapp.metanmobile.feature.stationdetail.navigation.navigateToStationDetail
 import com.ngapp.metanmobile.feature.stations.navigation.StationsNavigation
 import com.ngapp.metanmobile.feature.stations.navigation.navigateToStations
 import com.ngapp.metanmobile.navigation.TopLevelDestination
@@ -180,6 +185,41 @@ class MMAppState(
                 NEWS -> navController.navigateToNews(topLevelNavOptions)
                 FAVORITES -> navController.navigateToFavorites(topLevelNavOptions)
             }
+        }
+    }
+
+    /**
+     * Routes an incoming metan.by URL (an App Link tap — from a news article's text, an external
+     * app, or the browser) to the matching screen.
+     *
+     * Deliberately a plain [NavController.navigate] push onto whatever the back stack already is,
+     * NOT [NavController.handleDeepLink] — that replaces the entire back stack with a synthetic
+     * one rebuilt from the graph's start destination, which loses wherever the user actually was
+     * (e.g. a news article) and conflicts with the bottom nav's `restoreState`/`saveState` tabs.
+     */
+    fun navigateToDeepLink(uri: Uri) {
+        if (uri.host != "metan.by") return
+        val segments = uri.pathSegments
+        val singleTop = navOptions { launchSingleTop = true }
+        when (segments.getOrNull(0)) {
+            "ecogas-map" -> {
+                val stationCode = segments.getOrNull(1)
+                if (stationCode != null) {
+                    navController.navigateToStationDetail(stationCode) { launchSingleTop = true }
+                } else {
+                    navController.navigateToStations(singleTop)
+                }
+            }
+
+            "news" -> if (segments.getOrNull(1) == "by") {
+                segments.getOrNull(2)?.let {
+                    navController.navigateToNewsDetail(newsId = it) { launchSingleTop = true }
+                }
+            }
+
+            "faq" -> navController.navigateToFaq { launchSingleTop = true }
+            "career" -> navController.navigateToCareers { launchSingleTop = true }
+            null -> navController.navigateToHomeScreen(singleTop)
         }
     }
 

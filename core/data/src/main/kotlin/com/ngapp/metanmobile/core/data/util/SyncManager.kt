@@ -24,5 +24,12 @@ import kotlinx.coroutines.flow.Flow
  */
 interface SyncManager {
     val isSyncing: Flow<Boolean>
+
+    /**
+     * True once the background sync has given up after exhausting its retry attempts. This is
+     * the signal to distinguish "empty because there is genuinely no content" from "empty because
+     * the very first sync could not reach the API and there is no cache to fall back on".
+     */
+    val syncFailed: Flow<Boolean>
     fun requestSync()
 }
