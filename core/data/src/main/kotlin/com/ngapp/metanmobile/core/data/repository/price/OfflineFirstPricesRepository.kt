@@ -22,13 +22,14 @@ import com.ngapp.metanmobile.core.data.model.price.asEntity
 import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
 import com.ngapp.metanmobile.core.database.model.price.asExternalModel
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OfflineFirstPricesRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+    private val network: MetanEcogasNetworkDataSource,
     private val priceResourceDao: PriceResourceDao,
 ) : PricesRepository {
 
@@ -36,7 +37,7 @@ class OfflineFirstPricesRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getFuelPrices() },
+            dataFetcher = { network.getFuelPrices() },
             dataWriter = {
                 val newData = it.map(NetworkPriceResource::asEntity)
                 priceResourceDao.upsertPriceResources(newData)

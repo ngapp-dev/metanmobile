@@ -102,13 +102,13 @@
     <string name="core_ui_text_open_24_hours">Кругласутачна</string>
     <string name="core_ui_text_popular_times">Папулярны час:</string>
     <string-array name="core_ui_text_on_day_of_week">
-        <item>Панядзелкі</item>
-        <item>Аўторкі</item>
-        <item>Серады</item>
-        <item>Чацвяргі</item>
-        <item>Пятніцы</item>
-        <item>Суботы</item>
-        <item>Нядзелі</item>
+        <item>Панядзелак</item>
+        <item>Аўторак</item>
+        <item>Серада</item>
+        <item>Чацвярг</item>
+        <item>Пятніца</item>
+        <item>Субота</item>
+        <item>Нядзеля</item>
     </string-array>
     <string name="core_ui_text_busy_now">Загружанасць зараз</string>
     <string name="core_ui_text_based_on_visits">На аснове наведванняў гэтага месца.</string>

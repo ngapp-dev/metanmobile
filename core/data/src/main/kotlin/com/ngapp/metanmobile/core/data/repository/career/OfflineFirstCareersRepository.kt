@@ -24,6 +24,7 @@ import com.ngapp.metanmobile.core.database.dao.career.CareerResourceDao
 import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.career.asExternalModel
 import com.ngapp.metanmobile.core.model.career.CareerResource
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OfflineFirstCareersRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+    private val network: MetanEcogasNetworkDataSource,
     private val careerResourceDao: CareerResourceDao,
 ) : CareersRepository {
 
@@ -40,7 +41,7 @@ class OfflineFirstCareersRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getCareerList() },
+            dataFetcher = { network.getCareerList() },
             dataWriter = {
                 val newData = it.map(NetworkCareerResource::asEntity)
                 careerResourceDao.upsertCareerResources(newData)

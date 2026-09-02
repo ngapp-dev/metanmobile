@@ -22,13 +22,14 @@ import com.ngapp.metanmobile.core.data.model.contact.asEntity
 import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.contact.ContactResourceDao
 import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.contact.NetworkContactResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OfflineFirstContactsRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+    private val network: MetanEcogasNetworkDataSource,
     private val contactResourceDao: ContactResourceDao,
 ) : ContactsRepository {
 
@@ -37,7 +38,7 @@ class OfflineFirstContactsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getContacts() },
+            dataFetcher = { network.getContacts() },
             dataWriter = {
                 val newData = it.map(NetworkContactResource::asEntity)
                 contactResourceDao.upsertContactResources(newData)

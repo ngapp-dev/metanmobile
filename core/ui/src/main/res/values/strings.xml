@@ -102,13 +102,13 @@
     <string name="core_ui_text_open_24_hours">Open 24 hours</string>
     <string name="core_ui_text_popular_times">Popular times:</string>
     <string-array name="core_ui_text_on_day_of_week">
-        <item>Mondays</item>
-        <item>Tuesdays</item>
-        <item>Wednesdays</item>
-        <item>Thursdays</item>
-        <item>Fridays</item>
-        <item>Saturdays</item>
-        <item>Sundays</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
     </string-array>
     <string name="core_ui_text_busy_now">Busy now</string>
     <string name="core_ui_text_no_news">There is no news yet</string>
