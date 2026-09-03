@@ -101,7 +101,7 @@ internal fun OnboardingRoute(
 }
 
 @Composable
-private fun OnboardingScreen(
+internal fun OnboardingScreen(
     modifier: Modifier,
     uiState: OnboardingUiState,
     onAction: (OnboardingAction) -> Unit,

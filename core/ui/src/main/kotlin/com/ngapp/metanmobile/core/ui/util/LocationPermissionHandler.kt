@@ -51,6 +51,22 @@ class PermissionsState {
 
 val LocalPermissionsState = compositionLocalOf { PermissionsState() }
 
+private const val LOCATION_PERMISSION_PREFS_NAME = "location_permission_prefs"
+private const val KEY_HAS_REQUESTED_LOCATION_PERMISSION = "has_requested_location_permission"
+
+/**
+ * Whether calling `launchMultiplePermissionRequest()` is actually worth it, as opposed to
+ * sending the user to Settings directly.
+ *
+ * `shouldShowRationale` (-> [canAskAgain]) is `false` both before the very first-ever request
+ * and once the user has permanently denied the permission ("don't ask again", or a second
+ * decline) — Android doesn't distinguish the two through that API. [hasRequestedBefore] is what
+ * disambiguates: once we know we've asked for real at least once, a `false` reading of
+ * [canAskAgain] can only mean "permanently denied", not "never asked".
+ */
+internal fun shouldShowSystemDialog(hasRequestedBefore: Boolean, canAskAgain: Boolean): Boolean =
+    !hasRequestedBefore || canAskAgain
+
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun PermissionsManager(content: @Composable () -> Unit) {
@@ -62,6 +78,19 @@ fun PermissionsManager(content: @Composable () -> Unit) {
             android.Manifest.permission.ACCESS_COARSE_LOCATION
         )
     )
+
+    // shouldShowRationale is false both before the very first ever request AND once the user has
+    // permanently denied ("don't ask again", or a second decline) — Android doesn't distinguish
+    // the two. A launchMultiplePermissionRequest() call in the permanently-denied case shows no
+    // UI at all and (see below) can leave the caller stuck waiting forever for a status change
+    // that never comes, so a repeat "Request permission" button silently does nothing. This flag,
+    // persisted across process restarts, is what disambiguates: once we know we've asked for
+    // real at least once, a later false reading can only mean "permanently denied".
+    val prefs = remember {
+        context.getSharedPreferences(LOCATION_PERMISSION_PREFS_NAME, Context.MODE_PRIVATE)
+    }
+    fun hasRequestedBefore() = prefs.getBoolean(KEY_HAS_REQUESTED_LOCATION_PERMISSION, false)
+    fun markRequested() = prefs.edit().putBoolean(KEY_HAS_REQUESTED_LOCATION_PERMISSION, true).apply()
 
     LaunchedEffect(locationPermissionsState) {
         snapshotFlow { locationPermissionsState.allPermissionsGranted }
@@ -79,8 +108,19 @@ fun PermissionsManager(content: @Composable () -> Unit) {
 
     permissionsState.requestPermissions = {
         if (!locationPermissionsState.allPermissionsGranted) {
-            pendingRequest = true
-            locationPermissionsState.launchMultiplePermissionRequest()
+            val canAskAgain = locationPermissionsState.permissions.any { permission ->
+                val status = permission.status
+                status is PermissionStatus.Denied && status.shouldShowRationale
+            }
+            if (shouldShowSystemDialog(hasRequestedBefore(), canAskAgain)) {
+                markRequested()
+                pendingRequest = true
+                locationPermissionsState.launchMultiplePermissionRequest()
+            } else {
+                // Permanently denied (and we know this isn't just the pristine "never asked"
+                // state, because we've been here before) — the system dialog won't come back.
+                openAppSettings(context)
+            }
         }
     }
 

@@ -118,7 +118,7 @@ internal fun HomeRoute(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun HomeScreen(
+internal fun HomeScreen(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     reorderableList: List<HomeContentItem>,
@@ -136,6 +136,13 @@ private fun HomeScreen(
     onAction: (HomeAction) -> Unit,
 ) {
     val isLoading = uiState is HomeUiState.Loading
+    // Room's local flows emit as soon as they're subscribed, even when the very first sync
+    // hasn't reached the network yet - so uiState can turn Success with everything still empty
+    // well before there's anything real to show. Keep showing only the spinner above through
+    // that in-between moment, rather than flashing the static, always-rendered widgets (the
+    // calculators tile, the user-location header) with nothing behind them.
+    val isContentPending = isLoading ||
+        (uiState is HomeUiState.Success && uiState.isEmpty() && isSyncing && !syncFailed)
     ReportDrawnWhen { !isSyncing && !isLoading }
     var showTopAppBar by rememberSaveable { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
@@ -166,47 +173,49 @@ private fun HomeScreen(
             ) {
                 MMLinearWavyProgressIndicator()
             }
-            when (uiState) {
-                HomeUiState.Loading -> Unit
-                is HomeUiState.Success -> {
-                    if (uiState.isEmpty() && syncFailed) {
-                        LottieEmptyView(
-                            modifier = modifier
-                                .fillMaxSize()
-                                .verticalScroll(rememberScrollState()),
-                            message = stringResource(R.string.feature_home_text_empty),
-                            canRetry = true,
-                            onClickRetry = { onAction(HomeAction.RetrySync) },
-                        )
-                    } else {
-                        StationDetailBottomSheet(
-                            stationCode = uiState.nearestStation?.code,
-                            bottomSheetState = bottomSheetScaffoldState,
-                            onShowTopAppBar = { showTopAppBar = it },
-                            onShowBottomBar = onShowBottomBar,
-                            onNewsDetailClick = onNewsDetailClick,
-                        ) {
-                            HomeContent(
-                                isEditingUi = isEditingUi,
-                                isLastNewsExpended = isLastNewsExpended,
-                                reorderableList = reorderableList,
-                                pinnedNewsList = uiState.pinnedNewsList,
-                                lastNewsList = uiState.lastNewsList,
-                                nearestStation = uiState.nearestStation,
-                                cngPrice = uiState.cngPrice,
-                                pinnedFaqList = uiState.pinnedFaqList,
-                                career = uiState.career,
-                                onShowAllNewsClick = onNewsClick,
-                                onSeeAllFaqClick = onFaqListClick,
-                                onSeeAllCareersClick = onCareersClick,
-                                onNewsDetailClick = onNewsDetailClick,
-                                onStationDetailClick = {
-                                    showTopAppBar = false
-                                    onShowBottomBar(false)
-                                    coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
-                                },
-                                onAction = onAction,
+            if (!isContentPending) {
+                when (uiState) {
+                    HomeUiState.Loading -> Unit
+                    is HomeUiState.Success -> {
+                        if (uiState.isEmpty() && syncFailed) {
+                            LottieEmptyView(
+                                modifier = modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                message = stringResource(R.string.feature_home_text_empty),
+                                canRetry = true,
+                                onClickRetry = { onAction(HomeAction.RetrySync) },
                             )
+                        } else {
+                            StationDetailBottomSheet(
+                                stationCode = uiState.nearestStation?.code,
+                                bottomSheetState = bottomSheetScaffoldState,
+                                onShowTopAppBar = { showTopAppBar = it },
+                                onShowBottomBar = onShowBottomBar,
+                                onNewsDetailClick = onNewsDetailClick,
+                            ) {
+                                HomeContent(
+                                    isEditingUi = isEditingUi,
+                                    isLastNewsExpended = isLastNewsExpended,
+                                    reorderableList = reorderableList,
+                                    pinnedNewsList = uiState.pinnedNewsList,
+                                    lastNewsList = uiState.lastNewsList,
+                                    nearestStation = uiState.nearestStation,
+                                    cngPrice = uiState.cngPrice,
+                                    pinnedFaqList = uiState.pinnedFaqList,
+                                    career = uiState.career,
+                                    onShowAllNewsClick = onNewsClick,
+                                    onSeeAllFaqClick = onFaqListClick,
+                                    onSeeAllCareersClick = onCareersClick,
+                                    onNewsDetailClick = onNewsDetailClick,
+                                    onStationDetailClick = {
+                                        showTopAppBar = false
+                                        onShowBottomBar(false)
+                                        coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
+                                    },
+                                    onAction = onAction,
+                                )
+                            }
                         }
                     }
                 }
