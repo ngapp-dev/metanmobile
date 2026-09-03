@@ -25,7 +25,7 @@ plugins {
     alias(libs.plugins.mm.hilt)
     alias(libs.plugins.google.osslicenses)
     alias(libs.plugins.roborazzi)
-//    alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.baselineprofile)
     alias(libs.plugins.secrets)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -56,7 +56,6 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.named("debug").get()
-//            baselineProfile.automaticGenerationDuringBuild = true
         }
     }
     packaging {
