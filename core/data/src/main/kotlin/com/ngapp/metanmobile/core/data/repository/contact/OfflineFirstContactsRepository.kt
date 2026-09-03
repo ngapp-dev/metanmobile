@@ -23,7 +23,6 @@ import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.contact.ContactResourceDao
 import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.contact.NetworkContactResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

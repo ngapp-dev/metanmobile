@@ -23,7 +23,6 @@ import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
 import com.ngapp.metanmobile.core.database.model.price.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

@@ -25,7 +25,6 @@ import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.career.asExternalModel
 import com.ngapp.metanmobile.core.model.career.CareerResource
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -42,8 +41,12 @@ class OfflineFirstCareersRepository @Inject constructor(
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
             dataFetcher = { network.getCareerList() },
-            dataWriter = {
-                val newData = it.map(NetworkCareerResource::asEntity)
+            dataWriter = { networkCareerList ->
+                val newData = networkCareerList.map(NetworkCareerResource::asEntity)
+                val newIds = newData.map { it.id }.toSet()
+                val existingIds = careerResourceDao.getAllCareerIds().toSet()
+                val idsToDelete = existingIds - newIds
+                careerResourceDao.deleteCareerResources(idsToDelete.toList())
                 careerResourceDao.upsertCareerResources(newData)
             }
         )

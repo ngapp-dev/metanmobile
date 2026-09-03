@@ -28,6 +28,12 @@ android {
             "com.ngapp.metanmobile.core.testing.MetanMobileTestRunner"
     }
     namespace = "com.ngapp.metanmobile.core.database"
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -36,4 +42,9 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     androidTestImplementation(projects.core.testing)
+
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.junit4)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
 }

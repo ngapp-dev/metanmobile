@@ -24,12 +24,9 @@ import com.ngapp.metanmobile.core.database.dao.faq.FaqResourceDao
 import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.collections.map
-import kotlin.collections.toSet
 
 class OfflineFirstFaqRepository @Inject constructor(
     private val network: MetanEcogasNetworkDataSource,

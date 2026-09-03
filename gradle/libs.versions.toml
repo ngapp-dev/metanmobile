@@ -63,6 +63,7 @@ kotlinxSerializationJson = "1.8.1"
 ksp = "2.3.4"
 lottieCompose = "6.5.2"
 mapsCompose = "3.1.0"
+mockk = "1.13.13"
 moduleGraph = "2.8.0"
 okhttp = "4.12.0"
 playServiceLocation = "21.4.0"
@@ -159,6 +160,7 @@ hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hi
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
 javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 kotlin-metadata = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -174,6 +176,7 @@ lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.re
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
 maps-compose-widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsCompose" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServiceLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServiceMaps" }
