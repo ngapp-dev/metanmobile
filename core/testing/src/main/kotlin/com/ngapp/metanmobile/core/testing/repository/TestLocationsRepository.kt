@@ -18,7 +18,6 @@
 package com.ngapp.metanmobile.core.testing.repository
 
 import android.location.Location
-import android.util.Log
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.channels.BufferOverflow
@@ -30,9 +29,18 @@ class TestLocationsRepository : LocationsRepository {
 
     /**
      * The backing hot flow for the list of locations ids for testing.
+     *
+     * Seeded with an empty list so [getLocationResource] emits `null` immediately to the first
+     * collector, matching [com.ngapp.metanmobile.core.data.repository.location.OfflineFirstLocationsRepository],
+     * whose Room-backed flow emits right away even from an empty table. Without this seed, a
+     * `MutableSharedFlow(replay = 1)` emits nothing at all until [sendLocationResources] is
+     * called, which silently stalls every collector downstream (e.g. station lists combined with
+     * location) at "no value yet" instead of the documented "location unknown" `null`.
      */
-    private val locationResourcesFlow: MutableSharedFlow<List<LocationResource>> =
-        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val locationResourcesFlow =
+        MutableSharedFlow<List<LocationResource>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST).apply {
+            tryEmit(emptyList())
+        }
 
     /**
      * A test-only API to allow controlling the list of location resources from tests.
@@ -43,18 +51,19 @@ class TestLocationsRepository : LocationsRepository {
 
     override fun getLocationResources(): Flow<List<LocationResource>> = locationResourcesFlow
 
-    override fun getLocationResource(): Flow<LocationResource> =
-        locationResourcesFlow.map { locationResources ->
-            if (locationResources.isNotEmpty()) {
-                locationResources.first()
-            } else {
-                LocationResource.init()
-            }
-        }
+    override fun getLocationResource(): Flow<LocationResource?> =
+        locationResourcesFlow.map { locationResources -> locationResources.firstOrNull() }
 
     override suspend fun getLocationData(): Location = Location("test")
 
+    /**
+     * The permission values passed to successive [updateLocation] calls, in order, for
+     * verifying delegation from tests.
+     */
+    val updateLocationCalls: List<Boolean> get() = _updateLocationCalls
+    private val _updateLocationCalls = mutableListOf<Boolean>()
+
     override suspend fun updateLocation(locationPermissionGranted: Boolean) {
-        Log.d("TestLocationsRepository", "updateLocation: $locationPermissionGranted")
+        _updateLocationCalls += locationPermissionGranted
     }
 }

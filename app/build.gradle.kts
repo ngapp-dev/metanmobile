@@ -44,12 +44,12 @@ android {
     }
 
     buildTypes {
-        debug {
+    debug {
             applicationIdSuffix = MMBuildType.DEBUG.applicationIdSuffix
         }
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             applicationIdSuffix = MMBuildType.RELEASE.applicationIdSuffix
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

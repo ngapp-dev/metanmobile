@@ -59,7 +59,7 @@ internal fun NewsDetailRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NewsDetailScreen(
+internal fun NewsDetailScreen(
     modifier: Modifier,
     uiState: NewsDetailUiState,
     onBackClick: () -> Unit,

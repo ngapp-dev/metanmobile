@@ -146,11 +146,18 @@ class HomeViewModel @Inject constructor(
 
     private fun onSaveUi() {
         _isEditing.value = false
+        // Snapshot both values before launching either write: setHomeReorderableList's own
+        // persisted UserData round-trips back through the init block's collectLatest above,
+        // which re-derives _isLastNewsExpanded from it — reading isLastNewsExpanded.value lazily
+        // inside the second launch could observe that echo (still carrying the pre-save value)
+        // instead of the change just made here, silently discarding it.
+        val newReorderableList = reorderableList.value
+        val newIsLastNewsExpanded = isLastNewsExpanded.value
         viewModelScope.launch {
-            userDataRepository.setHomeReorderableList(reorderableList.value)
+            userDataRepository.setHomeReorderableList(newReorderableList)
         }
         viewModelScope.launch {
-            userDataRepository.setHomeLastNewsExpanded(isLastNewsExpanded.value)
+            userDataRepository.setHomeLastNewsExpanded(newIsLastNewsExpanded)
         }
     }
 

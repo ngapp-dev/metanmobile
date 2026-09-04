@@ -79,6 +79,10 @@ fun SimpleVerticalBarChartView(
         delay(3000)
         chosenBarKey = ""
     }
+    // A day with no attendance data yields an empty `data` (see createCharItems) - draw nothing
+    // rather than crash: data.maxOf{} below throws NoSuchElementException on an empty list, and
+    // spaceBetweenBars' (data.size - 1) divisor is meaningless for fewer than 2 bars anyway.
+    if (data.isEmpty()) return
     Canvas(modifier = modifier
         .fillMaxSize()
         .padding(

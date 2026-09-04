@@ -30,6 +30,7 @@ dependencies {
 
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)
+    testImplementation(libs.mockk)
     testImplementation(projects.core.testing)
     testImplementation(projects.core.screenshotTesting)
     testImplementation(libs.roborazzi)

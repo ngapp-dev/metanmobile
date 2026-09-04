@@ -110,7 +110,6 @@ private fun ContactsScreen(
                         Column(
                             modifier = modifier
                                 .fillMaxSize()
-                                .padding(padding)
                                 .padding(horizontal = 16.dp)
                                 .verticalScroll(rememberScrollState())
                         ) {

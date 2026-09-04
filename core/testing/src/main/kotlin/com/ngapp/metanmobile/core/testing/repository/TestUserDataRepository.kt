@@ -44,8 +44,15 @@ val emptyUserData = UserData(
 class TestUserDataRepository : UserDataRepository {
     /**
      * The backing hot flow for the list of followed topic ids for testing.
+     *
+     * Seeded with [emptyUserData] so collectors get a value right away, matching the
+     * DataStore-backed production repository (which always emits a value, defaults included) —
+     * see [TestLocationsRepository] for why an un-seeded `MutableSharedFlow(replay = 1)` is a
+     * trap for anything that `combine`s this with another flow.
      */
-    private val _userData = MutableSharedFlow<UserData>(replay = 1, onBufferOverflow = DROP_OLDEST)
+    private val _userData = MutableSharedFlow<UserData>(replay = 1, onBufferOverflow = DROP_OLDEST).apply {
+        tryEmit(emptyUserData)
+    }
 
     private val currentUserData get() = _userData.replayCache.firstOrNull() ?: emptyUserData
 

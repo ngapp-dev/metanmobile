@@ -122,7 +122,7 @@ internal fun FavoritesRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavoritesScreen(
+internal fun FavoritesScreen(
     modifier: Modifier,
     searchQuery: String,
     showDialog: Boolean,

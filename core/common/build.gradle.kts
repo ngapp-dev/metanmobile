@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.junit4)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
 }

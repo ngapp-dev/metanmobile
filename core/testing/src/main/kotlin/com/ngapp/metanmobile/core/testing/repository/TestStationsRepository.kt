@@ -25,14 +25,23 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class TestStationsRepository : StationsRepository {
 
     /**
      * The backing hot flow for the list of stations ids for testing.
+     *
+     * Seeded with an empty list so collectors get a value right away, the same as
+     * `StationResourceDao`'s Room-backed flow emitting an empty list from an empty table instead
+     * of nothing at all — see [TestLocationsRepository] for why an un-seeded
+     * `MutableSharedFlow(replay = 1)` is a trap for anything that `combine`s this with another
+     * flow.
      */
-    private val stationResourcesFlow: MutableSharedFlow<List<StationResource>> =
-        MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val stationResourcesFlow =
+        MutableSharedFlow<List<StationResource>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST).apply {
+            tryEmit(emptyList())
+        }
 
     /**
      * A test-only API to allow controlling the list of location resources from tests.
@@ -42,27 +51,38 @@ class TestStationsRepository : StationsRepository {
     }
 
     override fun getStationResourcesAsc(query: StationResourceQuery): Flow<List<StationResource>> =
-        stationResourcesFlow.map { stationResources ->
-            var result = stationResources
-            query.filterStationCodes?.let { filterStationCodes ->
-                result = result.filter { it.code in filterStationCodes }
-            }
-            result
-        }
+        stationResourcesFlow.map { stationResources -> applyQuery(stationResources, query) }
 
     override fun getStationResourcesDesc(query: StationResourceQuery): Flow<List<StationResource>> =
-        stationResourcesFlow.map { stationResources ->
-            var result = stationResources
-            query.filterStationCodes?.let { filterStationCodes ->
-                result = result.filter { it.code in filterStationCodes }
-            }
-            result
-        }
+        stationResourcesFlow.map { stationResources -> applyQuery(stationResources, query) }
 
-    override fun getStationResource(stationCode: String): Flow<StationResource> =
-        stationResourcesFlow.map { stationResources ->
-            stationResources.first { it.code == stationCode }
+    /**
+     * Mirrors the `WHERE` clause of `StationResourceDao.getStationResourcesAsc/Desc`: filters by
+     * [StationResourceQuery.filterStationCodes] and does a case-insensitive substring match of
+     * [StationResourceQuery.searchQuery] against the title (SQLite's `LIKE '%…%'` is
+     * case-insensitive for ASCII).
+     */
+    private fun applyQuery(
+        stationResources: List<StationResource>,
+        query: StationResourceQuery,
+    ): List<StationResource> {
+        var result = stationResources
+        query.filterStationCodes?.let { filterStationCodes ->
+            result = result.filter { it.code in filterStationCodes }
         }
+        if (query.searchQuery.isNotEmpty()) {
+            result = result.filter { it.title.contains(query.searchQuery, ignoreCase = true) }
+        }
+        return result
+    }
+
+    /**
+     * `mapNotNull` (not `.map { .first { ... } }`) so subscribing before [stationCode] has been
+     * sent — e.g. against the initial empty-list seed — simply emits nothing yet instead of
+     * throwing `NoSuchElementException`, matching a Room query that has no matching row so far.
+     */
+    override fun getStationResource(stationCode: String): Flow<StationResource> =
+        stationResourcesFlow.mapNotNull { stationResources -> stationResources.find { it.code == stationCode } }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean = true
 }

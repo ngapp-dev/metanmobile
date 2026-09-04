@@ -100,7 +100,7 @@ internal fun NewsRoute(
 }
 
 @Composable
-private fun NewsScreen(
+internal fun NewsScreen(
     modifier: Modifier,
     isSyncing: Boolean,
     syncFailed: Boolean,

@@ -125,7 +125,7 @@ internal fun StationsRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StationsScreen(
+internal fun StationsScreen(
     modifier: Modifier,
     isSyncing: Boolean,
     syncFailed: Boolean,
