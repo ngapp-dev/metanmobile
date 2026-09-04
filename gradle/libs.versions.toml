@@ -4,7 +4,7 @@ androidMinSdk = "23"
 androidTargetSdk = "36"
 versionMajor = "2"
 versionMinor = "3"
-versionPatch = "2"
+versionPatch = "1"
 applicationId = "com.ngapp.metanmobile"
 
 accompanist = "0.37.3"
