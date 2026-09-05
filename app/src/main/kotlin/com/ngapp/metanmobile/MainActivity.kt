@@ -19,6 +19,7 @@ package com.ngapp.metanmobile
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
@@ -118,9 +119,30 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    /**
+     * The intent that should be handed to the NavController for deep-link matching. Updated on
+     * every fresh launch and on [onNewIntent] (this Activity is `singleTask`, so a repeat App
+     * Link tap while already running arrives here rather than spawning a new instance).
+     */
+    private var pendingIntent by mutableStateOf<Intent?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingIntent = intent
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        // Only treat the launch Intent as a deep link to handle on a genuinely fresh start.
+        // savedInstanceState is non-null on a recreate() too — e.g. AppCompatDelegate applying a
+        // new per-app language — and `intent` still holds whatever originally launched the
+        // Activity, so without this check every recreate would re-navigate to that same deep
+        // link and undo whatever screen the user had since navigated to.
+        if (savedInstanceState == null) {
+            pendingIntent = intent
+        }
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         if (updateType == AppUpdateType.FLEXIBLE) {
             appUpdateManager.registerListener(installStateUpdateManager)
@@ -185,6 +207,13 @@ class MainActivity : ComponentActivity() {
                 userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
             )
+
+            // Route the launching/incoming Intent (App Link tap, e.g. a station or news URL) to
+            // the matching screen, and again for every subsequent onNewIntent while the app is
+            // already running.
+            LaunchedEffect(pendingIntent) {
+                pendingIntent?.data?.let { appState.navigateToDeepLink(it) }
+            }
 
             val currentTimeZone by appState.currentTimeZone.collectAsStateWithLifecycle()
 

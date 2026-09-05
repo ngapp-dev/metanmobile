@@ -18,7 +18,9 @@
 package com.ngapp.metanmobile.core.network.model.price
 
 import com.prof18.rssparser.model.RssItem
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class NetworkPriceResource(
     val id: Int,
     val title: String = "",

@@ -107,6 +107,7 @@ fun SimpleHorizontalBarChartView(
             .fillMaxSize()
             .padding(all = 8.dp),
             onDraw = {
+                if (data.isEmpty()) return@Canvas
                 screenSize = size
                 val spaceBetweenBars = (size.height - (data.size * barHeight)) / (data.size - 1)
                 val maxBarWidth = data.maxOf { it.value }

@@ -69,12 +69,15 @@ internal fun CareersRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
+    val syncFailed by viewModel.syncFailed.collectAsStateWithLifecycle()
 
     CareersScreen(
         modifier = modifier,
         isSyncing = isSyncing,
+        syncFailed = syncFailed,
         uiState = uiState,
         onBackClick = onBackClick,
+        onRetryClick = viewModel::retrySync,
     )
 }
 
@@ -82,8 +85,10 @@ internal fun CareersRoute(
 private fun CareersScreen(
     modifier: Modifier,
     isSyncing: Boolean,
+    syncFailed: Boolean,
     uiState: CareersUiState,
     onBackClick: () -> Unit,
+    onRetryClick: () -> Unit = {},
 ) {
     val isLoading = uiState is CareersUiState.Loading
     ReportDrawnWhen { !isLoading }
@@ -123,7 +128,9 @@ private fun CareersScreen(
                                 modifier = modifier
                                     .fillMaxSize()
                                     .verticalScroll(rememberScrollState()),
-                                message = stringResource(R.string.feature_menu_careers_text_empty)
+                                message = stringResource(R.string.feature_menu_careers_text_empty),
+                                canRetry = syncFailed,
+                                onClickRetry = onRetryClick,
                             )
                         }
                     }
@@ -181,6 +188,7 @@ private fun CareersScreenPreview() {
         CareersScreen(
             modifier = Modifier,
             isSyncing = false,
+            syncFailed = false,
             uiState = CareersUiState.Success(
                 careers = listOf(CareerResource.init())
             ),

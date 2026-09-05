@@ -35,7 +35,7 @@ fun NavGraphBuilder.stationsScreen(
     onShowBottomBar: (Boolean) -> Unit,
 ) {
     slideInLeftComposable<StationsNavigation>(
-        deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
+        deepLinks = listOf(navDeepLink { uriPattern = "$DEEP_LINK_URI_PATTERN/" }),
     ) {
         StationsRoute(onNewsDetailClick, onShowBottomBar)
     }

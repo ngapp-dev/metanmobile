@@ -42,7 +42,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
     userNewsResourceRepository: UserNewsResourceRepository,
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
@@ -71,11 +71,19 @@ class NewsViewModel @Inject constructor(
             initialValue = false,
         )
 
+    val syncFailed = syncManager.syncFailed
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
     fun triggerAction(action: NewsAction) {
         when (action) {
             is NewsAction.ShowAlertDialog -> onShowAlertDialog(action.showDialog)
             is NewsAction.UpdateSearchQuery -> onUpdateSearchQuery(action.input)
             is NewsAction.UpdateSortingConfig -> onUpdateSortingConfig(action.newsSortingConfig)
+            NewsAction.RetrySync -> syncManager.requestSync()
         }
     }
 

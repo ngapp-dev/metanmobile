@@ -67,7 +67,7 @@ fun StationDetailRoute(
 }
 
 @Composable
-private fun StationDetailScreen(
+internal fun StationDetailScreen(
     modifier: Modifier,
     uiState: StationDetailUiState,
     onAction: (StationDetailAction) -> Unit,

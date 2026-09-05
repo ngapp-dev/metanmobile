@@ -50,5 +50,13 @@ _sandbox
 
 # Android Studio captures folder
 captures/
-/.kotlin/sessions
-/.kotlin/errors
+
+# Kotlin daemon session/error caches — generated per module (build-logic, core/*, feature/*, …),
+# not just at the repo root
+.kotlin/
+
+# JVM heap dumps (e.g. from a crashed Gradle daemon)
+*.hprof
+
+# Claude Code session state
+.claude/

@@ -20,4 +20,5 @@
     <!-- Text -->
     <string name="feature_home_text_hello_user">С возвращением!</string>
     <string name="feature_home_text_today_date">Сегодня, %s</string>
+    <string name="feature_home_text_empty">Пока нет данных</string>
 </resources>

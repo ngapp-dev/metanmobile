@@ -54,7 +54,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     fuelPricesRepository: PricesRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
@@ -78,6 +78,13 @@ class HomeViewModel @Inject constructor(
         )
 
     val isSyncing = syncManager.isSyncing
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    val syncFailed = syncManager.syncFailed
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
@@ -111,6 +118,7 @@ class HomeViewModel @Inject constructor(
             is HomeAction.SaveUi -> onSaveUi()
             is HomeAction.ReorderList -> onReorderList(action.newOrder)
             is HomeAction.ExpandLastNews -> onExpandLastNews(action.expand)
+            HomeAction.RetrySync -> syncManager.requestSync()
         }
     }
 
@@ -138,11 +146,18 @@ class HomeViewModel @Inject constructor(
 
     private fun onSaveUi() {
         _isEditing.value = false
+        // Snapshot both values before launching either write: setHomeReorderableList's own
+        // persisted UserData round-trips back through the init block's collectLatest above,
+        // which re-derives _isLastNewsExpanded from it — reading isLastNewsExpanded.value lazily
+        // inside the second launch could observe that echo (still carrying the pre-save value)
+        // instead of the change just made here, silently discarding it.
+        val newReorderableList = reorderableList.value
+        val newIsLastNewsExpanded = isLastNewsExpanded.value
         viewModelScope.launch {
-            userDataRepository.setHomeReorderableList(reorderableList.value)
+            userDataRepository.setHomeReorderableList(newReorderableList)
         }
         viewModelScope.launch {
-            userDataRepository.setHomeLastNewsExpanded(isLastNewsExpanded.value)
+            userDataRepository.setHomeLastNewsExpanded(newIsLastNewsExpanded)
         }
     }
 
@@ -189,7 +204,12 @@ private fun homeUiState(
         val pinnedFaqList = flows[4] as List<FaqResource>
         val careersList = flows[5] as List<CareerResource>
 
-        val nearestStation = stationsList.minByOrNull { it.distanceBetween }
+        // distanceBetween is null when we don't know the user's location yet — pick among the
+        // ones we can actually compare, falling back to just the first station so the widget has
+        // something to show (its own permission/location UI covers the "no distance" case).
+        val nearestStation = stationsList.filter { it.distanceBetween != null }
+            .minByOrNull { it.distanceBetween!! }
+            ?: stationsList.firstOrNull()
 
         Success(
             pinnedNewsList = pinnedNewsList,

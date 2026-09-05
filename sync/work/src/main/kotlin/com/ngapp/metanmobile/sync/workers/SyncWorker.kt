@@ -86,10 +86,14 @@ internal class SyncWorker @AssistedInject constructor(
 
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 
-            if (syncedSuccessfully) {
-                Result.success()
-            } else {
-                Result.retry()
+            when {
+                syncedSuccessfully -> Result.success()
+                // Keep retrying transient failures (no connectivity, upstream hiccup) with
+                // WorkManager's backoff, but give up after a few attempts instead of retrying
+                // forever — a persistent failure (e.g. a broken API contract) should surface as
+                // FAILED so the UI can offer a manual retry, not spin silently in the background.
+                runAttemptCount < MAX_SYNC_ATTEMPTS -> Result.retry()
+                else -> Result.failure()
             }
         }
     }
@@ -139,3 +143,5 @@ val SyncConstraints
     get() = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.CONNECTED)
         .build()
+
+private const val MAX_SYNC_ATTEMPTS = 5

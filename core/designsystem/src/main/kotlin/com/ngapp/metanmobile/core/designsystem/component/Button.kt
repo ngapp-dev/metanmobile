@@ -35,7 +35,6 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -80,9 +79,7 @@ fun MMButton(
         elevation = elevation,
         shape = shape,
         enabled = enabled,
-        colors = colors.copy(
-            containerColor = MaterialTheme.colorScheme.onBackground,
-        ),
+        colors = colors,
         contentPadding = contentPadding,
         content = content,
     )

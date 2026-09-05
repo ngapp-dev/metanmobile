@@ -21,6 +21,8 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Tasks
 import com.ngapp.metanmobile.core.common.network.Dispatcher
 import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
@@ -31,10 +33,14 @@ import com.ngapp.metanmobile.core.database.model.location.LocationResourceEntity
 import com.ngapp.metanmobile.core.database.model.location.asExternalModel
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+private const val MAX_LOCATION_FETCH_ATTEMPTS = 3
+private const val LOCATION_RETRY_DELAY_MILLIS = 5_000L
 
 class OfflineFirstLocationsRepository @Inject constructor(
     private val locationResourceDao: LocationResourceDao,
@@ -48,13 +54,9 @@ class OfflineFirstLocationsRepository @Inject constructor(
             .map { it.map(LocationResourceEntity::asExternalModel) }
     }
 
-    override fun getLocationResource(): Flow<LocationResource> {
+    override fun getLocationResource(): Flow<LocationResource?> {
         return locationResourceDao.getLocationResources().map { locationResources ->
-            if (locationResources.isNotEmpty()) {
-                locationResources.first().asExternalModel()
-            } else {
-                LocationResource.init()
-            }
+            locationResources.firstOrNull()?.asExternalModel()
         }
     }
 
@@ -64,11 +66,7 @@ class OfflineFirstLocationsRepository @Inject constructor(
                 googleServicesChecker.isGoogleServicesAvailable
             }.onSuccess { isAvailable ->
                 if (isAvailable) {
-                    val location = getLocationData()?.asEntity()
-                    location?.let {
-//                        locationResourceDao.deleteLocationResources()
-                        locationResourceDao.insertOrIgnoreLocationResource(it)
-                    }
+                    fetchAndStoreLocationWithRetry()
                 } else {
                     // Do something if Google Services not available
                 }
@@ -78,14 +76,40 @@ class OfflineFirstLocationsRepository @Inject constructor(
         }
     }
 
+    /**
+     * A single [getLocationData] attempt can come back empty even with permission granted — a
+     * cold GPS fix genuinely takes a few seconds. Retries a few times with a short delay instead
+     * of leaving the UI stuck on "no location" (and its manual retry button) after one unlucky
+     * attempt.
+     */
+    private suspend fun fetchAndStoreLocationWithRetry() {
+        for (attempt in 1..MAX_LOCATION_FETCH_ATTEMPTS) {
+            val location = getLocationData()?.asEntity()
+            if (location != null) {
+                locationResourceDao.upsertLocationResources(location)
+                return
+            }
+            if (attempt < MAX_LOCATION_FETCH_ATTEMPTS) {
+                delay(LOCATION_RETRY_DELAY_MILLIS)
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     override suspend fun getLocationData(): Location? = withContext(ioDispatcher) {
-        try {
-            return@withContext Tasks.await(locationClient.lastLocation)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-        return@withContext null
+        val cached = runCatching { Tasks.await(locationClient.lastLocation) }.getOrNull()
+        // lastLocation is just a cache — null whenever the device has never computed a fix
+        // (fresh device, GPS/network location off). Fall back to one active request instead of
+        // silently giving up, so "permission granted" doesn't mean "stuck with no location
+        // forever" until something else on the device happens to trigger a fix.
+        cached ?: runCatching {
+            Tasks.await(
+                locationClient.getCurrentLocation(
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                    CancellationTokenSource().token,
+                )
+            )
+        }.getOrNull()
     }
 }
 

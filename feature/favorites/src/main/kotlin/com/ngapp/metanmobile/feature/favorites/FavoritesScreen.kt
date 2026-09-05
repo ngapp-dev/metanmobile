@@ -93,7 +93,7 @@ internal fun FavoritesRoute(
     viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val permissionsState = LocalPermissionsState.current
-    LaunchedEffect(permissionsState) {
+    LaunchedEffect(permissionsState.hasLocationPermissions) {
         if (permissionsState.hasLocationPermissions) {
             viewModel.triggerAction(FavoritesAction.UpdateLocation(true))
         }
@@ -122,7 +122,7 @@ internal fun FavoritesRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavoritesScreen(
+internal fun FavoritesScreen(
     modifier: Modifier,
     searchQuery: String,
     showDialog: Boolean,

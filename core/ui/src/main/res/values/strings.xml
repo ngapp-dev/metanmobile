@@ -95,6 +95,10 @@
     <string name="core_ui_text_recent_offers">Recent offers</string>
     <string name="core_ui_text_google_service_unavailable">Google services unavailable</string>
     <string name="core_ui_text_permission_denied">Permission was denied</string>
+    <string name="core_ui_title_location_rationale">Location access</string>
+    <string name="core_ui_text_location_rationale">The app uses your location to show the distance to each station on the map and in the list. It\'s only used while you\'re in the app and isn\'t shared anywhere.</string>
+    <string name="core_ui_button_open_settings">Open settings</string>
+    <string name="core_ui_button_decline_anyway">Dismiss</string>
     <string name="core_ui_text_share_via">&#160;- Share via&#160;</string>
     <string name="core_ui_text_no_experience">Not required</string>
     <string name="core_ui_text_place_any">Any</string>
@@ -102,13 +106,13 @@
     <string name="core_ui_text_open_24_hours">Open 24 hours</string>
     <string name="core_ui_text_popular_times">Popular times:</string>
     <string-array name="core_ui_text_on_day_of_week">
-        <item>Mondays</item>
-        <item>Tuesdays</item>
-        <item>Wednesdays</item>
-        <item>Thursdays</item>
-        <item>Fridays</item>
-        <item>Saturdays</item>
-        <item>Sundays</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
     </string-array>
     <string name="core_ui_text_busy_now">Busy now</string>
     <string name="core_ui_text_no_news">There is no news yet</string>

@@ -21,13 +21,14 @@ import androidx.annotation.VisibleForTesting
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.navDeepLink
 import com.ngapp.metanmobile.core.ui.util.slideInLeftComposable
 import com.ngapp.metanmobile.feature.news.detail.NewsDetailRoute
 import kotlinx.serialization.Serializable
 
 @VisibleForTesting
 internal const val NEWS_DETAIL_ID_ARG = "newsId"
-//private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by"
+private const val DEEP_LINK_URI_PATTERN = "https://metan.by/news/by"
 
 fun NavController.navigateToNewsDetail(
     newsId: String, navOptions: NavOptionsBuilder.() -> Unit = {},
@@ -37,7 +38,7 @@ fun NavController.navigateToNewsDetail(
 
 fun NavGraphBuilder.newsDetailScreen(onBackClick: () -> Unit) {
     slideInLeftComposable<NewsDetailNavigation>(
-//        deepLinks = listOf(navDeepLink { uriPattern = DEEP_LINK_URI_PATTERN }),
+        deepLinks = listOf(navDeepLink { uriPattern = "$DEEP_LINK_URI_PATTERN/{$NEWS_DETAIL_ID_ARG}/" }),
     ) {
         NewsDetailRoute(onBackClick = onBackClick)
     }

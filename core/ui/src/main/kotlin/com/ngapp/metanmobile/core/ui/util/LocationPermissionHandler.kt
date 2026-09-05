@@ -21,6 +21,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -31,12 +34,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
+import com.ngapp.metanmobile.core.ui.R
 import kotlinx.coroutines.flow.collectLatest
 
 class PermissionsState {
@@ -45,6 +50,22 @@ class PermissionsState {
 }
 
 val LocalPermissionsState = compositionLocalOf { PermissionsState() }
+
+private const val LOCATION_PERMISSION_PREFS_NAME = "location_permission_prefs"
+private const val KEY_HAS_REQUESTED_LOCATION_PERMISSION = "has_requested_location_permission"
+
+/**
+ * Whether calling `launchMultiplePermissionRequest()` is actually worth it, as opposed to
+ * sending the user to Settings directly.
+ *
+ * `shouldShowRationale` (-> [canAskAgain]) is `false` both before the very first-ever request
+ * and once the user has permanently denied the permission ("don't ask again", or a second
+ * decline) — Android doesn't distinguish the two through that API. [hasRequestedBefore] is what
+ * disambiguates: once we know we've asked for real at least once, a `false` reading of
+ * [canAskAgain] can only mean "permanently denied", not "never asked".
+ */
+internal fun shouldShowSystemDialog(hasRequestedBefore: Boolean, canAskAgain: Boolean): Boolean =
+    !hasRequestedBefore || canAskAgain
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
@@ -58,6 +79,19 @@ fun PermissionsManager(content: @Composable () -> Unit) {
         )
     )
 
+    // shouldShowRationale is false both before the very first ever request AND once the user has
+    // permanently denied ("don't ask again", or a second decline) — Android doesn't distinguish
+    // the two. A launchMultiplePermissionRequest() call in the permanently-denied case shows no
+    // UI at all and (see below) can leave the caller stuck waiting forever for a status change
+    // that never comes, so a repeat "Request permission" button silently does nothing. This flag,
+    // persisted across process restarts, is what disambiguates: once we know we've asked for
+    // real at least once, a later false reading can only mean "permanently denied".
+    val prefs = remember {
+        context.getSharedPreferences(LOCATION_PERMISSION_PREFS_NAME, Context.MODE_PRIVATE)
+    }
+    fun hasRequestedBefore() = prefs.getBoolean(KEY_HAS_REQUESTED_LOCATION_PERMISSION, false)
+    fun markRequested() = prefs.edit().putBoolean(KEY_HAS_REQUESTED_LOCATION_PERMISSION, true).apply()
+
     LaunchedEffect(locationPermissionsState) {
         snapshotFlow { locationPermissionsState.allPermissionsGranted }
             .collectLatest { allPermissionsGranted ->
@@ -65,22 +99,66 @@ fun PermissionsManager(content: @Composable () -> Unit) {
             }
     }
 
-    LaunchedEffect(locationPermissionsState.permissions) {
-        locationPermissionsState.permissions.forEach { permissionState ->
-            handlePermissionRequest(permissionState, context)
+    // No custom UI before the very first ask — go straight to the system dialog, that's the
+    // familiar/expected flow and adds friction for nothing. Only explain (and offer another
+    // try, or Settings) *after* an actual decline — that's also the one moment Android itself
+    // tells us whether asking again is worth it (shouldShowRationale).
+    var pendingRequest by remember { mutableStateOf(false) }
+    var deniedAfterRequest by remember { mutableStateOf(false) }
+
+    permissionsState.requestPermissions = {
+        if (!locationPermissionsState.allPermissionsGranted) {
+            val canAskAgain = locationPermissionsState.permissions.any { permission ->
+                val status = permission.status
+                status is PermissionStatus.Denied && status.shouldShowRationale
+            }
+            if (shouldShowSystemDialog(hasRequestedBefore(), canAskAgain)) {
+                markRequested()
+                pendingRequest = true
+                locationPermissionsState.launchMultiplePermissionRequest()
+            } else {
+                // Permanently denied (and we know this isn't just the pristine "never asked"
+                // state, because we've been here before) — the system dialog won't come back.
+                openAppSettings(context)
+            }
         }
     }
 
-    permissionsState.requestPermissions = {
-        locationPermissionsState.permissions.forEach {
-            locationPermissionsState.launchMultiplePermissionRequest()
-            val status = it.status
-            if (status is PermissionStatus.Denied && !status.shouldShowRationale) {
-                openAppSettings(context)
-            } else {
-                locationPermissionsState.launchMultiplePermissionRequest()
+    // allPermissionsGranted alone won't fire this on a denial (false -> false, no change), so
+    // watch the actual per-permission statuses instead — those do change once the system dialog
+    // is answered, granted or not.
+    LaunchedEffect(locationPermissionsState) {
+        snapshotFlow { locationPermissionsState.permissions.map { it.status } }
+            .collectLatest {
+                if (pendingRequest) {
+                    pendingRequest = false
+                    if (!locationPermissionsState.allPermissionsGranted) {
+                        deniedAfterRequest = true
+                    }
+                }
             }
+    }
+
+    if (deniedAfterRequest) {
+        val canAskAgain = locationPermissionsState.permissions.any { permission ->
+            val status = permission.status
+            status is PermissionStatus.Denied && status.shouldShowRationale
         }
+        LocationRationaleDialog(
+            canAskAgain = canAskAgain,
+            onRetry = {
+                deniedAfterRequest = false
+                if (canAskAgain) {
+                    pendingRequest = true
+                    locationPermissionsState.launchMultiplePermissionRequest()
+                } else {
+                    // "Don't ask again" / permanently denied — the system dialog won't come back,
+                    // Settings is the only remaining path.
+                    openAppSettings(context)
+                }
+            },
+            onDeclineAnyway = { deniedAfterRequest = false },
+        )
     }
 
     CompositionLocalProvider(LocalPermissionsState provides permissionsState) {
@@ -88,13 +166,45 @@ fun PermissionsManager(content: @Composable () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
-fun handlePermissionRequest(permissionState: PermissionState, context: Context) {
-    if (permissionState.status is PermissionStatus.Denied &&
-        !(permissionState.status as PermissionStatus.Denied).shouldShowRationale
-    ) {
-        permissionState.launchPermissionRequest()
-    }
+@Composable
+private fun LocationRationaleDialog(
+    canAskAgain: Boolean,
+    onRetry: () -> Unit,
+    onDeclineAnyway: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDeclineAnyway,
+        title = {
+            Text(
+                text = stringResource(R.string.core_ui_title_location_rationale),
+                style = MMTypography.displayMedium,
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.core_ui_text_location_rationale),
+                style = MMTypography.bodyLarge,
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onRetry) {
+                Text(
+                    text = stringResource(
+                        if (canAskAgain) {
+                            R.string.core_ui_button_permission_request
+                        } else {
+                            R.string.core_ui_button_open_settings
+                        }
+                    )
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDeclineAnyway) {
+                Text(text = stringResource(R.string.core_ui_button_decline_anyway))
+            }
+        },
+    )
 }
 
 fun openAppSettings(context: Context) {

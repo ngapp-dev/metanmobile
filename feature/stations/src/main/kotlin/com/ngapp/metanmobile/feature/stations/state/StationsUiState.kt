@@ -24,7 +24,7 @@ import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 sealed interface StationsUiState {
     data class Success(
         val stationList: List<UserStationResource>,
-        val userLocation: LocationResource,
+        val userLocation: LocationResource?,
         val stationSortingConfig: StationSortingConfig,
     ) : StationsUiState
 

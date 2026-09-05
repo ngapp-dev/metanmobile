@@ -55,6 +55,9 @@ interface CareerResourceDao {
     @Query(value = """SELECT * FROM career_resources WHERE id = :id""")
     fun getCareerResource(id: String): Flow<CareerResourceEntity>
 
+    @Query("SELECT id FROM career_resources")
+    suspend fun getAllCareerIds(): List<String>
+
     /**
      * Inserts [entities] into the db if they don't exist, and ignores those that do
      */

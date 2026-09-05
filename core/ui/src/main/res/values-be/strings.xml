@@ -95,6 +95,10 @@
     <string name="core_ui_text_recent_offers">Нядаўнія вакансіі</string>
     <string name="core_ui_text_google_service_unavailable">Сэрвісы Google недаступныя</string>
     <string name="core_ui_text_permission_denied">Дазвол быў адхілены</string>
+    <string name="core_ui_title_location_rationale">Доступ да геалакацыі</string>
+    <string name="core_ui_text_location_rationale">Праграма выкарыстоўвае ваша месцазнаходжанне, каб паказваць адлегласць да кожнай заправкі на карце і ў спісе. Вызначаецца толькі пакуль вы знаходзіцеся ў праграме і нікуды не перадаецца.</string>
+    <string name="core_ui_button_open_settings">Адкрыць налады</string>
+    <string name="core_ui_button_decline_anyway">Адхіліць</string>
     <string name="core_ui_text_share_via">&#160;- Падзяліцца праз&#160;</string>
     <string name="core_ui_text_no_experience">Не патрабуецца</string>
     <string name="core_ui_text_place_any">Любое</string>
@@ -102,13 +106,13 @@
     <string name="core_ui_text_open_24_hours">Кругласутачна</string>
     <string name="core_ui_text_popular_times">Папулярны час:</string>
     <string-array name="core_ui_text_on_day_of_week">
-        <item>Панядзелкі</item>
-        <item>Аўторкі</item>
-        <item>Серады</item>
-        <item>Чацвяргі</item>
-        <item>Пятніцы</item>
-        <item>Суботы</item>
-        <item>Нядзелі</item>
+        <item>Панядзелак</item>
+        <item>Аўторак</item>
+        <item>Серада</item>
+        <item>Чацвярг</item>
+        <item>Пятніца</item>
+        <item>Субота</item>
+        <item>Нядзеля</item>
     </string-array>
     <string name="core_ui_text_busy_now">Загружанасць зараз</string>
     <string name="core_ui_text_based_on_visits">На аснове наведванняў гэтага месца.</string>

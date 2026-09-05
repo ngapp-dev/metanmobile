@@ -61,12 +61,14 @@ class FakeCompositeStationResourcesWithFavoritesRepository @Inject constructor(
             stationResourcesFlow.combine(locationsRepository.getLocationResource()) { stationResources, location ->
                 val userStationResources = stationResources.mapToUserStationResources(userData)
                 userStationResources.map {
-                    val distanceBetween = distanceInKm(
-                        location.latitude,
-                        location.longitude,
-                        it.latitude.toDouble(),
-                        it.longitude.toDouble(),
-                    )
+                    val distanceBetween = location?.let { loc ->
+                        distanceInKm(
+                            loc.latitude,
+                            loc.longitude,
+                            it.latitude.toDouble(),
+                            it.longitude.toDouble(),
+                        )
+                    }
                     it.copy(distanceBetween = distanceBetween)
                 }
             }

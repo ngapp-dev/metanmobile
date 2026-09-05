@@ -37,10 +37,13 @@ import javax.inject.Inject
 internal class WorkManagerSyncManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : SyncManager {
-    override val isSyncing: Flow<Boolean> =
+    private val workInfos: Flow<List<WorkInfo>> =
         WorkManager.getInstance(context).getWorkInfosForUniqueWorkFlow(SYNC_WORK_NAME)
-            .map(List<WorkInfo>::anyRunning)
             .conflate()
+
+    override val isSyncing: Flow<Boolean> = workInfos.map(List<WorkInfo>::anyRunning)
+
+    override val syncFailed: Flow<Boolean> = workInfos.map(List<WorkInfo>::anyFailed)
 
     override fun requestSync() {
         val workManager = WorkManager.getInstance(context)
@@ -54,3 +57,4 @@ internal class WorkManagerSyncManager @Inject constructor(
 }
 
 private fun List<WorkInfo>.anyRunning() = any { it.state == State.RUNNING }
+private fun List<WorkInfo>.anyFailed() = any { it.state == State.FAILED }

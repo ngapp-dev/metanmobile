@@ -94,6 +94,10 @@
     <string name="core_ui_text_recent_offers">Недавние вакансии</string>
     <string name="core_ui_text_google_service_unavailable">Сервисы Google недоступны</string>
     <string name="core_ui_text_permission_denied">Разрешение было отклонено</string>
+    <string name="core_ui_title_location_rationale">Доступ к геолокации</string>
+    <string name="core_ui_text_location_rationale">Приложение использует ваше местоположение, чтобы показывать расстояние до каждой заправки на карте и в списке. Определяется только пока вы находитесь в приложении и никуда не передаётся.</string>
+    <string name="core_ui_button_open_settings">Открыть настройки</string>
+    <string name="core_ui_button_decline_anyway">Отклонить</string>
     <string name="core_ui_text_share_via">&#160;- Падзяліцца через&#160;</string>
     <string name="core_ui_text_no_experience">Не требуется</string>
     <string name="core_ui_text_place_any">Любое</string>
@@ -101,13 +105,13 @@
     <string name="core_ui_text_open_24_hours">Круглосуточно</string>
     <string name="core_ui_text_popular_times">Популярное время:</string>
     <string-array name="core_ui_text_on_day_of_week">
-        <item>Понедельники</item>
-        <item>Вторники</item>
-        <item>Среды</item>
-        <item>Четверги</item>
-        <item>Пятницы</item>
-        <item>Субботы</item>
-        <item>Воскресенья</item>
+        <item>Понедельник</item>
+        <item>Вторник</item>
+        <item>Среда</item>
+        <item>Четверг</item>
+        <item>Пятница</item>
+        <item>Суббота</item>
+        <item>Воскресенье</item>
     </string-array>
     <string name="core_ui_text_busy_now">Загруженность сейчас</string>
     <string name="core_ui_text_based_on_visits">На основе посещений этого места.</string>

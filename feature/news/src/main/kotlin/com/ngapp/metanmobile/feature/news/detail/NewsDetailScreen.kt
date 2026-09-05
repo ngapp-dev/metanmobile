@@ -59,7 +59,7 @@ internal fun NewsDetailRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NewsDetailScreen(
+internal fun NewsDetailScreen(
     modifier: Modifier,
     uiState: NewsDetailUiState,
     onBackClick: () -> Unit,
@@ -67,23 +67,31 @@ private fun NewsDetailScreen(
 ) {
     ReportDrawnWhen { uiState is NewsDetailUiState.Loading }
 
-    when (uiState) {
-        NewsDetailUiState.Loading -> {
-            AnimatedVisibility(
-                visible = true,
-                enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-            ) {
-                MMLinearWavyProgressIndicator()
+    // The top app bar must render regardless of uiState — otherwise, while Loading, nothing
+    // consumes the top window insets and the content draws straight under the status bar. That
+    // Loading state is near-instant for an already-synced item tapped from the list (unnoticeable
+    // flash), but visible on a cold start via deep link, so it needs to look right too.
+    Column(modifier) {
+        MMNavShareButtonsTopAppBar(
+            onNavigationClick = onBackClick,
+            onShareActionClick = {
+                if (uiState is NewsDetailUiState.Success) {
+                    onAction(NewsDetailAction.ShareNews(uiState.news))
+                }
             }
-        }
+        )
+        when (uiState) {
+            NewsDetailUiState.Loading -> {
+                AnimatedVisibility(
+                    visible = true,
+                    enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+                ) {
+                    MMLinearWavyProgressIndicator()
+                }
+            }
 
-        is NewsDetailUiState.Success -> {
-            Column(modifier) {
-                MMNavShareButtonsTopAppBar(
-                    onNavigationClick = onBackClick,
-                    onShareActionClick = { onAction(NewsDetailAction.ShareNews(uiState.news)) }
-                )
+            is NewsDetailUiState.Success -> {
                 NewsDetailContent(news = uiState.news)
             }
         }

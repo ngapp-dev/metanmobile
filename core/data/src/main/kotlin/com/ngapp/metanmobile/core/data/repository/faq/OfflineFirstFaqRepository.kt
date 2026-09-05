@@ -23,15 +23,13 @@ import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.faq.FaqResourceDao
 import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.asExternalModel
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.collections.map
-import kotlin.collections.toSet
 
 class OfflineFirstFaqRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+    private val network: MetanEcogasNetworkDataSource,
     private val faqResourceDao: FaqResourceDao,
 ) : FaqRepository {
 
@@ -41,7 +39,7 @@ class OfflineFirstFaqRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getFaqList() },
+            dataFetcher = { network.getFaqList() },
             dataWriter = { networkFaqList ->
                 val newData = networkFaqList.map(NetworkFaqResource::asEntity)
                 val newIds = newData.map { it.id }.toSet()

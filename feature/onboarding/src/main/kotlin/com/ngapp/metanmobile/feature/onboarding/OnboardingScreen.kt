@@ -48,8 +48,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,6 +76,7 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 import com.ngapp.metanmobile.feature.onboarding.state.OnboardingAction
 import com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState
 import kotlinx.coroutines.launch
@@ -96,7 +101,7 @@ internal fun OnboardingRoute(
 }
 
 @Composable
-private fun OnboardingScreen(
+internal fun OnboardingScreen(
     modifier: Modifier,
     uiState: OnboardingUiState,
     onAction: (OnboardingAction) -> Unit,
@@ -110,6 +115,19 @@ private fun OnboardingScreen(
     )
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { pages.size })
+
+    // Ask for location permission once the user has seen the "find stations near you" page and
+    // moved past it — via Next, a swipe, or Skip (which jumps straight to the last page). Not on
+    // launch: a bare system dialog with zero context, before the user even knows what the app
+    // does, is a bad first impression.
+    val permissionsState = LocalPermissionsState.current
+    var locationPermissionRequested by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage >= pages.indexOf(OnBoardingPage.Third) && !locationPermissionRequested) {
+            locationPermissionRequested = true
+            permissionsState.requestPermissions()
+        }
+    }
 
     ReportDrawnWhen { !isLoading }
     OnboardingHeader(

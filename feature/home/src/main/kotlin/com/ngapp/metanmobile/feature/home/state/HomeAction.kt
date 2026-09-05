@@ -25,4 +25,5 @@ sealed interface HomeAction {
     data class ReorderList(val newOrder: List<HomeContentItem>) : HomeAction
     data object SaveUi : HomeAction
     data class ExpandLastNews(val expand: Boolean) : HomeAction
+    data object RetrySync : HomeAction
 }

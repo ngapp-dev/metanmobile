@@ -46,6 +46,7 @@ import com.ngapp.metanmobile.feature.privacypolicy.navigation.navigateToPrivacyP
 import com.ngapp.metanmobile.feature.privacypolicy.navigation.privacyPolicyScreen
 import com.ngapp.metanmobile.feature.locationinformation.navigation.locationInformationScreen
 import com.ngapp.metanmobile.feature.locationinformation.navigation.navigateToLocationInformation
+import com.ngapp.metanmobile.feature.stationdetail.navigation.stationDetailScreen
 import com.ngapp.metanmobile.feature.stations.navigation.stationsScreen
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.navigateToTermsAndConditions
 import com.ngapp.metanmobile.feature.termsandconditions.navigation.termsAndConditionsScreen
@@ -87,6 +88,10 @@ fun MMNavHost(
             onShowBottomBar = onShowBottomBar,
         )
         newsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
+        stationDetailScreen(
+            onNewsDetailClick = navController::navigateToNewsDetail,
+            onBackClick = navController::navigateUp,
+        )
         favoritesScreen(
             onNewsDetailClick = navController::navigateToNewsDetail,
             onShowBottomBar = onShowBottomBar,

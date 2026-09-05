@@ -28,4 +28,10 @@ dependencies {
     api(projects.core.data)
 
     implementation(libs.hilt.android.testing)
+
+    testImplementation(projects.core.analytics)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.play.services.location)
+    testImplementation(libs.turbine)
 }

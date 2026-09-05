@@ -19,8 +19,8 @@ package com.ngapp.metanmobile.core.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,35 +37,34 @@ import com.ngapp.metanmobile.core.designsystem.theme.permissionButtonColor
 @Composable
 fun RequestPermissionOrGoogleServices(
     modifier: Modifier = Modifier,
-    titleText: Int,
+    subtitle: Int,
     buttonText: Int,
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Column {
             Text(
-                text = stringResource(id = titleText),
+                text = stringResource(id = subtitle),
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MMTypography.titleLarge
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(top = 2.dp)
             )
             MMButton(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = onClick,
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    hoveredElevation = 0.dp,
-                    focusedElevation = 0.dp
-                ),
                 shape = MMShapes.large,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MMColors.permissionButtonColor
                 ),
             ) {
-                Text(text = stringResource(id = buttonText))
+                Text(
+                    text = stringResource(id = buttonText),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }

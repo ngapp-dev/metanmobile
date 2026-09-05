@@ -18,8 +18,6 @@
 package com.ngapp.metanmobile.core.database.dao.location
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.ngapp.metanmobile.core.database.model.location.LocationResourceEntity
@@ -34,12 +32,9 @@ interface LocationResourceDao {
     @Upsert
     suspend fun upsertLocationResources(locationResourceEntity: LocationResourceEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertOrIgnoreLocationResource(location: LocationResourceEntity)
-
     @Query("DELETE FROM location_resources")
     suspend fun deleteLocationResources()
 
-    @Query("SELECT * FROM location_resources ORDER BY time")
+    @Query("SELECT * FROM location_resources ORDER BY time DESC")
     fun getLocationResources(): Flow<List<LocationResourceEntity>>
 }

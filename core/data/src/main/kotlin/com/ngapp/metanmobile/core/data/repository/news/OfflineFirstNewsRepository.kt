@@ -23,13 +23,13 @@ import com.ngapp.metanmobile.core.data.updateDataSync
 import com.ngapp.metanmobile.core.database.dao.news.NewsResourceDao
 import com.ngapp.metanmobile.core.database.model.news.NewsResourceEntity
 import com.ngapp.metanmobile.core.database.model.news.asExternalModel
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-internal class OfflineFirstNewsRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+class OfflineFirstNewsRepository @Inject constructor(
+    private val network: MetanEcogasNetworkDataSource,
     private val newsResourceDao: NewsResourceDao,
 ) : NewsRepository {
 
@@ -60,7 +60,7 @@ internal class OfflineFirstNewsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getNewsList() },
+            dataFetcher = { network.getNewsList() },
             dataWriter = { networkNewsList ->
                 val newData = networkNewsList.map(NetworkNewsResource::asEntity)
                 val newIds = newData.map { it.id }.toSet()

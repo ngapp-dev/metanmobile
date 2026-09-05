@@ -57,9 +57,9 @@ interface StationResourceDao {
             ORDER BY 
             CASE
                 WHEN :sortingType = 'STATION_NAME' THEN title 
-                ELSE NULL 
+                ELSE NULL
             END
-            ASC
+            DESC
     """,
     )
     fun getStationResourcesDesc(
@@ -93,9 +93,9 @@ interface StationResourceDao {
             ORDER BY 
             CASE
                 WHEN :sortingType = 'STATION_NAME' THEN title 
-                ELSE NULL 
+                ELSE NULL
             END
-            DESC
+            ASC
     """,
     )
     fun getStationResourcesAsc(

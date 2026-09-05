@@ -34,7 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FaqViewModel @Inject constructor(
     faqRepository: FaqRepository,
-    syncManager: SyncManager,
+    private val syncManager: SyncManager,
 ) : ViewModel() {
 
     val uiState: StateFlow<FaqUiState> = faqRepository.getFaqList()
@@ -51,4 +51,13 @@ class FaqViewModel @Inject constructor(
             started = WhileSubscribed(5_000),
             initialValue = false,
         )
+
+    val syncFailed = syncManager.syncFailed
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    fun retrySync() = syncManager.requestSync()
 }

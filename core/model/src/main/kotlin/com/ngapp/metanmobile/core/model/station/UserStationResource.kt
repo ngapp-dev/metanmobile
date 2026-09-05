@@ -49,7 +49,9 @@ data class UserStationResource(
     val title: String,
     val dateCreated: Long,
     val url: String,
-    val distanceBetween: Double = 0.0,
+    // null = we don't know the user's location (permission not granted, or granted but no fix
+    // yet) — distinct from a real distance, including a genuine 0.0 (user standing at the pump).
+    val distanceBetween: Double? = null,
     val isFavorite: Boolean,
 ) {
     companion object {

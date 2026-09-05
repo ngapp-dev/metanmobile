@@ -31,12 +31,23 @@ import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState.Loading
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/**
+ * Marking a news resource as viewed re-emits the news list Flow (`hasBeenViewed` drives the
+ * unread indicator), which recomposes the news list screen. If that happens immediately on
+ * opening the detail screen, the list is still mid slide-out in the nav [AnimatedContent]
+ * transition (see `slideInLeftComposable`'s `tween(250)`) and gets remeasured concurrently with
+ * that transition's own measure pass — Compose treats this as an illegal concurrent state change
+ * and crashes. Waiting for the transition to settle first avoids the race.
+ */
+private const val MARK_VIEWED_DELAY_MILLIS = 300L
 
 @HiltViewModel
 class NewsDetailViewModel @Inject constructor(
@@ -50,12 +61,18 @@ class NewsDetailViewModel @Inject constructor(
 
     val uiState: StateFlow<NewsDetailUiState> = newsRepository.getNewsResource(newsId)
         .map<NewsResource, NewsDetailUiState>(::Success)
-        .onEach { onSetNewsResourceViewed(newsId) }
         .stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5_000),
             initialValue = Loading
         )
+
+    init {
+        viewModelScope.launch {
+            delay(MARK_VIEWED_DELAY_MILLIS)
+            onSetNewsResourceViewed(newsId)
+        }
+    }
 
     fun triggerAction(action: NewsDetailAction) {
         when (action) {

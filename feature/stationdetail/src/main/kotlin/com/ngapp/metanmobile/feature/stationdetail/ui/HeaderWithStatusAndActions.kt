@@ -108,11 +108,9 @@ internal fun HeaderWithStatusAndActions(
 @Composable
 internal fun HeaderObjectType(
     objectType: String,
-    distanceBetween: Double,
+    distanceBetween: Double?,
     style: TextStyle = MMTypography.bodyLarge,
 ) {
-    val km =
-        String.format(Locale.getDefault(), "%.1f", distanceBetween).replace('.', ',')
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,7 +122,8 @@ internal fun HeaderObjectType(
             text = objectType,
             style = style,
         )
-        if (distanceBetween != 0.0) {
+        if (distanceBetween != null) {
+            val km = String.format(Locale.getDefault(), "%.1f", distanceBetween).replace('.', ',')
             Text(
                 text = "·",
                 style = style,

@@ -24,6 +24,7 @@ import com.ngapp.metanmobile.core.database.dao.station.StationResourceDao
 import com.ngapp.metanmobile.core.database.model.station.StationResourceEntity
 import com.ngapp.metanmobile.core.database.model.station.asExternalModel
 import com.ngapp.metanmobile.core.model.station.StationResource
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +34,7 @@ import kotlin.collections.map
 import kotlin.collections.toSet
 
 class OfflineFirstStationsRepository @Inject constructor(
-    private val parser: MetanMobileParserDataSource,
+    private val network: MetanEcogasNetworkDataSource,
     private val stationResourceDao: StationResourceDao,
 ) : StationsRepository {
 
@@ -63,7 +64,7 @@ class OfflineFirstStationsRepository @Inject constructor(
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
-            dataFetcher = { parser.getStations() },
+            dataFetcher = { network.getStations() },
             dataWriter = { networkStationList ->
                 val newData = networkStationList.map(NetworkStationResource::asEntity)
                 val newIds = newData.map { it.code }.toSet()
