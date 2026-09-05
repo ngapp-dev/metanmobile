@@ -9,6 +9,7 @@ applicationId = "com.ngapp.metanmobile"
 
 accompanist = "0.37.3"
 androidDesugarJdkLibs = "2.1.5"
+hotfix/2.3.1
 androidGradlePlugin = "9.4.0"
 androidTools = "32.4.0"
 androidxActivity = "1.10.1"
@@ -60,6 +61,7 @@ kotlin = "2.3.0"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.6.2"
 kotlinxSerializationJson = "1.8.1"
+hotfix/2.3.1
 ksp = "2.3.6"
 lottieCompose = "6.5.2"
 mapsCompose = "3.1.0"
@@ -74,6 +76,7 @@ retrofit = "2.11.0"
 retrofitKotlinxSerializationJson = "1.0.0"
 robolectric = "4.14.1"
 roborazzi = "1.56.0"
+hotfix/2.3.1
 room = "2.8.3"
 rssParser = "6.1.0"
 secrets = "2.0.1"
