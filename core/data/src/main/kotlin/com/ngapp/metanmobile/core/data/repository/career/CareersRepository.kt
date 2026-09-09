@@ -17,10 +17,4 @@
 
 package com.ngapp.metanmobile.core.data.repository.career
 
-import com.ngapp.metanmobile.core.data.Syncable
-import com.ngapp.metanmobile.core.model.career.CareerResource
-import kotlinx.coroutines.flow.Flow
-
-interface CareersRepository : Syncable {
-    fun getCareerList(): Flow<List<CareerResource>>
-}
+typealias CareersRepository = com.ngapp.metanmobile.core.domain.repository.career.CareersRepository

@@ -48,8 +48,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.designsystem.component.MMAsyncImage
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
@@ -63,7 +63,7 @@ import com.ngapp.metanmobile.feature.about.state.AboutUiState
 internal fun AboutRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AboutViewModel = hiltViewModel(),
+    viewModel: AboutViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()

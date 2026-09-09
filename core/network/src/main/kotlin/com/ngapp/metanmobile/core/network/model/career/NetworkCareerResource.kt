@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.career
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,20 +35,3 @@ data class NetworkCareerResource(
     val responsibilities: String = "",
     val number: Int = 1,
 )
-
-fun RssItem.asNetworkCareerResource() = NetworkCareerResource(
-    id = categories[CareerCategoryValues.CATEGORY_ID],
-    code = categories[CareerCategoryValues.CATEGORY_CODE],
-    previewPicture = categories[CareerCategoryValues.CATEGORY_PREVIEW_PICTURE],
-    detailPicture = categories[CareerCategoryValues.CATEGORY_DETAIL_PICTURE],
-    isActive = if (categories[CareerCategoryValues.CATEGORY_ACTIVE] == "active") 1 else 0,
-    title = title ?: "",
-    dateCreated = pubDate ?: "",
-    exp = categories[CareerCategoryValues.CATEGORY_EXP],
-    place = categories[CareerCategoryValues.CATEGORY_PLACE],
-    description = categories[CareerCategoryValues.CATEGORY_DESCRIPTION],
-    requirements = categories[CareerCategoryValues.CATEGORY_REQ],
-    responsibilities = categories[CareerCategoryValues.CATEGORY_RESP],
-    number = categories[CareerCategoryValues.CATEGORY_NUMBER].toInt(),
-)
-

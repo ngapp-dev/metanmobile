@@ -17,6 +17,4 @@
 
 package com.ngapp.metanmobile.core.data.util
 
-interface GoogleServicesChecker {
-    val isGoogleServicesAvailable: Boolean
-}
+typealias GoogleServicesChecker = com.ngapp.metanmobile.core.domain.platform.GoogleServicesChecker

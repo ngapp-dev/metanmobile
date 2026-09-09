@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.contact
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,10 +25,3 @@ data class NetworkContactResource(
     val dateCreated: String = "",
     val content: String = "",
 )
-
-fun RssItem.asNetworkContactResource() = NetworkContactResource(
-    id = categories[ContactCategoryValues.CATEGORY_ID].toInt(),
-    dateCreated = pubDate ?: "",
-    content = content ?: "",
-)
-

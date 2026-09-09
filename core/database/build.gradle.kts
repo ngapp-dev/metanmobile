@@ -16,35 +16,35 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
-    alias(libs.plugins.mm.android.room)
+    alias(libs.plugins.mm.kmp.room)
 }
 
-android {
-    defaultConfig {
-        testInstrumentationRunner =
-            "com.ngapp.metanmobile.core.testing.MetanMobileTestRunner"
-    }
-    namespace = "com.ngapp.metanmobile.core.database"
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
+kotlin {
+    sourceSets {
+        commonMain {
+            // The existing Room schema, entities and DAOs are platform-neutral. Keeping this
+            // source directory during the staged move preserves Android package names and v8 SQL.
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.exclude("com/ngapp/metanmobile/core/database/di/DaosModule.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/database/di/DatabaseKoinModule.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/database/di/DatabaseModule.kt")
+            dependencies {
+                api(projects.core.model)
+                api(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.koin.core)
+            }
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.android)
         }
     }
 }
 
 dependencies {
-    api(projects.core.model)
-
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.serialization.json)
-    androidTestImplementation(projects.core.testing)
-
-    testImplementation(libs.androidx.test.core)
-    testImplementation(libs.junit4)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.robolectric)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
 }

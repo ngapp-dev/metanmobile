@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
 import com.ngapp.metanmobile.core.data.repository.logLanguageConfigChanged
@@ -58,6 +57,7 @@ import com.ngapp.metanmobile.feature.menu.ui.LegalRegulationsRowItem
 import com.ngapp.metanmobile.feature.menu.ui.MenuRowItem
 import com.ngapp.metanmobile.feature.menu.ui.ThemeModeConfigDialog
 import com.ngapp.metanmobile.feature.menu.ui.ThemeModeRowItem
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun MenuRoute(
@@ -69,7 +69,7 @@ internal fun MenuRoute(
     onCareerPageClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MenuViewModel = hiltViewModel(),
+    viewModel: MenuViewModel = koinViewModel(),
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 

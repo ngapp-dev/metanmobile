@@ -17,19 +17,7 @@
 
 package com.ngapp.metanmobile.core.data.repository.news
 
-import com.ngapp.metanmobile.core.data.Syncable
-import com.ngapp.metanmobile.core.model.news.NewsResource
-import com.ngapp.metanmobile.core.model.userdata.NewsSortingType
-import com.ngapp.metanmobile.core.model.userdata.SortingOrder
-import kotlinx.coroutines.flow.Flow
-
-/**
- * Encapsulation class for query parameters for [NewsResource].
- *
- * This class holds various parameters used to filter and sort news resources
- * when querying from the repository.
- */
-data class NewsResourceQuery(
+/*data class NewsResourceQuery(
     /**
      * A set of news IDs to filter the results by. If null, any news ID will match.
      * Useful for fetching specific news items.
@@ -77,4 +65,6 @@ interface NewsRepository : Syncable {
     fun getNewsResourcesAsc(query: NewsResourceQuery = NewsResourceQuery()): Flow<List<NewsResource>>
     fun getNewsResourcesDesc(query: NewsResourceQuery = NewsResourceQuery()): Flow<List<NewsResource>>
     fun getNewsResource(newsId: String): Flow<NewsResource>
-}
+}*/
+typealias NewsResourceQuery = com.ngapp.metanmobile.core.domain.repository.news.NewsResourceQuery
+typealias NewsRepository = com.ngapp.metanmobile.core.domain.repository.news.NewsRepository

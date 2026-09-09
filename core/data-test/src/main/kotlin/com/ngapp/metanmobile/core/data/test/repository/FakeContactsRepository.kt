@@ -24,7 +24,7 @@ import com.ngapp.metanmobile.core.data.model.contact.asEntity
 import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
 import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
 import com.ngapp.metanmobile.core.model.contact.ContactResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,7 +39,7 @@ import javax.inject.Inject
  */
 internal class FakeContactsRepository @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : ContactsRepository {
 
     override fun getContactResource(): Flow<ContactResource?> = flow {

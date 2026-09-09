@@ -26,14 +26,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.ngapp.metanmobile.core.designsystem.component.MMCircularWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
 import com.ngapp.metanmobile.core.ui.lottie.LottieLoadingView
@@ -47,7 +48,7 @@ fun ItemDetailImageView(
     val painter = rememberAsyncImagePainter(
         if (imageUrl != "") imageUrl else MMIcons.Error
     )
-    val state = painter.state
+    val state by painter.state.collectAsState()
 
     val transition by animateFloatAsState(
         targetValue = if (state is AsyncImagePainter.State.Success) 1f else 0f, label = ""

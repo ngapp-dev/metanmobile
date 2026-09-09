@@ -24,15 +24,12 @@ import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.feature.careers.state.CareersUiState
 import com.ngapp.metanmobile.feature.careers.state.CareersUiState.Success
 import com.ngapp.metanmobile.feature.careers.state.CareersUiState.Loading
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class CareersViewModel @Inject constructor(
+class CareersViewModel(
     careersRepository: CareersRepository,
     private val syncManager: SyncManager,
 ) : ViewModel() {

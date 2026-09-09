@@ -34,7 +34,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
     api(projects.core.common)
+    api(projects.core.domain)
     api(projects.core.database)
     api(projects.core.datastore)
     api(projects.core.network)

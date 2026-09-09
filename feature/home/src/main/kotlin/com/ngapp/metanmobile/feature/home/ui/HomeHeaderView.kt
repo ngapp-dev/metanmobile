@@ -50,6 +50,7 @@ import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
+import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
 import com.ngapp.metanmobile.core.ui.logNewsResourceOpened
 import com.ngapp.metanmobile.core.ui.news.NewsRow
 import com.ngapp.metanmobile.core.ui.news.PinnedNewsScreen

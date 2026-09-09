@@ -27,7 +27,7 @@ import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.asExternalModel
 import com.ngapp.metanmobile.core.model.faq.FaqResource
 import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -42,7 +42,7 @@ import javax.inject.Inject
  */
 internal class FakeFaqRepository @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : FaqRepository {
 
     override fun getFaqList(query: FaqResourceQuery): Flow<List<FaqResource>> = flow {

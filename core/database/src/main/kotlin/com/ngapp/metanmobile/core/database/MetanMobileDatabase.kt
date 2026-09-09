@@ -18,7 +18,9 @@
 package com.ngapp.metanmobile.core.database
 
 import androidx.room.Database
+import androidx.room.ConstructedBy
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.ngapp.metanmobile.core.database.dao.career.CareerResourceDao
 import com.ngapp.metanmobile.core.database.dao.contact.ContactResourceDao
@@ -50,13 +52,16 @@ import com.ngapp.metanmobile.core.database.util.ListStringConverter
         PriceResourceEntity::class,
         LocationResourceEntity::class,
     ],
-    version = 8,
-    exportSchema = false,
+    version = METAN_MOBILE_DATABASE_VERSION,
+    // Keep the v8 schema in source control before moving this database to Room Multiplatform.
+    // Future KMP schema changes must be accompanied by an explicit migration.
+    exportSchema = true,
 )
 @TypeConverters(
     InstantConverter::class,
     ListStringConverter::class,
 )
+@ConstructedBy(MetanMobileDatabaseConstructor::class)
 abstract class MetanMobileDatabase : RoomDatabase() {
     abstract fun stationResourceDao(): StationResourceDao
     abstract fun newsResourceDao(): NewsResourceDao
@@ -66,4 +71,9 @@ abstract class MetanMobileDatabase : RoomDatabase() {
     abstract fun careerResourceDao(): CareerResourceDao
     abstract fun priceResourceDao(): PriceResourceDao
     abstract fun locationResourceDao(): LocationResourceDao
+}
+
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object MetanMobileDatabaseConstructor : RoomDatabaseConstructor<MetanMobileDatabase> {
+    override fun initialize(): MetanMobileDatabase
 }

@@ -17,21 +17,5 @@
 
 package com.ngapp.metanmobile.core.data.repository.faq
 
-import com.ngapp.metanmobile.core.data.Syncable
-import com.ngapp.metanmobile.core.model.faq.FaqResource
-import com.ngapp.metanmobile.core.model.news.NewsResource
-import kotlinx.coroutines.flow.Flow
-
-/**
- * Encapsulation class for query parameters for [NewsResource]
- */
-data class FaqResourceQuery(
-    /**
-     * News pinned to filter for. Null means any faq item will match.
-     */
-    val filterFaqListPinned: Boolean = false,
-)
-
-interface FaqRepository : Syncable {
-    fun getFaqList(query: FaqResourceQuery = FaqResourceQuery(filterFaqListPinned = false)): Flow<List<FaqResource>>
-}
+typealias FaqResourceQuery = com.ngapp.metanmobile.core.domain.repository.faq.FaqResourceQuery
+typealias FaqRepository = com.ngapp.metanmobile.core.domain.repository.faq.FaqRepository

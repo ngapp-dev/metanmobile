@@ -20,6 +20,7 @@ package com.ngapp.metanmobile.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.ngapp.metanmobile.core.database.MetanMobileDatabase
+import com.ngapp.metanmobile.core.database.METAN_MOBILE_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,7 +38,7 @@ internal object DatabaseModule {
     ): MetanMobileDatabase = Room.databaseBuilder(
         context = context,
         klass = MetanMobileDatabase::class.java,
-        name = "MetanMobileDb",
+        name = METAN_MOBILE_DATABASE_NAME,
     )
         .fallbackToDestructiveMigration()
         .build()

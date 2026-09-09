@@ -19,6 +19,7 @@ package com.ngapp.metanmobile.core.ui.ads
 import android.annotation.SuppressLint
 import android.util.Log
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -42,6 +43,19 @@ class ConsentHelper {
     fun initializeMobileAdsSdk() {
         if (isMobileAdsInitializeCalled.getAndSet(true)) {
             return
+        }
+        if (BuildConfig.DEBUG) {
+            // ADS_TEST_DEVICE_ID is also handed to ConsentDebugSettings above, but that only
+            // makes *consent* treat this device as EEA - it does nothing for the real
+            // MAIN_BANNER_AD_ID_KEY ad unit's own requests. Without registering the same device
+            // here too, that real ad unit has no reason to serve anything to a dev device, and
+            // AdView.loadAd() fails silently (see the AdListener in MainBannerAd) with no fill -
+            // this is the most common reason "consent works but the banner never shows".
+            MobileAds.setRequestConfiguration(
+                RequestConfiguration.Builder()
+                    .setTestDeviceIds(listOf(BuildConfig.ADS_TEST_DEVICE_ID))
+                    .build()
+            )
         }
         MobileAds.initialize(context)
     }
@@ -78,7 +92,15 @@ class ConsentHelper {
 
         val ci = UserMessagingPlatform.getConsentInformation(context)
         ci.requestConsentInfoUpdate(context, params, {
-            if (isPrivacyOptionsRequired() && showingForm) return@requestConsentInfoUpdate
+            // Guard against a form load already in flight - this used to also require
+            // isPrivacyOptionsRequired(), which is false for a brand-new user (it only flips to
+            // REQUIRED once a consent decision has been recorded), so a second
+            // requestConsentInfoUpdate() firing before the first form finished loading (e.g. every
+            // few seconds from onObserveConsent while onboarding/usage-time updates kept the
+            // userData flow emitting) would slip past this check and call
+            // loadAndShowConsentFormIfRequired() again while one was already showing, leaving
+            // showingForm/canShowAds stuck and ads never re-enabled.
+            if (showingForm) return@requestConsentInfoUpdate
             showingForm = true
             UserMessagingPlatform.loadAndShowConsentFormIfRequired(context) { error ->
                 showingForm = false

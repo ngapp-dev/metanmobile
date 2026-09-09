@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.station
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -51,35 +50,3 @@ data class NetworkStationResource(
     val dateCreated: String = "",
     val url: String = "",
 )
-
-fun RssItem.asNetworkStationResource() = NetworkStationResource(
-    id = categories[StationCategoryValues.CATEGORY_ID],
-    code = categories[StationCategoryValues.CATEGORY_CODE],
-    previewPicture = categories[StationCategoryValues.CATEGORY_PREVIEW_PICTURE],
-    detailPicture = categories[StationCategoryValues.CATEGORY_DETAIL_PICTURE],
-    isActive = if (categories[StationCategoryValues.CATEGORY_ACTIVE] == "active") 1 else 0,
-    isOperate = if (categories[StationCategoryValues.CATEGORY_OPERATE] == "Работает") 1 else 0,
-    type = categories[StationCategoryValues.CATEGORY_TYPE],
-    address = categories[StationCategoryValues.CATEGORY_ADDRESS],
-    region = categories[StationCategoryValues.CATEGORY_REGION],
-    phones = categories[StationCategoryValues.CATEGORY_PHONE],
-    service = categories[StationCategoryValues.CATEGORY_SERVICE],
-    workingTime = categories[StationCategoryValues.CATEGORY_WORKING_TIME],
-    payment = categories[StationCategoryValues.CATEGORY_PAYMENT],
-    latitude = categories[StationCategoryValues.CATEGORY_COORDINATE_TAGS].substringAfter(","),
-    longitude = categories[StationCategoryValues.CATEGORY_COORDINATE_TAGS].substringBefore(","),
-    busyOnMonday = categories[StationCategoryValues.CATEGORY_MONDAY],
-    busyOnTuesday = categories[StationCategoryValues.CATEGORY_TUESDAY],
-    busyOnWednesday = categories[StationCategoryValues.CATEGORY_WEDNESDAY],
-    busyOnThursday = categories[StationCategoryValues.CATEGORY_THURSDAY],
-    busyOnFriday = categories[StationCategoryValues.CATEGORY_FRIDAY],
-    busyOnSaturday = categories[StationCategoryValues.CATEGORY_SATURDAY],
-    busyOnSunday = categories[StationCategoryValues.CATEGORY_SUNDAY],
-    googleTag = categories[StationCategoryValues.CATEGORY_GOOGLE_TAG],
-    googleMapsTag = categories[StationCategoryValues.CATEGORY_GOOGLE_MAPS_TAG],
-    yandexTag = categories[StationCategoryValues.CATEGORY_YANDEX_TAG],
-    title = title ?: "",
-    dateCreated = pubDate ?: "",
-    url = link ?: ""
-)
-

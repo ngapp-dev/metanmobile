@@ -26,9 +26,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.koin.compose.viewmodel)
     testImplementation(projects.core.testing)
     testImplementation(libs.mockk)
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)
 }
-

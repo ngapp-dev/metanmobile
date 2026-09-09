@@ -24,10 +24,12 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,12 +48,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
@@ -59,6 +62,7 @@ import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.util.LanguageHelper
 import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyAction
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 private const val urlEn = "https://metan.by/upload/metanmobile/privacypolicy.html"
@@ -68,7 +72,7 @@ private const val urlRu = "https://metan.by/upload/metanmobile/privacypolicy_ru.
 internal fun PrivacyPolicyRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PrivacyPolicyViewModel = hiltViewModel(),
+    viewModel: PrivacyPolicyViewModel = koinViewModel(),
 ) {
     val isPrivacyOptionsRequired by viewModel.isPrivacyOptionsRequired.collectAsStateWithLifecycle()
 
@@ -150,31 +154,52 @@ private fun PrivacyPolicyScreen(
     TrackScreenViewEvent(screenName = "PrivacyPolicyScreen")
 }
 
+/**
+ * The privacy policy page rendered by the [AndroidView] below carries no styling of its own
+ * beyond `body { padding: 8px }` (see privacypolicy.html/privacypolicy_ru.html) - it's always a
+ * plain white page with black text and default blue underlined links, regardless of the app's
+ * theme. This link sits directly above that page, so it's pinned to the same look instead of
+ * [MaterialTheme]'s colors: in dark mode those would put light body text right on top of the
+ * page's white background with no visual separation.
+ */
 @Composable
 private fun ConsentChangeLink(onUpdateConsent: () -> Unit) {
-    Text(
-        buildAnnotatedString {
-            append(stringResource(CoreUiR.string.core_ui_change_consent))
-            withLink(
-                LinkAnnotation.Clickable(
-                    linkInteractionListener = { onUpdateConsent() },
-                    styles = TextLinkStyles(
-                        SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            letterSpacing = 0.25.sp,
-                        )
-                    ),
-                    tag = ""
-                )
-            ) {
-                append(stringResource(CoreUiR.string.core_ui_here))
-            }
-        },
-        modifier = Modifier.padding(horizontal = 16.dp),
-        style = MaterialTheme.typography.bodyLarge,
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(8.dp),
+    ) {
+        Text(
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = Color.Black)) {
+                    append(stringResource(CoreUiR.string.core_ui_change_consent))
+                }
+                withLink(
+                    LinkAnnotation.Clickable(
+                        linkInteractionListener = { onUpdateConsent() },
+                        styles = TextLinkStyles(
+                            SpanStyle(
+                                color = HtmlLinkColor,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                letterSpacing = 0.25.sp,
+                                textDecoration = TextDecoration.Underline,
+                            )
+                        ),
+                        tag = ""
+                    )
+                ) {
+                    append(stringResource(CoreUiR.string.core_ui_here))
+                }
+            },
+            style = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
+        )
+    }
 }
+
+/** The default, unstyled `<a>` link color a WebView renders - matches the page below. */
+private val HtmlLinkColor = Color(0xFF0000EE)
 
 @Composable
 private fun PrivacyPolicyHeader(

@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.koin.compose.viewmodel)
     implementation(projects.feature.stationdetail)
 
     implementation(libs.accompanist.permissions)

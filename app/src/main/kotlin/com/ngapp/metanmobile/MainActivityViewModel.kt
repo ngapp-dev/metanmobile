@@ -29,20 +29,19 @@ import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
 import com.ngapp.metanmobile.core.model.station.StationType
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MainActivityViewModel @Inject constructor(
+class MainActivityViewModel(
     private val userDataRepository: UserDataRepository,
     private val consentHelper: ConsentHelper,
 ) : ViewModel() {
@@ -66,11 +65,16 @@ class MainActivityViewModel @Inject constructor(
 
     private fun onObserveConsent() {
         viewModelScope.launch {
-            userDataRepository.userData.collectLatest { userData ->
-                if (userData.shouldHideOnboarding) {
-                    consentHelper.obtainConsentAndShow()
-                }
-            }
+            // Only react to shouldHideOnboarding actually turning true, not to every emission of
+            // the whole UserData flow (usage-time ticks every 30s, sorting config, home list
+            // reorders, ...) - collectLatest-ing the raw flow used to re-run
+            // consentHelper.obtainConsentAndShow() on each of those, re-entering the consent form
+            // while a previous one was still loading and leaving canShowAds stuck at false.
+            userDataRepository.userData
+                .map { it.shouldHideOnboarding }
+                .distinctUntilChanged()
+                .filter { it }
+                .collect { consentHelper.obtainConsentAndShow() }
         }
         viewModelScope.launch {
             consentHelper.canShowAds.collectLatest { canShow ->

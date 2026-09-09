@@ -30,7 +30,6 @@ import com.ngapp.metanmobile.core.ui.ShareManager
 import com.ngapp.metanmobile.feature.stationdetail.state.StationDetailAction
 import com.ngapp.metanmobile.feature.stationdetail.state.StationDetailUiState
 import com.ngapp.metanmobile.feature.stationdetail.state.StationDetailUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,10 +41,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class StationDetailViewModel @Inject constructor(
+class StationDetailViewModel(
     private val userStationsRepository: StationResourcesWithFavoritesRepository,
     private val fuelPricesRepository: PricesRepository,
     private val userNewsResourceRepository: UserNewsResourceRepository,

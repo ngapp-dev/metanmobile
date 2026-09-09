@@ -61,8 +61,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchFieldTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
@@ -90,7 +90,7 @@ internal fun FavoritesRoute(
     onNewsDetailClick: (String) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = hiltViewModel(),
+    viewModel: FavoritesViewModel = koinViewModel(),
 ) {
     val permissionsState = LocalPermissionsState.current
     LaunchedEffect(permissionsState.hasLocationPermissions) {

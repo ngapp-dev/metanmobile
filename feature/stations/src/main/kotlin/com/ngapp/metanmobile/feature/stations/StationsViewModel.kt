@@ -29,7 +29,6 @@ import com.ngapp.metanmobile.feature.stations.state.StationsAction
 import com.ngapp.metanmobile.feature.stations.state.StationsUiState
 import com.ngapp.metanmobile.feature.stations.state.StationsUiState.Loading
 import com.ngapp.metanmobile.feature.stations.state.StationsUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -39,10 +38,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class StationsViewModel @Inject constructor(
+class StationsViewModel(
     private val syncManager: SyncManager,
     userStationsRepository: StationResourcesWithFavoritesRepository,
     private val locationsRepository: LocationsRepository,

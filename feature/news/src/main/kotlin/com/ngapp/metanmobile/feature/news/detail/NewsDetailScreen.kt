@@ -30,8 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMNavShareButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
@@ -45,7 +45,7 @@ import com.ngapp.metanmobile.feature.news.detail.ui.NewsDetailContent
 internal fun NewsDetailRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: NewsDetailViewModel = hiltViewModel(),
+    viewModel: NewsDetailViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

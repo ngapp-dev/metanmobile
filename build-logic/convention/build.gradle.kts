@@ -108,5 +108,13 @@ gradlePlugin {
             id = "metanmobile.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("kmpLibrary") {
+            id = "metanmobile.kmp.library"
+            implementationClass = "KmpLibraryConventionPlugin"
+        }
+        register("kmpRoom") {
+            id = "metanmobile.kmp.room"
+            implementationClass = "KmpRoomConventionPlugin"
+        }
     }
 }

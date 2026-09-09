@@ -19,18 +19,14 @@ package com.ngapp.metanmobile.feature.privacypolicy
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
 import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyAction
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class PrivacyPolicyViewModel @Inject constructor(
+class PrivacyPolicyViewModel(
     private val consentHelper: ConsentHelper,
 ) : ViewModel() {
 

@@ -29,7 +29,7 @@ import com.ngapp.metanmobile.core.model.station.StationResource
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.model.userdata.StationSortingType
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -44,7 +44,7 @@ import javax.inject.Inject
  */
 internal class FakeStationsRepository @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : StationsRepository {
 
     override fun getStationResourcesAsc(query: StationResourceQuery): Flow<List<StationResource>> =

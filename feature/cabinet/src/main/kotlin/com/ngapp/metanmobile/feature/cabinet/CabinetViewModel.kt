@@ -20,14 +20,11 @@ package com.ngapp.metanmobile.feature.cabinet
 import androidx.lifecycle.ViewModel
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetActions
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
-@HiltViewModel
-class CabinetViewModel @Inject constructor() : ViewModel() {
+class CabinetViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(CabinetUiState())
     val uiState = _uiState.asStateFlow()

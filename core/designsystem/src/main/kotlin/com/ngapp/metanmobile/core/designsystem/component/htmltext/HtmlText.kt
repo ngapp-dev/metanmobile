@@ -52,8 +52,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 
 private const val URL_TAG = "url_tag"
 private const val SUP_TAG = "sup_tag"
@@ -211,4 +212,3 @@ private fun String.asHTML(
             }
         }
 }
-

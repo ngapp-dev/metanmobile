@@ -55,7 +55,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -67,10 +66,11 @@ import com.ngapp.metanmobile.core.designsystem.component.MetanMobileBackground
 import com.ngapp.metanmobile.core.designsystem.component.MetanMobileGradientBackground
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.LocalGradientColors
-import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
+import com.ngapp.metanmobile.core.ui.ads.ConsentGatedBannerAd
 import com.ngapp.metanmobile.navigation.MMNavHost
 import kotlin.reflect.KClass
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MMApp(
@@ -78,7 +78,7 @@ fun MMApp(
     startDestination: KClass<*>,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
-    viewModel: MainActivityViewModel = hiltViewModel(),
+    viewModel: MainActivityViewModel = koinViewModel(),
 ) {
     val consentState by viewModel.consentState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -150,11 +150,7 @@ internal fun MMApp(
             }
         },
         windowAdaptiveInfo = windowAdaptiveInfo,
-        adsContent = {
-            if (consentState.canShowAds) {
-                MainBannerAd()
-            }
-        },
+        adsContent = { ConsentGatedBannerAd(canShowAds = consentState.canShowAds) },
         showBottomBar = currentTopLevelDestination != null && showBottomBar,
     ) {
         DestinationScaffold(

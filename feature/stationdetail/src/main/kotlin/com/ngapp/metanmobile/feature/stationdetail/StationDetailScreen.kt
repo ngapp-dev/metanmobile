@@ -32,8 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
@@ -50,7 +50,7 @@ fun StationDetailRoute(
     stationCode: String? = "",
     onNewsDetailClick: (String) -> Unit,
     onBackClick: () -> Unit,
-    viewModel: StationDetailViewModel = hiltViewModel(),
+    viewModel: StationDetailViewModel = koinViewModel(),
 ) {
     LaunchedEffect(stationCode) {
         viewModel.triggerAction(StationDetailAction.SetStationCode(stationCode))

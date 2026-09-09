@@ -24,16 +24,13 @@ import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.feature.onboarding.state.OnboardingAction
 import com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class OnboardingViewModel @Inject constructor(
+class OnboardingViewModel(
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 

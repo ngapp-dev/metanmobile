@@ -23,15 +23,12 @@ import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
 import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.feature.contacts.state.ContactsUiState
 import com.ngapp.metanmobile.feature.contacts.state.ContactsUiState.Loading
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class ContactsViewModel @Inject constructor(
+class ContactsViewModel(
     contactsRepository: ContactsRepository,
     private val syncManager: SyncManager,
 ) : ViewModel() {

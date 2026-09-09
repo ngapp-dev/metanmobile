@@ -25,16 +25,13 @@ import com.ngapp.metanmobile.feature.menu.state.SettingsAction
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState.Loading
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MenuViewModel @Inject constructor(
+class MenuViewModel(
     private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 

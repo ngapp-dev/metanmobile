@@ -41,7 +41,7 @@ dependencies {
     api(libs.androidx.compose.runtime)
     api(libs.androidx.compose.ui.util)
 
-    implementation(libs.coil.kt.compose)
+    implementation(libs.coil3.compose)
     implementation(libs.androidx.core.ktx)
 
     testImplementation(libs.androidx.compose.ui.test)
@@ -51,6 +51,6 @@ dependencies {
     testImplementation(projects.core.screenshotTesting)
     testImplementation(projects.core.testing)
 
-    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)
 }

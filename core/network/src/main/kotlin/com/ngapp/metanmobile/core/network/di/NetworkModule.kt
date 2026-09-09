@@ -19,11 +19,10 @@ package com.ngapp.metanmobile.core.network.di
 
 import android.content.Context
 import androidx.tracing.trace
-import coil.ImageLoader
-import coil.decode.SvgDecoder
-import coil.util.DebugLogger
 import com.ngapp.metanmobile.core.network.BuildConfig
-import com.prof18.rssparser.RssParserBuilder
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
+import com.ngapp.metanmobile.core.network.client.MetanEcogasHttpClient
+import com.ngapp.metanmobile.core.network.network.KtorMetanEcogasNetwork
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,15 +40,16 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesParser() = RssParserBuilder(
-        callFactory = okHttpCallFactory()
-    ).build()
-
-    @Provides
-    @Singleton
     fun providesNetworkJson(): Json = Json {
         ignoreUnknownKeys = true
     }
+
+    @Provides
+    @Singleton
+    fun providesMetanEcogasNetwork(
+    ): MetanEcogasNetworkDataSource = KtorMetanEcogasNetwork(
+        client = MetanEcogasHttpClient(baseUrl = BuildConfig.METAN_ECOGAS_API),
+    )
 
     @Provides
     @Singleton
@@ -65,31 +65,4 @@ internal object NetworkModule {
         clientBuilder.build()
     }
 
-    /**
-     * Since we're displaying SVGs in the app, Coil needs an ImageLoader which supports this
-     * format. During Coil's initialization it will call `applicationContext.newImageLoader()` to
-     * obtain an ImageLoader.
-     *
-     * @see <a href="https://github.com/coil-kt/coil/blob/main/coil-singleton/src/main/java/coil/Coil.kt">Coil</a>
-     */
-    @Provides
-    @Singleton
-    fun imageLoader(
-        // We specifically request dagger.Lazy here, so that it's not instantiated from Dagger.
-        okHttpCallFactory: dagger.Lazy<Call.Factory>,
-        @ApplicationContext application: Context,
-    ): ImageLoader = trace("MetanMobileImageLoader") {
-        ImageLoader.Builder(application)
-            .callFactory { okHttpCallFactory.get() }
-            .components { add(SvgDecoder.Factory()) }
-            // Assume most content images are versioned urls
-            // but some problematic images are fetching each time
-            .respectCacheHeaders(false)
-            .apply {
-                if (BuildConfig.DEBUG) {
-                    logger(DebugLogger())
-                }
-            }
-            .build()
-    }
 }

@@ -17,48 +17,22 @@
 
 package com.ngapp.metanmobile.core.data
 
-import android.util.Log
-import kotlin.coroutines.cancellation.CancellationException
+import com.ngapp.metanmobile.core.domain.sync.Syncable as DomainSyncable
+import com.ngapp.metanmobile.core.domain.sync.Synchronizer as DomainSynchronizer
+import com.ngapp.metanmobile.core.domain.sync.updateDataSync as domainUpdateDataSync
+import com.ngapp.metanmobile.core.domain.sync.updateSingleDataSync as domainUpdateSingleDataSync
 
 /**
  * Interface marker for a class that manages synchronization between local data and a remote
  * source for a [Syncable].
  */
-interface Synchronizer {
-    /**
-     * Syntactic sugar to call [Syncable.syncWith] while omitting the synchronizer argument
-     */
-    suspend fun Syncable.sync() = this@sync.syncWith(this@Synchronizer)
-}
+typealias Synchronizer = DomainSynchronizer
 
 /**
  * Interface marker for a class that is synchronized with a remote source. Syncing must not be
  * performed concurrently and it is the [Synchronizer]'s responsibility to ensure this.
  */
-interface Syncable {
-    /**
-     * Synchronizes the local database backing the repository with the network.
-     * Returns if the sync was successful or not.
-     */
-    suspend fun syncWith(synchronizer: Synchronizer): Boolean
-}
-
-/**
- * Attempts [block], returning a successful [Result] if it succeeds, otherwise a [Result.Failure]
- * taking care not to break structured concurrency
- */
-private suspend fun <T> suspendRunCatching(block: suspend () -> T): Result<T> = try {
-    Result.success(block())
-} catch (cancellationException: CancellationException) {
-    throw cancellationException
-} catch (exception: Exception) {
-    Log.i(
-        "suspendRunCatching",
-        "Failed to evaluate a suspendRunCatchingBlock. Returning failure Result",
-        exception,
-    )
-    Result.failure(exception)
-}
+typealias Syncable = DomainSyncable
 
 /**
  * Utility function for syncing a repository with the network.
@@ -68,17 +42,9 @@ private suspend fun <T> suspendRunCatching(block: suspend () -> T): Result<T> = 
 suspend fun <T> Synchronizer.updateDataSync(
     dataFetcher: suspend () -> List<T>,
     dataWriter: suspend (List<T>) -> Unit,
-) = suspendRunCatching {
-    val dataFromNetwork = dataFetcher()
-    dataWriter(dataFromNetwork)
-    true
-}.getOrElse { false }
+): Boolean = domainUpdateDataSync(dataFetcher, dataWriter)
 
 suspend fun <T> Synchronizer.updateSingleDataSync(
     dataFetcher: suspend () -> T,
     dataWriter: suspend (T) -> Unit,
-) = suspendRunCatching {
-    val dataFromNetwork = dataFetcher()
-    dataWriter(dataFromNetwork)
-    true
-}.getOrElse { false }
+): Boolean = domainUpdateSingleDataSync(dataFetcher, dataWriter)

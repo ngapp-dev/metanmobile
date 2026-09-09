@@ -61,8 +61,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchButtonsTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMFilterSearchFieldTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
@@ -93,7 +93,7 @@ internal fun StationsRoute(
     onNewsDetailClick: (String) -> Unit,
     onShowBottomBar: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: StationsViewModel = hiltViewModel(),
+    viewModel: StationsViewModel = koinViewModel(),
 ) {
     val permissionsState = LocalPermissionsState.current
     LaunchedEffect(permissionsState.hasLocationPermissions) {

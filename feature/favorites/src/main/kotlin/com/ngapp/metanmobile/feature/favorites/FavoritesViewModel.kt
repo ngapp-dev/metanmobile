@@ -29,7 +29,6 @@ import com.ngapp.metanmobile.feature.favorites.state.FavoritesAction
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState.Loading
 import com.ngapp.metanmobile.feature.favorites.state.FavoritesUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -39,10 +38,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class FavoritesViewModel @Inject constructor(
+class FavoritesViewModel(
     userStationsRepository: StationResourcesWithFavoritesRepository,
     private val locationsRepository: LocationsRepository,
     private val userDataRepository: UserDataRepository,

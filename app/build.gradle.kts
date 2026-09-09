@@ -16,6 +16,7 @@
  */
 
 import com.ngapp.metanmobile.MMBuildType
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.mm.android.application)
@@ -41,6 +42,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         resourceConfigurations += listOf("en", "ru", "be")
+
+        // The secrets plugin (applied below) only injects secrets.properties into each real
+        // variant's manifestPlaceholders via the new Variant API - the unitTest component that
+        // testOptions.unitTests.isIncludeAndroidResources merges the manifest for has no such
+        // provider to receive it, so mergeDebugUnitTestManifest fails to resolve
+        // ${MAPS_API_KEY}/${ADS_ID_KEY}. Mirroring the two placeholders the manifest actually
+        // uses into this classic map (which that merge does read) fixes it for unit tests too.
+        val secretsProperties = Properties().apply {
+            rootProject.file("secrets.properties").takeIf { it.exists() }
+                ?.inputStream()?.use(::load)
+        }
+        manifestPlaceholders["MAPS_API_KEY"] = secretsProperties.getProperty("MAPS_API_KEY", "")
+        manifestPlaceholders["ADS_ID_KEY"] = secretsProperties.getProperty("ADS_ID_KEY", "")
     }
 
     buildTypes {
@@ -76,11 +90,17 @@ secrets {
 }
 
 dependencies {
+    // Firebase Performance still uses lite generated protobuf messages at runtime. This was
+    // previously brought in transitively by the Android-only DataStore proto module.
+    implementation(libs.protobuf.kotlin.lite)
+
     implementation(projects.core.analytics)
     implementation(projects.core.common)
     implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.model)
+    implementation(projects.core.network)
+    implementation(projects.core.networkClient)
     implementation(projects.core.ui)
     implementation(projects.sync.work)
 
@@ -112,6 +132,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation)
     implementation(libs.androidx.compose.material3.windowSizeClass)
     implementation(libs.androidx.compose.runtime.tracing)
+    implementation(libs.coil3.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -120,8 +141,9 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.tracing.ktx)
     implementation(libs.kotlinx.coroutines.guava)
-    implementation(libs.coil.kt)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose.viewmodel)
     implementation(libs.google.play.app.update)
     implementation(libs.google.play.app.update.ktx)
     implementation(libs.google.play.app.review)
@@ -136,11 +158,14 @@ dependencies {
     kspTest(libs.hilt.compiler)
 
     testImplementation(projects.core.dataTest)
+    testImplementation(projects.core.datastore)
+    testImplementation(projects.core.datastoreProto)
     testImplementation(projects.core.testing)
     testImplementation(libs.hilt.android.testing)
 
     testImplementation(libs.robolectric)
     testImplementation(libs.roborazzi)
+    testImplementation(libs.mockk)
     testImplementation(projects.core.screenshotTesting)
 
     androidTestImplementation(projects.core.testing)
@@ -158,5 +183,5 @@ dependencies {
 //}
 
 dependencyGuard {
-    configuration("prodReleaseRuntimeClasspath")
+    configuration("releaseRuntimeClasspath")
 }

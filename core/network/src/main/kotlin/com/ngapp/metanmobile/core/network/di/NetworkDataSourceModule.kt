@@ -18,11 +18,7 @@
 package com.ngapp.metanmobile.core.network.di
 
 import com.ngapp.metanmobile.core.network.GithubNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
 import com.ngapp.metanmobile.core.network.network.RetrofitGithubNetwork
-import com.ngapp.metanmobile.core.network.network.RetrofitMetanEcogasNetwork
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,11 +30,6 @@ import dagger.hilt.components.SingletonComponent
 internal interface NetworkDataSourceModule {
 
     @Binds
-    fun bindsMetanMobileNetwork(impl: MetanMobileParser): MetanMobileParserDataSource
-
-    @Binds
     fun bindsGithubNetwork(impl: RetrofitGithubNetwork): GithubNetworkDataSource
 
-    @Binds
-    fun bindsMetanEcogasNetwork(impl: RetrofitMetanEcogasNetwork): MetanEcogasNetworkDataSource
 }

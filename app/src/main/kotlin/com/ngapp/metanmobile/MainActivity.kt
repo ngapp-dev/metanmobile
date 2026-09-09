@@ -28,7 +28,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -73,6 +72,7 @@ import com.ngapp.metanmobile.feature.onboarding.navigation.OnboardingScreenNavig
 import com.ngapp.metanmobile.ui.MMApp
 import com.ngapp.metanmobile.ui.rememberMMAppState
 import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModel()
 
     private lateinit var appUpdateManager: AppUpdateManager
     private val updateType = AppUpdateType.FLEXIBLE
@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        UiAndroidPlatformContextProvider.setContext(this)
         // Only treat the launch Intent as a deep link to handle on a genuinely fresh start.
         // savedInstanceState is non-null on a recreate() too — e.g. AppCompatDelegate applying a
         // new per-app language — and `intent` still holds whatever originally launched the
@@ -169,8 +170,6 @@ class MainActivity : ComponentActivity() {
                 is Success -> false
             }
         }
-
-        UiAndroidPlatformContextProvider.setContext(this)
 
         // Turn off the decor fitting system windows, which allows us to handle insets,
         // including IME animations, and go edge-to-edge

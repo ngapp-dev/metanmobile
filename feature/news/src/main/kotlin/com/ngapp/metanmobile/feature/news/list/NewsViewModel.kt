@@ -28,7 +28,6 @@ import com.ngapp.metanmobile.feature.news.list.state.NewsAction
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState.Loading
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -38,10 +37,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NewsViewModel @Inject constructor(
+class NewsViewModel(
     private val syncManager: SyncManager,
     userNewsResourceRepository: UserNewsResourceRepository,
     private val userDataRepository: UserDataRepository,

@@ -18,24 +18,13 @@
 package com.ngapp.metanmobile.core.datastore.test
 
 import androidx.datastore.core.DataStore
-import com.ngapp.metanmobile.core.datastore.UserPreferences
-import com.ngapp.metanmobile.core.datastore.UserPreferencesSerializer
-import com.ngapp.metanmobile.core.datastore.di.DataStoreModule
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
-import javax.inject.Singleton
+import com.ngapp.metanmobile.core.datastore.MetanMobilePreferencesDataSource
+import com.ngapp.metanmobile.core.datastore.shared.UserPreferences
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
-@Module
-@TestInstallIn(
-    components = [SingletonComponent::class],
-    replaces = [DataStoreModule::class],
-)
-internal object TestDataStoreModule {
-    @Provides
-    @Singleton
-    fun providesUserPreferencesDataStore(
-        serializer: UserPreferencesSerializer,
-    ): DataStore<UserPreferences> = InMemoryDataStore(serializer.defaultValue)
+/** Koin replacement for the persisted store in unit and shared tests. */
+fun testUserPreferencesDataStoreModule(): Module = module {
+    single<DataStore<UserPreferences>> { InMemoryDataStore(UserPreferences()) }
+    single { MetanMobilePreferencesDataSource(get()) }
 }

@@ -30,14 +30,12 @@ import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailAction
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState.Loading
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState.Success
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Marking a news resource as viewed re-emits the news list Flow (`hasBeenViewed` drives the
@@ -49,8 +47,7 @@ import javax.inject.Inject
  */
 private const val MARK_VIEWED_DELAY_MILLIS = 300L
 
-@HiltViewModel
-class NewsDetailViewModel @Inject constructor(
+class NewsDetailViewModel(
     savedStateHandle: SavedStateHandle,
     newsRepository: NewsRepository,
     private val userDataRepository: UserDataRepository,

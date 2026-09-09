@@ -18,26 +18,78 @@
 package com.ngapp.metanmobile
 
 import android.app.Application
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import android.content.Context
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import com.ngapp.metanmobile.core.network.BuildConfig as NetworkBuildConfig
+import com.ngapp.metanmobile.core.network.client.di.networkClientModule
+import com.ngapp.metanmobile.core.network.di.metanEcogasNetworkModule
+import com.ngapp.metanmobile.core.analytics.di.analyticsModule
+import com.ngapp.metanmobile.core.data.di.userDataModule
+import com.ngapp.metanmobile.core.data.di.locationModule
+import com.ngapp.metanmobile.core.database.di.databaseModule
+import com.ngapp.metanmobile.core.ui.di.uiModule
+import com.ngapp.metanmobile.core.datastore.di.userPreferencesDataStoreModule
+import com.ngapp.metanmobile.di.mainActivityModule
+import com.ngapp.metanmobile.feature.cabinet.di.cabinetModule
+import com.ngapp.metanmobile.feature.careers.di.careersModule
+import com.ngapp.metanmobile.feature.contacts.di.contactsModule
+import com.ngapp.metanmobile.feature.faq.di.faqModule
+import com.ngapp.metanmobile.feature.menu.di.menuModule
+import com.ngapp.metanmobile.feature.privacypolicy.di.privacyPolicyModule
+import com.ngapp.metanmobile.feature.onboarding.di.onboardingModule
+import com.ngapp.metanmobile.feature.news.di.newsModule
+import com.ngapp.metanmobile.feature.favorites.di.favoritesModule
+import com.ngapp.metanmobile.feature.stations.di.stationsModule
+import com.ngapp.metanmobile.feature.home.di.homeModule
+import com.ngapp.metanmobile.feature.about.di.aboutModule
+import com.ngapp.metanmobile.feature.stationdetail.di.stationDetailModule
 import com.ngapp.metanmobile.sync.initializers.Sync
+import com.ngapp.metanmobile.sync.di.syncModule
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.GlobalContext
 
 /**
  * [Application] class for Metan Mobile
  */
 @HiltAndroidApp
-class MetanMobileApplication : Application(), ImageLoaderFactory {
-
-    @Inject
-    lateinit var imageLoader: dagger.Lazy<ImageLoader>
+class MetanMobileApplication : Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
         super.onCreate()
+        startKoin {
+            androidContext(this@MetanMobileApplication)
+            modules(
+                networkClientModule(NetworkBuildConfig.METAN_ECOGAS_API, NetworkBuildConfig.GITHUB_BASE_URL),
+                metanEcogasNetworkModule(),
+                analyticsModule(),
+                databaseModule(),
+                uiModule(),
+                userPreferencesDataStoreModule(),
+                userDataModule(),
+                locationModule(),
+                syncModule(),
+                mainActivityModule(),
+                cabinetModule(),
+                careersModule(),
+                contactsModule(),
+                faqModule(),
+                menuModule(),
+                privacyPolicyModule(),
+                onboardingModule(),
+                newsModule(),
+                favoritesModule(),
+                stationsModule(),
+                homeModule(),
+                aboutModule(),
+                stationDetailModule(),
+            )
+        }
         Sync.initialize(context = this)
     }
 
-    override fun newImageLoader(): ImageLoader = imageLoader.get()
+    override fun newImageLoader(context: Context): ImageLoader = GlobalContext.get().get()
 
 }

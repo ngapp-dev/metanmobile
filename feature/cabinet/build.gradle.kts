@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.koin.compose.viewmodel)
     testImplementation(projects.core.testing)
     testImplementation(libs.robolectric)
 

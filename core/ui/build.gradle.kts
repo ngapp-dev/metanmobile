@@ -38,6 +38,7 @@ secrets {
 }
 
 dependencies {
+    implementation(libs.koin.android)
     api(libs.androidx.metrics)
     api(projects.core.analytics)
     api(projects.core.common)
@@ -52,8 +53,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 //    api(libs.google.messaging.platform)
     implementation(libs.androidx.browser)
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
+    implementation(libs.coil3.compose)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)

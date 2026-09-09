@@ -24,7 +24,7 @@ import com.ngapp.metanmobile.core.data.model.price.asEntity
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
 import com.ngapp.metanmobile.core.database.model.price.asExternalModel
 import com.ngapp.metanmobile.core.model.price.PriceResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -39,7 +39,7 @@ import javax.inject.Inject
  */
 internal class FakePricesRepository @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : PricesRepository {
 
     override fun getFuelPrice(): Flow<PriceResource?> = flow {

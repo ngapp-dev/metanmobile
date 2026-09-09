@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.koin.core)
     implementation(libs.androidx.compose.runtime)
 
     implementation(platform(libs.firebase.bom))

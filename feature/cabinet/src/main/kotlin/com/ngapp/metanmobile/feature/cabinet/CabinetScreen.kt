@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.core.designsystem.component.MMCabinetTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
@@ -56,13 +55,14 @@ import com.ngapp.metanmobile.core.ui.lottie.LottieErrorView
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetActions
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetUiState
 import com.ngapp.metanmobile.core.ui.R as CorUiR
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun CabinetRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     url: String = "http://lk.metan.by/",
-    viewModel: CabinetViewModel = hiltViewModel(),
+    viewModel: CabinetViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

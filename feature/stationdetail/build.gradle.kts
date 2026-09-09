@@ -27,6 +27,7 @@ android {
 
 dependencies {
     implementation(libs.accompanist.permissions)
+    implementation(libs.koin.compose.viewmodel)
 
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)

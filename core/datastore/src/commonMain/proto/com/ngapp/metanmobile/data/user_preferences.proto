@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.ngapp.metanmobile.core.datastore.shared;
+
+import "com/ngapp/metanmobile/data/dark_theme_config.proto";
+import "com/ngapp/metanmobile/data/sorting_config.proto";
+
+message UserPreferences {
+  reserved 2;
+
+  bool has_done_int_to_string_id_migration = 1;
+  repeated string deprecated_favorite_station_resource_codes = 3;
+  bool has_done_list_to_map_migration = 4;
+
+  map<string, bool> favorite_station_resource_codes = 5;
+  map<string, bool> viewed_news_resource_ids = 6;
+  DarkThemeConfigProto dark_theme_config = 8;
+  bool should_hide_onboarding = 9;
+  NewsSortingConfigProto news_sorting_config = 10;
+  StationSortingConfigProto station_sorting_config = 11;
+  int64 total_usage_time = 12;
+  bool is_review_shown = 13;
+  repeated string home_reorderable = 14;
+  bool is_home_last_news_expanded = 15;
+}
