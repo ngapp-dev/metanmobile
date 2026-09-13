@@ -28,9 +28,8 @@ import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class OfflineFirstUserDataRepository @Inject constructor(
+class OfflineFirstUserDataRepository(
     private val preferencesDataSource: MetanMobilePreferencesDataSource,
     private val analyticsHelper: AnalyticsHelper,
 ) : UserDataRepository {

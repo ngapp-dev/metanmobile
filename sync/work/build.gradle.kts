@@ -18,7 +18,6 @@
 plugins {
     alias(libs.plugins.mm.android.library)
     alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
 }
 
 android {
@@ -29,11 +28,8 @@ android {
 }
 
 dependencies {
-    ksp(libs.hilt.ext.compiler)
-
     implementation(libs.androidx.tracing.ktx)
     implementation(libs.androidx.work.ktx)
-    implementation(libs.hilt.ext.work)
     implementation(libs.koin.android)
     implementation(projects.core.analytics)
     implementation(projects.core.data)
@@ -41,7 +37,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
 
     androidTestImplementation(libs.androidx.work.testing)
-    androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.kotlinx.coroutines.guava)
     androidTestImplementation(project(mapOf("path" to ":core:testing")))
 }

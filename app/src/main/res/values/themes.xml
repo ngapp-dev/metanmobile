@@ -32,5 +32,12 @@
     <style name="Theme.MM.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.MM</item>
+        <!-- postSplashScreenTheme only swaps theme *attributes* after the splash is dismissed —
+             it can't retroactively undo window decor (like an ActionBar) that PhoneWindow already
+             committed to when the Activity was first created under this theme. Theme.SplashScreen
+             doesn't disable the ActionBar itself, so without this the app is stuck showing a
+             native ActionBar (with the app's label) on top of the Compose content. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 </resources>

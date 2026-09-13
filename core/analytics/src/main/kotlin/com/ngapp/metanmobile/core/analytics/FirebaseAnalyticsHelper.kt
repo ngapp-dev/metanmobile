@@ -19,12 +19,11 @@ package com.ngapp.metanmobile.core.analytics
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
-import javax.inject.Inject
 
 /**
  * Implementation of `AnalyticsHelper` which logs events to a Firebase backend.
  */
-internal class FirebaseAnalyticsHelper @Inject constructor(
+internal class FirebaseAnalyticsHelper(
     private val firebaseAnalytics: FirebaseAnalytics,
 ) : AnalyticsHelper {
 

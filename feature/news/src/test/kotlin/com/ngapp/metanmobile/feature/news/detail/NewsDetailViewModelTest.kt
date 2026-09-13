@@ -22,7 +22,7 @@ import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.testing.repository.TestNewsRepository
 import com.ngapp.metanmobile.core.testing.repository.TestUserDataRepository
 import com.ngapp.metanmobile.core.testing.util.MainDispatcherRule
-import com.ngapp.metanmobile.core.ui.ShareManager
+import com.ngapp.metanmobile.core.share.ShareManager
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailAction
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState
 import io.mockk.every
@@ -88,10 +88,10 @@ class NewsDetailViewModelTest {
     fun `ShareNews action delegates to the share manager with the given news`() = runTest {
         val viewModel = viewModel("1")
         val news = NewsResource.init().copy(id = "1")
-        every { shareManager.createShareNewsIntent(news) } returns Unit
+        every { shareManager.shareNews(news) } returns Unit
 
         viewModel.triggerAction(NewsDetailAction.ShareNews(news))
 
-        verify(exactly = 1) { shareManager.createShareNewsIntent(news) }
+        verify(exactly = 1) { shareManager.shareNews(news) }
     }
 }

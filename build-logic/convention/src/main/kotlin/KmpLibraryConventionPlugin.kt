@@ -39,6 +39,15 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
                     compilerOptions {
                         jvmTarget.set(JvmTarget.JVM_11)
                     }
+                    // This KMP-native Android library target has no test compilation at all by
+                    // default (that's the "androidTestImplementation dependencies are ignored
+                    // because androidTest is disabled" warning seen across these modules) — unlike
+                    // the classic com.android.library plugin, it has to be opted into explicitly,
+                    // and its instrumented-test source set is conventionally named
+                    // androidDeviceTest, not androidTest.
+                    withDeviceTest {
+                        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                    }
                 }
 
                 iosArm64()

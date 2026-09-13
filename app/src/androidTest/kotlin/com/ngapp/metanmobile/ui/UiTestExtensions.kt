@@ -17,11 +17,17 @@
 
 package com.ngapp.metanmobile.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import dev.icerock.moko.resources.StringResource
 import kotlin.properties.ReadOnlyProperty
 
+/**
+ * moko's [StringResource] carries the underlying Android `@StringRes` id as [StringResource.
+ * resourceId] — this used to take a plain `@StringRes Int` directly (master/pre-moko), but every
+ * string in this app is a moko resource now, so this resolves through that id instead of taking
+ * one.
+ */
 fun AndroidComposeTestRule<*, *>.stringResource(
-    @StringRes resId: Int,
+    resource: StringResource,
 ): ReadOnlyProperty<Any, String> =
-    ReadOnlyProperty { _, _ -> activity.getString(resId) }
+    ReadOnlyProperty { _, _ -> activity.getString(resource.resourceId) }

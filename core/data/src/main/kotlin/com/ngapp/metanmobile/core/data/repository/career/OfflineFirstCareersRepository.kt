@@ -28,9 +28,8 @@ import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstCareersRepository @Inject constructor(
+class OfflineFirstCareersRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val careerResourceDao: CareerResourceDao,
 ) : CareersRepository {

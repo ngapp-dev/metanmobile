@@ -16,19 +16,33 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.feature)
-    alias(libs.plugins.mm.android.library.compose)
-    alias(libs.plugins.mm.android.library.jacoco)
+    alias(libs.plugins.mm.kmp.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.ngapp.metanmobile.feature.onboarding"
-}
-
-dependencies {
-    implementation(projects.core.data)
-    implementation(libs.koin.compose.viewmodel)
-    testImplementation(projects.core.testing)
-    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
-    androidTestImplementation(projects.core.testing)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("org.jetbrains.compose.runtime:runtime:${libs.versions.composePlugin.get()}")
+            implementation("org.jetbrains.compose.foundation:foundation:${libs.versions.composePlugin.get()}")
+            implementation(compose.materialIconsExtended)
+            implementation(compose.material3)
+            implementation("org.jetbrains.compose.ui:ui:${libs.versions.composePlugin.get()}")
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.lifecycle.viewmodel.compose.kmp)
+            implementation(libs.lifecycle.viewmodel.kmp)
+            implementation(libs.moko.core)
+            implementation(libs.moko.compose)
+            implementation(libs.navigation.compose)
+            implementation(projects.core.data)
+            implementation(projects.core.model)
+        implementation(projects.resources)
+        implementation(projects.core.designsystem)
+        implementation(projects.core.ui)
+        }
+    }
 }

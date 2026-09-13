@@ -33,5 +33,12 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/bg_splash_12</item>
         <item name="postSplashScreenTheme">@style/Theme.MM</item>
         <item name="windowSplashScreenBackground">@color/c_blue</item>
+        <!-- postSplashScreenTheme only swaps theme *attributes* after the splash is dismissed —
+             it can't retroactively undo window decor (like an ActionBar) that PhoneWindow already
+             committed to when the Activity was first created under this theme. Without this the
+             app is stuck showing a native ActionBar (with the app's label) on top of the Compose
+             content — see values/themes.xml for the same fix on API < 31. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 </resources>

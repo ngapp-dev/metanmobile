@@ -17,8 +17,6 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.faq.asEntity
 import com.ngapp.metanmobile.core.data.repository.faq.FaqRepository
@@ -32,7 +30,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [FaqRepository] that retrieves the faq resources from a JSON String.
@@ -40,8 +37,8 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakeFaqRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+internal class FakeFaqRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
     private val parser: MetanEcogasNetworkDataSource,
 ) : FaqRepository {
 

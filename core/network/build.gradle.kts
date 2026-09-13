@@ -16,44 +16,34 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
-    alias(libs.plugins.secrets)
+    alias(libs.plugins.mm.kmp.library)
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    buildFeatures {
-        buildConfig = true
-    }
-    namespace = "com.ngapp.metanmobile.core.network"
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.exclude("com/ngapp/metanmobile/core/network/di/NetworkKoinModule.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/network/di/NetworkModule.kt")
+            dependencies {
+                api(projects.core.common)
+                api(projects.core.datastore)
+                api(projects.core.model)
+                implementation(projects.core.networkClient)
+                implementation(libs.koin.core)
+                api(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization.json)
+            }
+        }
+        androidMain {
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.include("com/ngapp/metanmobile/core/network/di/NetworkKoinModule.kt")
+            dependencies {
+                implementation(libs.koin.android)
+                implementation(libs.coil3.core)
+                implementation(libs.coil3.svg)
+            }
         }
     }
-}
-
-secrets {
-    defaultPropertiesFileName = "secrets.properties"
-}
-
-dependencies {
-    api(projects.core.common)
-    api(projects.core.datastore)
-    api(projects.core.model)
-    implementation(projects.core.networkClient)
-    implementation(libs.koin.core)
-    implementation(libs.koin.android)
-
-    api(libs.kotlinx.datetime)
-    implementation(libs.coil3.core)
-    implementation(libs.coil3.svg)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.okhttp.logging)
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.kotlin.serialization)
-
-    testImplementation(libs.kotlinx.coroutines.test)
 }

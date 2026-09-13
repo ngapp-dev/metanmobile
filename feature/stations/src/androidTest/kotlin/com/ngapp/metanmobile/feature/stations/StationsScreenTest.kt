@@ -41,12 +41,12 @@ import com.ngapp.metanmobile.core.designsystem.R as DesignSystemR
 import com.ngapp.metanmobile.core.ui.R as CoreUiR
 
 /**
- * UI tests for [StationsScreen], exercised directly (no Hilt/navigation) with a caller-supplied
+ * UI tests for [StationsScreen], exercised directly (no navigation) with a caller-supplied
  * [StationsUiState] and captured [StationsAction]s - the same approach as `OnboardingScreenTest`.
  *
  * A row's own "view details" tap is intentionally never exercised: like `FavoritesScreen`, it
  * expands an embedded [com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute] bottom
- * sheet that needs Hilt. The MAP tab is also never switched to: `StationMapContent` renders a
+ * sheet that is not part of this isolated test. The MAP tab is also never switched to: `StationMapContent` renders a
  * real Google Map, which needs a Maps API key that this module's standalone test manifest doesn't
  * carry (only the app's does) - only its presence (the tab label) is checked.
  */

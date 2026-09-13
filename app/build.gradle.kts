@@ -23,7 +23,6 @@ plugins {
     alias(libs.plugins.mm.android.application.compose)
     alias(libs.plugins.mm.android.application.jacoco)
     alias(libs.plugins.mm.android.application.firebase)
-    alias(libs.plugins.mm.hilt)
     alias(libs.plugins.google.osslicenses)
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.baselineprofile)
@@ -32,6 +31,12 @@ plugins {
 }
 
 android {
+    // Network endpoints are supplied by the Secrets Gradle plugin and consumed when
+    // the shared Ktor client is registered in the Android application graph.
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = libs.versions.applicationId.get()
         versionCode =
@@ -90,6 +95,7 @@ secrets {
 }
 
 dependencies {
+    implementation(projects.composeApp)
     // Firebase Performance still uses lite generated protobuf messages at runtime. This was
     // previously brought in transitively by the Android-only DataStore proto module.
     implementation(libs.protobuf.kotlin.lite)
@@ -99,9 +105,10 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.designsystem)
     implementation(projects.core.model)
+    implementation(projects.core.ui)
     implementation(projects.core.network)
     implementation(projects.core.networkClient)
-    implementation(projects.core.ui)
+    implementation(projects.core.share)
     implementation(projects.sync.work)
 
     implementation(projects.feature.cabinet)
@@ -135,7 +142,6 @@ dependencies {
     implementation(libs.coil3.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.profileinstaller)
@@ -150,18 +156,12 @@ dependencies {
     implementation(libs.google.play.app.review.ktx)
     implementation(libs.google.play.app.integrity)
 
-    ksp(libs.hilt.compiler)
-
     debugImplementation(libs.androidx.compose.ui.testManifest)
-    debugImplementation(projects.uiTestHiltManifest)
-
-    kspTest(libs.hilt.compiler)
 
     testImplementation(projects.core.dataTest)
     testImplementation(projects.core.datastore)
     testImplementation(projects.core.datastoreProto)
     testImplementation(projects.core.testing)
-    testImplementation(libs.hilt.android.testing)
 
     testImplementation(libs.robolectric)
     testImplementation(libs.roborazzi)
@@ -171,9 +171,11 @@ dependencies {
     androidTestImplementation(projects.core.testing)
     androidTestImplementation(projects.core.dataTest)
     androidTestImplementation(projects.core.datastoreTest)
+    androidTestImplementation(projects.composeApp)
+    androidTestImplementation(projects.resources)
+    androidTestImplementation(libs.moko.core)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)
-    androidTestImplementation(libs.hilt.android.testing)
 //    baselineProfile(projects.benchmarks)
 }
 

@@ -17,7 +17,6 @@
 
 plugins {
     alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.hilt)
 }
 
 android {
@@ -27,10 +26,11 @@ android {
 dependencies {
     api(projects.core.data)
 
-    implementation(libs.hilt.android.testing)
+    implementation(libs.koin.core)
 
     testImplementation(projects.core.analytics)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit4)
     testImplementation(libs.mockk)
     testImplementation(libs.play.services.location)
     testImplementation(libs.turbine)

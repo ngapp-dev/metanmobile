@@ -18,7 +18,6 @@
 plugins {
     alias(libs.plugins.mm.android.library)
     alias(libs.plugins.mm.android.library.compose)
-    alias(libs.plugins.mm.hilt)
 }
 
 android {

@@ -28,11 +28,10 @@ import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 import kotlin.collections.map
 import kotlin.collections.toSet
 
-class OfflineFirstStationsRepository @Inject constructor(
+class OfflineFirstStationsRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val stationResourceDao: StationResourceDao,
 ) : StationsRepository {

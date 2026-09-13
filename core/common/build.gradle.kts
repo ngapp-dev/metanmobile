@@ -27,7 +27,6 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-            implementation(libs.hilt.android)
         }
         commonTest.dependencies {
             implementation(libs.kotlinx.coroutines.test)

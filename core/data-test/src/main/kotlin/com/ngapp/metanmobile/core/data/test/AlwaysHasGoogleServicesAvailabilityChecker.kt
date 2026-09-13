@@ -18,9 +18,8 @@
 package com.ngapp.metanmobile.core.data.test
 
 import com.ngapp.metanmobile.core.data.util.GoogleServicesChecker
-import javax.inject.Inject
 
-class AlwaysHasGoogleServicesAvailabilityChecker @Inject constructor() : GoogleServicesChecker {
+class AlwaysHasGoogleServicesAvailabilityChecker : GoogleServicesChecker {
 
     override val isGoogleServicesAvailable: Boolean = true
 }

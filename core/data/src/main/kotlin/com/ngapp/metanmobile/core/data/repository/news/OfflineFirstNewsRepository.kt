@@ -26,9 +26,8 @@ import com.ngapp.metanmobile.core.database.model.news.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstNewsRepository @Inject constructor(
+class OfflineFirstNewsRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val newsResourceDao: NewsResourceDao,
 ) : NewsRepository {

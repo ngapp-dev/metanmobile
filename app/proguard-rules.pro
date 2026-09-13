@@ -46,24 +46,13 @@
 
 -dontwarn android.media.AudioTrack$StreamEventCallback
 
-# Jetpack Compose, Hilt/Dagger, Coroutines and Coil each ship their own
+# Jetpack Compose, Coroutines and Coil each ship their own
 # consumer-rules.txt with exactly the -keep rules they need, so blanket
 # "-keep class x.** { *; }" rules for them here only disable shrinking,
 # obfuscation and optimization for those trees without protecting anything
 # that isn't already protected - this was the main cause of the low R8
 # optimization/obfuscation/compression percentages reported for 2.3.1.
 -dontwarn androidx.compose.**
-
-# Hilt (Dependency Injection)
--keep class javax.inject.** { *; }
--keep class dagger.hilt.EntryPoint { *; }
--keep class dagger.Module { *; }
--keep @dagger.hilt.InstallIn class * { *; }
--keep @dagger.Module class * { *; }
--keepclassmembers class * {
-    @dagger.hilt.android.lifecycle.HiltViewModel <init>(...);
-}
--dontwarn dagger.hilt.**
 
 -dontwarn kotlinx.coroutines.**
 

@@ -1,62 +1,55 @@
-/*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.compose)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
-    alias(libs.plugins.secrets)
+    alias(libs.plugins.mm.kmp.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose)
 }
 
-android {
-    buildFeatures {
-        buildConfig = true
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.core.analytics)
+            api(projects.core.common)
+            api(projects.core.designsystem)
+            api(projects.core.model)
+            implementation(projects.resources)
+            implementation(libs.moko.compose)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.ui)
+            implementation(libs.navigation.compose)
+            implementation(libs.coil3.core)
+            implementation(libs.coil3.compose)
+            implementation(libs.kotlinx.datetime)
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+            implementation(libs.androidx.metrics)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.accompanist.permissions)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.google.services.ads)
+            implementation(libs.google.services.base)
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.browser)
+            implementation(libs.google.oss.licenses)
+        }
+        androidMain {
+            kotlin.srcDir("src/androidMain/kotlin")
+            resources.srcDir("src/androidMain/res")
+        }
+        // See core:designsystem's androidDeviceTest block for why this is pinned to an explicit
+        // version instead of the usual androidx-compose-bom platform().
+        androidDeviceTest.dependencies {
+            implementation("androidx.compose.ui:ui-test-junit4:1.11.4")
+            implementation("androidx.compose.ui:ui-test-manifest:1.11.4")
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.junit4)
+        }
     }
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    namespace = "com.ngapp.metanmobile.core.ui"
 }
 
-secrets {
-    defaultPropertiesFileName = "secrets.properties"
-}
-
-dependencies {
-    implementation(libs.koin.android)
-    api(libs.androidx.metrics)
-    api(projects.core.analytics)
-    api(projects.core.common)
-    api(projects.core.designsystem)
-    api(projects.core.model)
-
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.accompanist.permissions)
-    implementation(libs.lottie.compose)
-    implementation(libs.androidx.appcompat)
-    api(libs.google.services.ads)
-    implementation(libs.androidx.navigation.compose)
-//    api(libs.google.messaging.platform)
-    implementation(libs.androidx.browser)
-    implementation(libs.coil3.compose)
-
-    androidTestImplementation(libs.bundles.androidx.compose.ui.test)
-    androidTestImplementation(projects.core.testing)
-
-    testImplementation(libs.junit4)
-}
+// See core:designsystem's build.gradle.kts for why this is disabled.
+tasks.matching { it.name == "copyAndroidDeviceTestComposeResourcesToAndroidAssets" }
+    .configureEach { enabled = false }

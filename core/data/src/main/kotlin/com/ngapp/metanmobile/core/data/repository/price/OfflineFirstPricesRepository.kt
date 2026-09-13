@@ -25,9 +25,8 @@ import com.ngapp.metanmobile.core.database.model.price.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstPricesRepository @Inject constructor(
+class OfflineFirstPricesRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val priceResourceDao: PriceResourceDao,
 ) : PricesRepository {

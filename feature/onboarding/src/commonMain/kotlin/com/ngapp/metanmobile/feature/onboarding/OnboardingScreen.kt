@@ -1,0 +1,288 @@
+package com.ngapp.metanmobile.feature.onboarding
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.SharedRes
+import com.ngapp.metanmobile.core.designsystem.component.MMOnboardingTopAppBar
+import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
+import com.ngapp.metanmobile.core.designsystem.theme.Blue
+import com.ngapp.metanmobile.core.designsystem.theme.Gray300
+import com.ngapp.metanmobile.core.designsystem.theme.MMShapes
+import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
+import com.ngapp.metanmobile.core.designsystem.theme.White
+import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
+import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
+import com.ngapp.metanmobile.feature.onboarding.state.OnboardingAction
+import com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState
+import dev.icerock.moko.resources.ImageResource
+import dev.icerock.moko.resources.StringResource
+import dev.icerock.moko.resources.compose.painterResource
+import dev.icerock.moko.resources.compose.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import kotlinx.coroutines.launch
+
+@Composable
+fun OnboardingRoute(
+    onSkipOnboarding: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: OnboardingViewModel = koinViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    when (uiState) {
+        OnboardingUiState.NotShown -> onSkipOnboarding()
+        else -> {
+            OnboardingScreen(
+                modifier = modifier,
+                uiState = uiState,
+                onAction = viewModel::triggerAction,
+            )
+        }
+    }
+}
+
+@Composable
+internal fun OnboardingScreen(
+    modifier: Modifier = Modifier,
+    uiState: OnboardingUiState,
+    onAction: (OnboardingAction) -> Unit,
+) {
+    val pages = listOf(OnBoardingPage.First, OnBoardingPage.Second, OnBoardingPage.Third)
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { pages.size })
+
+    // Ask for location permission once the user has seen the "find stations near you" page and
+    // moved past it — via Next, a swipe, or Skip (which jumps straight to the last page). Not on
+    // launch: a bare system dialog with zero context, before the user even knows what the app
+    // does, is a bad first impression.
+    val permissionsState = LocalPermissionsState.current
+    var locationPermissionRequested by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage >= pages.indexOf(OnBoardingPage.Third) && !locationPermissionRequested) {
+            locationPermissionRequested = true
+            permissionsState.requestPermissions()
+        }
+    }
+
+    OnboardingHeader(
+        modifier = modifier,
+        shouldShowNavigationButton = pagerState.currentPage > 0,
+        onBackClick = {
+            if (pagerState.currentPage > 0) {
+                scope.launch { pagerState.scrollToPage(pagerState.currentPage - 1) }
+            }
+        },
+        onSkipClick = {
+            scope.launch { pagerState.scrollToPage(pages.lastIndex) }
+        }
+    ) { padding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) { page ->
+                PagerScreen(onBoardingPage = pages[page])
+            }
+            BottomSection(size = pages.size, index = pagerState.currentPage) {
+                if (pagerState.currentPage < pages.lastIndex) {
+                    scope.launch { pagerState.scrollToPage(pagerState.currentPage + 1) }
+                } else {
+                    onAction(OnboardingAction.DismissOnboarding)
+                }
+            }
+        }
+    }
+    TrackScreenViewEvent(screenName = "OnboardingScreen")
+}
+
+@Composable
+private fun BottomSection(
+    size: Int,
+    index: Int,
+    onButtonClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            repeat(size) { Indicator(isSelected = it == index) }
+        }
+        Button(
+            onClick = onButtonClick,
+            colors = ButtonDefaults.buttonColors(containerColor = Blue, contentColor = White),
+            shape = MMShapes.large,
+            modifier = Modifier
+                .height(56.dp)
+                .semantics { contentDescription = "Next" }
+        ) {
+            AnimatedVisibility(visible = index != 2) {
+                Icon(
+                    imageVector = MMIcons.KeyboardArrowRight,
+                    tint = White,
+                    contentDescription = stringResource(SharedRes.strings.feature_onboarding_description_next_icon)
+                )
+            }
+            AnimatedVisibility(visible = index == 2) {
+                Text(
+                    text = stringResource(SharedRes.strings.onboarding_start),
+                    color = White,
+                    textAlign = TextAlign.Center,
+                    style = MMTypography.headlineMedium,
+                    modifier = Modifier.padding(horizontal = 64.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Indicator(isSelected: Boolean) {
+    val width = animateDpAsState(
+        targetValue = if (isSelected) 25.dp else 10.dp,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        label = stringResource(SharedRes.strings.feature_onboarding_description_pager_indicator)
+    )
+    Box(
+        modifier = Modifier
+            .height(10.dp)
+            .width(width.value)
+            .clip(CircleShape)
+            .background(color = if (isSelected) Blue else Gray300)
+    )
+}
+
+@Composable
+private fun PagerScreen(onBoardingPage: OnBoardingPage) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 50.dp, vertical = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(onBoardingPage.image),
+            contentDescription = stringResource(onBoardingPage.title),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .weight(4f)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(onBoardingPage.title),
+            style = MMTypography.displayMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(onBoardingPage.description),
+            style = MMTypography.headlineMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(2f)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+private sealed class OnBoardingPage(
+    val image: ImageResource,
+    val title: StringResource,
+    val description: StringResource,
+) {
+    data object First : OnBoardingPage(
+        image = SharedRes.images.onboarding_news,
+        title = SharedRes.strings.onboarding_title_news,
+        description = SharedRes.strings.onboarding_description_news
+    )
+
+    data object Second : OnBoardingPage(
+        image = SharedRes.images.onboarding_stations,
+        title = SharedRes.strings.onboarding_title_stations,
+        description = SharedRes.strings.onboarding_description_stations
+    )
+
+    data object Third : OnBoardingPage(
+        image = SharedRes.images.onboarding_favorites,
+        title = SharedRes.strings.onboarding_title_favorites,
+        description = SharedRes.strings.onboarding_description_favorites
+    )
+}
+
+@Composable
+private fun OnboardingHeader(
+    modifier: Modifier,
+    shouldShowNavigationButton: Boolean,
+    onBackClick: () -> Unit,
+    onSkipClick: () -> Unit,
+    pageContent: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        modifier = modifier,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = {
+            MMOnboardingTopAppBar(
+                shouldShowNavigationButton = shouldShowNavigationButton,
+                onNavigationClick = onBackClick,
+                onSkipActionClick = onSkipClick
+            )
+        },
+        content = pageContent
+    )
+}

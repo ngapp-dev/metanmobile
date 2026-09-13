@@ -18,25 +18,13 @@
 package com.ngapp.metanmobile.sync.workers
 
 import android.content.Context
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import kotlin.reflect.KClass
-
-/**
- * An entry point to retrieve the [HiltWorkerFactory] at runtime
- */
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface HiltWorkerFactoryEntryPoint {
-    fun hiltWorkerFactory(): HiltWorkerFactory
-}
+import org.koin.core.context.GlobalContext
+import org.koin.core.parameter.parametersOf
 
 private const val WORKER_CLASS_NAME = "RouterWorkerDelegateClassName"
 
@@ -50,7 +38,7 @@ internal fun KClass<out CoroutineWorker>.delegatedData() =
         .build()
 
 /**
- * A worker that delegates sync to another [CoroutineWorker] constructed with a [HiltWorkerFactory].
+ * A worker that delegates sync to another [CoroutineWorker] constructed from the Koin graph.
  *
  * This allows for creating and using [CoroutineWorker] instances with extended arguments
  * without having to provide a custom WorkManager configuration that the app module needs to utilize.
@@ -66,12 +54,12 @@ class DelegatingWorker(
     private val workerClassName =
         workerParams.inputData.getString(WORKER_CLASS_NAME) ?: ""
 
-    private val delegateWorker =
-        EntryPointAccessors.fromApplication<HiltWorkerFactoryEntryPoint>(appContext)
-            .hiltWorkerFactory()
-            .createWorker(appContext, workerClassName, workerParams)
-            as? CoroutineWorker
-            ?: throw IllegalArgumentException("Unable to find appropriate worker")
+    private val delegateWorker: CoroutineWorker = when (workerClassName) {
+        SyncWorker::class.qualifiedName -> GlobalContext.get().get<SyncWorker> {
+            parametersOf(appContext, workerParams)
+        }
+        else -> throw IllegalArgumentException("Unable to find appropriate worker: $workerClassName")
+    }
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
         delegateWorker.getForegroundInfo()

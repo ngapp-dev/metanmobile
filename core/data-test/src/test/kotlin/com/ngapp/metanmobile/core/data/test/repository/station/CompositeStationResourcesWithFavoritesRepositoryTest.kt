@@ -294,7 +294,5 @@ private class FakeLocationsRepository : LocationsRepository {
 
     override fun getLocationResource(): Flow<LocationResource?> = state
 
-    override suspend fun getLocationData(): Location? = null
-
     override suspend fun updateLocation(locationPermissionGranted: Boolean) {}
 }

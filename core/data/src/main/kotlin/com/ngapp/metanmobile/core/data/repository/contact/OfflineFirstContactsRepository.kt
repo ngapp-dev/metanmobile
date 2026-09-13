@@ -25,9 +25,8 @@ import com.ngapp.metanmobile.core.database.model.contact.asExternalModel
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.contact.NetworkContactResource
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstContactsRepository @Inject constructor(
+class OfflineFirstContactsRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val contactResourceDao: ContactResourceDao,
 ) : ContactsRepository {

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Metan Mobile</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.ngapp.metanmobile.ios</string>
+	<key>CFBundleName</key>
+	<string>MetanMobile</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Metan Mobile uses your location to show the distance to each gas station on the map and in the list. It's only read while the app is open and never shared.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.ngapp.metanmobile.ios.sync</string>
+	</array>
+	<!-- Custom-scheme deep links (metanmobile://...) — a fully self-contained mechanism that
+	     doesn't need server hosting or an Apple Developer Team entitlement, unlike real Universal
+	     Links for https://metan.by/... (those additionally need a com.apple.developer.associated-
+	     domains entitlement plus an apple-app-site-association file hosted on metan.by itself —
+	     both outside what this repo alone can set up). -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.ngapp.metanmobile.ios</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>metanmobile</string>
+			</array>
+		</dict>
+	</array>
+	<!-- Matches Android's splash (Theme.MM.Splash / bg_splash*): brand blue background with the
+	     app mark centered. iOS's LaunchScreen dict format can't do Android's blue-to-green
+	     gradient, so this uses the flat #009CDE also used for API 31+'s windowSplashScreenBackground. -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackgroundColor</string>
+		<key>UIImageName</key>
+		<string>LaunchLogo</string>
+	</dict>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+</dict>
+</plist>

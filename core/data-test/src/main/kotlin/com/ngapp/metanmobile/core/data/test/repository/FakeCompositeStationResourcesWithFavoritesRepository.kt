@@ -32,13 +32,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * Implements a [StationResourcesWithFavoritesRepository] by combining a [StationsRepository] with ¬
  * [LocationsRepository] and [UserDataRepository].
  */
-class FakeCompositeStationResourcesWithFavoritesRepository @Inject constructor(
+class FakeCompositeStationResourcesWithFavoritesRepository constructor(
     private val stationsRepository: StationsRepository,
     private val locationsRepository: LocationsRepository,
     private val userDataRepository: UserDataRepository,

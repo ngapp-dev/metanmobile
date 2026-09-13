@@ -21,8 +21,7 @@ import com.ngapp.metanmobile.core.data.util.TimeZoneMonitor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.TimeZone
-import javax.inject.Inject
 
-class DefaultZoneIdTimeZoneMonitor @Inject constructor() : TimeZoneMonitor {
+class DefaultZoneIdTimeZoneMonitor : TimeZoneMonitor {
     override val currentTimeZone: Flow<TimeZone> = flowOf(TimeZone.of("Europe/Warsaw"))
 }

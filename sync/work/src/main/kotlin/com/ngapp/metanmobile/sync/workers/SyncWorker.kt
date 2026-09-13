@@ -22,7 +22,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.hilt.work.HiltWorker
 import androidx.tracing.traceAsync
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
@@ -32,57 +31,29 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
-import com.ngapp.metanmobile.core.data.Synchronizer
-import com.ngapp.metanmobile.core.data.repository.career.CareersRepository
-import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
-import com.ngapp.metanmobile.core.data.repository.faq.FaqRepository
-import com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository
-import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
-import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
-import com.ngapp.metanmobile.core.data.repository.station.StationsRepository
+import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
 import com.ngapp.metanmobile.sync.R
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 /**
- * Syncs the data layer by delegating to the appropriate repository instances with
- * sync functionality.
+ * Syncs the data layer by delegating to [DataSyncCoordinator] — the *what* of a sync (which
+ * repositories, fetched in parallel) is shared with iOS's `IosSyncManager`; this worker is only
+ * the Android-specific *how* (WorkManager scheduling/constraints/retry/foreground notification).
  */
-@HiltWorker
-internal class SyncWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
-    @Assisted workerParams: WorkerParameters,
-    private val newsRepository: NewsRepository,
-    private val stationsRepository: StationsRepository,
-    private val contactsRepository: ContactsRepository,
-    private val faqRepository: FaqRepository,
-    private val careersRepository: CareersRepository,
-    private val pricesRepository: PricesRepository,
-    private val githubUserRepository: GithubUserRepository,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+internal class SyncWorker(
+    private val appContext: Context,
+    workerParams: WorkerParameters,
+    private val dataSyncCoordinator: DataSyncCoordinator,
+    private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
-) : CoroutineWorker(appContext, workerParams), Synchronizer {
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         traceAsync("Sync", 0) {
             analyticsHelper.logSyncStarted()
 
-            // First sync the repositories in parallel
-            val syncedSuccessfully = awaitAll(
-                async { newsRepository.sync() },
-                async { stationsRepository.sync() },
-                async { contactsRepository.sync() },
-                async { faqRepository.sync() },
-                async { careersRepository.sync() },
-                async { pricesRepository.sync() },
-                async { githubUserRepository.sync() },
-            ).all { it }
+            val syncedSuccessfully = dataSyncCoordinator.sync()
 
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 

@@ -17,7 +17,6 @@
 
 plugins {
     alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.hilt)
 }
 
 android {
@@ -25,7 +24,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.hilt.android.testing)
     implementation(projects.core.data)
     implementation(projects.sync.work)
 }

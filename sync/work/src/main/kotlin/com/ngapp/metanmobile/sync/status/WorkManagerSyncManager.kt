@@ -25,17 +25,15 @@ import androidx.work.WorkManager
 import com.ngapp.metanmobile.sync.initializers.SYNC_WORK_NAME
 import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.sync.workers.SyncWorker
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * [SyncManager] backed by [WorkInfo] from [WorkManager]
  */
-internal class WorkManagerSyncManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+internal class WorkManagerSyncManager(
+    private val context: Context,
 ) : SyncManager {
     private val workInfos: Flow<List<WorkInfo>> =
         WorkManager.getInstance(context).getWorkInfosForUniqueWorkFlow(SYNC_WORK_NAME)

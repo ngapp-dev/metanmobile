@@ -41,11 +41,11 @@ import com.ngapp.metanmobile.core.ui.R as CoreUiR
 import com.ngapp.metanmobile.core.designsystem.R as DesignSystemR
 
 /**
- * UI tests for [FavoritesScreen], exercised directly (no Hilt/navigation) with a caller-supplied
+ * UI tests for [FavoritesScreen], exercised directly (no navigation) with a caller-supplied
  * [FavoritesUiState] and captured [FavoritesAction]s, the same approach as
  * `OnboardingScreenTest`. A row's own "view details" tap is intentionally never exercised here:
  * in the real screen that expands an embedded [com.ngapp.metanmobile.feature.stationdetail.StationDetailRoute]
- * bottom sheet, which needs Hilt - out of reach for a plain (non-`@HiltAndroidTest`) Compose test.
+ * bottom sheet, which is out of reach for a plain Compose test.
  */
 class FavoritesScreenTest {
 

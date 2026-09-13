@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.data.repository.location
 
-import android.location.Location
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.flow.Flow
 
@@ -27,8 +26,6 @@ interface LocationsRepository {
 
     /** Emits `null` while the user's location isn't known yet (see [updateLocation]). */
     fun getLocationResource(): Flow<LocationResource?>
-
-    suspend fun getLocationData(): Location?
 
     suspend fun updateLocation(locationPermissionGranted: Boolean)
 }

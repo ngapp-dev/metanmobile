@@ -27,7 +27,6 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "metanmobile.android.library")
-            apply(plugin = "metanmobile.hilt")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true
@@ -40,7 +39,6 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
 
                 "implementation"(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
                 "implementation"(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
-                "implementation"(libs.findLibrary("androidx.hilt.lifecycle.viewModelCompose").get())
                 "implementation"(libs.findLibrary("androidx.navigation3.runtime").get())
                 "implementation"(libs.findLibrary("androidx.tracing.ktx").get())
 

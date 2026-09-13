@@ -88,10 +88,6 @@ gradlePlugin {
             id = "metanmobile.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
-        register("hilt") {
-            id = "metanmobile.hilt"
-            implementationClass = "HiltConventionPlugin"
-        }
         register("androidRoom") {
             id = "metanmobile.android.room"
             implementationClass = "AndroidRoomConventionPlugin"

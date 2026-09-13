@@ -96,6 +96,17 @@
             </intent-filter>
         </activity>
 
+        <!-- This is a classic View-based Activity from Play Services (getSupportActionBar()
+             requires an AppCompat-descended theme) — the app's own theme is Material3/Compose,
+             not AppCompat, so it needs its own explicit theme override here or it crashes on
+             launch with "You need to use a Theme.AppCompat theme (or descendant)". -->
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
