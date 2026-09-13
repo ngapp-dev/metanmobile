@@ -14,6 +14,15 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<!-- Lets iOS show a per-app "Language" row in Settings > Metan Mobile (iOS 13+) - without this,
+	     the app can only ever follow the device's global language, with no way to override it just
+	     for this app, even though the ru/be/en string bundles already exist and are compiled in. -->
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ru</string>
+		<string>be</string>
+	</array>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>LSRequiresIPhoneOS</key>

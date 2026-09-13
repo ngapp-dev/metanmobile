@@ -28,6 +28,10 @@ private suspend fun <T> runSync(
     true
 } catch (exception: CancellationException) {
     throw exception
-} catch (_: Exception) {
+} catch (exception: Exception) {
+    // A sync failure here (network error, JSON shape mismatch, DB write error, ...) used to be
+    // completely silent - the caller just sees an empty/stale list with no clue why. Printing it
+    // at least surfaces the real exception in Logcat/Xcode console instead of a guessing game.
+    println("Sync failed: ${exception::class.simpleName}: ${exception.message}")
     false
 }

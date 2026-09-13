@@ -67,5 +67,12 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
         }
+        // sync:work holds the platform-specific sync mechanism (WorkManager on Android,
+        // BGTaskScheduler on iOS) - SharedKoin.kt's initSharedKoin() wires up the iOS side
+        // (iosSyncModule/registerBackgroundSync) from here, same as MetanMobileApplication does
+        // for Android's own WorkManager wiring via the :app module's own dependency on it.
+        iosMain.dependencies {
+            implementation(projects.sync.work)
+        }
     }
 }

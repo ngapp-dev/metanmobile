@@ -39,23 +39,38 @@ private fun CLAuthorizationStatus.isGranted() =
 actual fun PermissionsManager(content: @Composable () -> Unit) {
     val permissionsState = remember { PermissionsState() }
     val locationManager = remember { CLLocationManager() }
-
-    DisposableEffect(locationManager) {
-        val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+    // CLLocationManager.delegate is a *weak* Objective-C property (Apple's usual delegate
+    // convention) - held only as a local val inside DisposableEffect, this object had no strong
+    // Kotlin-side reference anywhere once that block finished running, so Kotlin/Native's own GC
+    // was free to collect it before the async callback for the user's permission choice ever
+    // arrived (confirmed live: the initial/setup callback fired, but nothing after the user
+    // actually responded to the system dialog). remember{} roots it in the composition for as
+    // long as PermissionsManager stays composed - i.e. the whole app's lifetime.
+    val delegate = remember {
+        object : NSObject(), CLLocationManagerDelegateProtocol {
             override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
+                println("PermissionsManager: locationManagerDidChangeAuthorization -> ${manager.authorizationStatus}")
                 permissionsState.hasLocationPermissions = manager.authorizationStatus.isGranted()
             }
         }
+    }
+
+    DisposableEffect(locationManager, delegate) {
         locationManager.delegate = delegate
+        println("PermissionsManager: initial authorizationStatus = ${locationManager.authorizationStatus}")
         permissionsState.hasLocationPermissions = locationManager.authorizationStatus.isGranted()
         permissionsState.requestPermissions = {
+            println("PermissionsManager: requestPermissions() called, current status = ${locationManager.authorizationStatus}")
             if (locationManager.authorizationStatus == kCLAuthorizationStatusNotDetermined) {
                 locationManager.requestWhenInUseAuthorization()
             } else {
                 openAppSettings()
             }
         }
-        onDispose { locationManager.delegate = null }
+        onDispose {
+            println("PermissionsManager: disposed")
+            locationManager.delegate = null
+        }
     }
 
     CompositionLocalProvider(LocalPermissionsState provides permissionsState) {
@@ -65,7 +80,7 @@ actual fun PermissionsManager(content: @Composable () -> Unit) {
 
 actual fun openAppSettings() {
     val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString) ?: return
-    UIApplication.sharedApplication.openURL(url)
+    UIApplication.sharedApplication.openURL(url, options = emptyMap<Any?, Any?>(), completionHandler = null)
 }
 
 // iOS has no Google-Play-Services-style gate on location; the system permission flow above is

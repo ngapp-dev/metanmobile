@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
+import com.ngapp.metanmobile.core.designsystem.theme.Gray400
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import dev.icerock.moko.resources.compose.stringResource
 
@@ -49,6 +50,7 @@ fun EmptyView(
         PulsingIcon(
             icon = MMIcons.EmptyOutlined,
             contentDescription = message,
+            tint = Gray400,
         )
         Text(
             text = message,

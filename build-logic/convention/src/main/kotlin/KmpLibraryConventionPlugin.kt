@@ -48,6 +48,14 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
                     withDeviceTest {
                         instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                     }
+                    // Same story for plain local/JVM unit tests (the "commonTest source directory
+                    // exists, but android host tests are not enabled" warning): without this,
+                    // src/test never actually runs on Android, not even to report a failure — a
+                    // suite can sit here fully broken (testing a constructor shape long since
+                    // deleted from the class under test, say) with nothing to say so.
+                    withHostTest {
+                        isIncludeAndroidResources = true
+                    }
                 }
 
                 iosArm64()

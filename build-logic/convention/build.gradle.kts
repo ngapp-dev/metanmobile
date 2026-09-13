@@ -76,10 +76,6 @@ gradlePlugin {
             id = "metanmobile.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidFeature") {
-            id = "metanmobile.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
-        }
         register("androidLibraryJacoco") {
             id = "metanmobile.android.library.jacoco"
             implementationClass = "AndroidLibraryJacocoConventionPlugin"
@@ -88,10 +84,6 @@ gradlePlugin {
             id = "metanmobile.android.test"
             implementationClass = "AndroidTestConventionPlugin"
         }
-        register("androidRoom") {
-            id = "metanmobile.android.room"
-            implementationClass = "AndroidRoomConventionPlugin"
-        }
         register("androidFirebase") {
             id = "metanmobile.android.application.firebase"
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
@@ -99,10 +91,6 @@ gradlePlugin {
         register("androidLint") {
             id = "metanmobile.android.lint"
             implementationClass = "AndroidLintConventionPlugin"
-        }
-        register("jvmLibrary") {
-            id = "metanmobile.jvm.library"
-            implementationClass = "JvmLibraryConventionPlugin"
         }
         register("kmpLibrary") {
             id = "metanmobile.kmp.library"

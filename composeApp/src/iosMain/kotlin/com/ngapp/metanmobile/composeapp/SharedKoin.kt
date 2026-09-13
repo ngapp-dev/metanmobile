@@ -3,13 +3,13 @@ package com.ngapp.metanmobile.composeapp
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.analytics.NoOpAnalyticsHelper
 import com.ngapp.metanmobile.composeapp.di.mainModule
-import com.ngapp.metanmobile.core.data.di.iosSyncModule
 import com.ngapp.metanmobile.core.data.di.locationDataModule
 import com.ngapp.metanmobile.core.data.di.syncDataModule
 import com.ngapp.metanmobile.core.data.di.userDataModule
 import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
-import com.ngapp.metanmobile.core.data.sync.registerBackgroundSync
 import com.ngapp.metanmobile.core.domain.sync.SyncManager
+import com.ngapp.metanmobile.sync.di.iosSyncModule
+import com.ngapp.metanmobile.sync.schedulers.registerBackgroundSync
 import com.ngapp.metanmobile.core.datastore.di.userPreferencesDataStoreModule
 import com.ngapp.metanmobile.core.database.di.databaseModule
 import com.ngapp.metanmobile.core.network.client.di.networkClientModule

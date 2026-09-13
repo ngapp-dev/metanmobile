@@ -57,10 +57,10 @@ class TestStationsRepository : StationsRepository {
         stationResourcesFlow.map { stationResources -> applyQuery(stationResources, query) }
 
     /**
-     * Mirrors the `WHERE` clause of `StationResourceDao.getStationResourcesAsc/Desc`: filters by
-     * [StationResourceQuery.filterStationCodes] and does a case-insensitive substring match of
-     * [StationResourceQuery.searchQuery] against the title (SQLite's `LIKE '%…%'` is
-     * case-insensitive for ASCII).
+     * Mirrors `OfflineFirstStationsRepository`: filters by [StationResourceQuery.filterStationCodes]
+     * in the fake "DAO" step, then [StationResourceQuery.searchQuery] against title, address and
+     * region with Kotlin's own `ignoreCase` (not SQL `LIKE`, which only case-folds ASCII —
+     * unusable for Cyrillic queries against this app's Russian/Belarusian content).
      */
     private fun applyQuery(
         stationResources: List<StationResource>,
@@ -71,7 +71,11 @@ class TestStationsRepository : StationsRepository {
             result = result.filter { it.code in filterStationCodes }
         }
         if (query.searchQuery.isNotEmpty()) {
-            result = result.filter { it.title.contains(query.searchQuery, ignoreCase = true) }
+            result = result.filter { station ->
+                station.title.contains(query.searchQuery, ignoreCase = true) ||
+                    station.address.contains(query.searchQuery, ignoreCase = true) ||
+                    station.region.contains(query.searchQuery, ignoreCase = true)
+            }
         }
         return result
     }

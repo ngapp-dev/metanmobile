@@ -29,6 +29,8 @@ import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.util.LanguageHelper
 import com.ngapp.metanmobile.core.ui.util.isPerAppLanguageConfigSupported
+import com.ngapp.metanmobile.core.ui.util.isSystemLanguageSettingsAvailable
+import com.ngapp.metanmobile.core.ui.util.openAppSettings
 import com.ngapp.metanmobile.feature.menu.state.SettingsAction
 import com.ngapp.metanmobile.feature.menu.state.SettingsUiState
 import com.ngapp.metanmobile.feature.menu.ui.LanguageConfigDialog
@@ -152,6 +154,16 @@ private fun MenuScreen(
                             onShowAlertDialog = { showLanguageDialog = true }
                         )
                     }
+                    MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                } else if (isSystemLanguageSettingsAvailable()) {
+                    // No in-app language API (iOS) - route to this app's own page in the system
+                    // Settings app instead, where CFBundleLocalizations (Info.plist) now makes a
+                    // per-app "Language" row available.
+                    LanguageConfigRowItem(
+                        titleRes = SharedRes.strings.feature_menu_main_title_app_language,
+                        currentLanguage = currentLanguage,
+                        onShowAlertDialog = { openAppSettings() }
+                    )
                     MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
                 MenuRowItem(

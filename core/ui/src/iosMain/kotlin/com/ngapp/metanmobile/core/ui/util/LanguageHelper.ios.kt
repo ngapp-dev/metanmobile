@@ -16,3 +16,5 @@ actual class LanguageHelper actual constructor() {
 }
 
 actual fun isPerAppLanguageConfigSupported(): Boolean = false
+
+actual fun isSystemLanguageSettingsAvailable(): Boolean = true

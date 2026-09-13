@@ -23,5 +23,5 @@ import platform.UIKit.UIApplication
 
 actual fun launchCustomChromeTab(url: String, toolbarColor: Color) {
     val nsUrl = NSURL.URLWithString(url) ?: return
-    UIApplication.sharedApplication.openURL(nsUrl)
+    UIApplication.sharedApplication.openURL(nsUrl, options = emptyMap<Any?, Any?>(), completionHandler = null)
 }

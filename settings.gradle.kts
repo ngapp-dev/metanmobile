@@ -53,7 +53,6 @@ include(":core:model")
 include(":core:network")
 include(":core:network-client")
 include(":core:screenshot-testing")
-include(":core:share")
 include(":core:testing")
 include(":core:ui")
 

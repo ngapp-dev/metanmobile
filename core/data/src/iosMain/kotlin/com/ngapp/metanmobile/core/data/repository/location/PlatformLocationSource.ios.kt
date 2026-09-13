@@ -37,9 +37,18 @@ actual fun isPlatformLocationAvailable(): Boolean = true
 actual class PlatformLocationSource actual constructor() {
     private val manager = CLLocationManager()
 
+    // CLLocationManager.delegate is a *weak* property - an object held only as a local val inside
+    // getCurrentLocation() has no strong Kotlin-side reference once that function suspends, which
+    // let Kotlin/Native's GC collect the exact same kind of delegate mid-flight in
+    // PermissionsManager (confirmed live: its callback fired once at setup, then never again).
+    // This class is a Koin single, so a plain instance property keeps this delegate alive for the
+    // app's whole lifetime regardless of how coroutine suspension happens to interact with GC.
+    private var delegate: CLLocationManagerDelegateProtocol? = null
+
     actual suspend fun getCurrentLocation(): PlatformLocationPoint? =
         suspendCancellableCoroutine { continuation ->
-            val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+            println("PlatformLocationSource: getCurrentLocation() called, authorizationStatus = ${manager.authorizationStatus}")
+            val newDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
                 override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
                     val location = didUpdateLocations.lastOrNull() as? CLLocation
                     val point = location?.coordinate?.useContents {
@@ -49,17 +58,25 @@ actual class PlatformLocationSource actual constructor() {
                             time = (NSDate().timeIntervalSince1970 * 1000).toLong(),
                         )
                     }
+                    println("PlatformLocationSource: didUpdateLocations -> $point")
                     manager.delegate = null
+                    delegate = null
                     if (continuation.isActive) continuation.resume(point)
                 }
 
                 override fun locationManager(manager: CLLocationManager, didFailWithError: NSError) {
+                    println("PlatformLocationSource: didFailWithError -> ${didFailWithError.localizedDescription}")
                     manager.delegate = null
+                    delegate = null
                     if (continuation.isActive) continuation.resume(null)
                 }
             }
-            manager.delegate = delegate
+            delegate = newDelegate
+            manager.delegate = newDelegate
             manager.requestLocation()
-            continuation.invokeOnCancellation { manager.delegate = null }
+            continuation.invokeOnCancellation {
+                manager.delegate = null
+                delegate = null
+            }
         }
 }

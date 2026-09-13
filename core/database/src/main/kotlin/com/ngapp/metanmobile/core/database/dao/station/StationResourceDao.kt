@@ -35,11 +35,15 @@ interface StationResourceDao {
     /**
      * Fetches station resources that match the query parameters
      */
+    // Free-text search isn't done here in SQL on purpose: SQLite's LIKE only case-folds ASCII, so
+    // a Cyrillic query like "ми" would silently fail to match "Минск" (capital М). The repository
+    // applies the search text itself, in Kotlin, with a real Unicode-aware ignoreCase comparison
+    // — this query only keeps the filters that are exact (and therefore SQL-safe) matches.
     @Transaction
     @Query(
         value = """
             SELECT * FROM station_resources
-            WHERE 
+            WHERE
                 (CASE WHEN :useFilterStationCodes
                     THEN code IN (:filterStationCodes)
                     ELSE 1=1
@@ -49,14 +53,9 @@ interface StationResourceDao {
                     THEN type IN (:filterStationTypes)
                     ELSE 1=1
                 END)
-                AND
-                (CASE WHEN :searchQuery != '' 
-                    THEN title LIKE '%' || :searchQuery || '%' 
-                    ELSE 1=1
-                END)
-            ORDER BY 
+            ORDER BY
             CASE
-                WHEN :sortingType = 'STATION_NAME' THEN title 
+                WHEN :sortingType = 'STATION_NAME' THEN title
                 ELSE NULL
             END
             DESC
@@ -68,14 +67,13 @@ interface StationResourceDao {
         useFilterStationTypes: Boolean = false,
         filterStationTypes: Set<String> = emptySet(),
         sortingType: String,
-        searchQuery: String,
     ): Flow<List<StationResourceEntity>>
 
     @Transaction
     @Query(
         value = """
             SELECT * FROM station_resources
-            WHERE 
+            WHERE
                 (CASE WHEN :useFilterStationCodes
                     THEN code IN (:filterStationCodes)
                     ELSE 1=1
@@ -85,14 +83,9 @@ interface StationResourceDao {
                     THEN type IN (:filterStationTypes)
                     ELSE 1=1
                 END)
-                AND
-                (CASE WHEN :searchQuery != '' 
-                    THEN title LIKE '%' || :searchQuery || '%' 
-                    ELSE 1=1
-                END)
-            ORDER BY 
+            ORDER BY
             CASE
-                WHEN :sortingType = 'STATION_NAME' THEN title 
+                WHEN :sortingType = 'STATION_NAME' THEN title
                 ELSE NULL
             END
             ASC
@@ -104,7 +97,6 @@ interface StationResourceDao {
         useFilterStationTypes: Boolean = false,
         filterStationTypes: Set<String> = emptySet(),
         sortingType: String,
-        searchQuery: String,
     ): Flow<List<StationResourceEntity>>
 
     @Query(value = """SELECT * FROM station_resources WHERE code = :code""")

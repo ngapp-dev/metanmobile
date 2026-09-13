@@ -43,8 +43,7 @@ class OfflineFirstStationsRepository(
             useFilterStationTypes = query.filterStationTypes != null,
             filterStationTypes = query.filterStationTypes?.map { it.typeName }?.toSet() ?: emptySet(),
             sortingType = query.sortingType.name,
-            searchQuery = query.searchQuery,
-        ).map { it.map(StationResourceEntity::asExternalModel) }
+        ).map { it.map(StationResourceEntity::asExternalModel).filterBySearchQuery(query.searchQuery) }
 
     override fun getStationResourcesDesc(query: StationResourceQuery): Flow<List<StationResource>> =
         stationResourceDao.getStationResourcesDesc(
@@ -53,12 +52,26 @@ class OfflineFirstStationsRepository(
             useFilterStationTypes = query.filterStationTypes != null,
             filterStationTypes = query.filterStationTypes?.map { it.typeName }?.toSet() ?: emptySet(),
             sortingType = query.sortingType.name,
-            searchQuery = query.searchQuery,
-        ).map { it.map(StationResourceEntity::asExternalModel) }
+        ).map { it.map(StationResourceEntity::asExternalModel).filterBySearchQuery(query.searchQuery) }
 
     override fun getStationResource(stationCode: String) =
         stationResourceDao.getStationResource(stationCode)
             .map(StationResourceEntity::asExternalModel)
+
+    /**
+     * Matches [StationResourceQuery.searchQuery] against title, address and region — not just
+     * title, since that's where a city name (e.g. "Минск") usually actually shows up — using
+     * Kotlin's own `ignoreCase`, which correctly case-folds Cyrillic (unlike the SQL `LIKE` this
+     * used to run through, which only case-folds ASCII).
+     */
+    private fun List<StationResource>.filterBySearchQuery(searchQuery: String): List<StationResource> {
+        if (searchQuery.isBlank()) return this
+        return filter { station ->
+            station.title.contains(searchQuery, ignoreCase = true) ||
+                station.address.contains(searchQuery, ignoreCase = true) ||
+                station.region.contains(searchQuery, ignoreCase = true)
+        }
+    }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(

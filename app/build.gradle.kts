@@ -108,7 +108,6 @@ dependencies {
     implementation(projects.core.ui)
     implementation(projects.core.network)
     implementation(projects.core.networkClient)
-    implementation(projects.core.share)
     implementation(projects.sync.work)
 
     implementation(projects.feature.cabinet)

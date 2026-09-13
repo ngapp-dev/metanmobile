@@ -16,27 +16,41 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
+    alias(libs.plugins.mm.kmp.library)
 }
 
-android {
-    defaultConfig {
-        testInstrumentationRunner = "com.ngapp.metanmobile.core.testing.MetanMobileTestRunner"
+kotlin {
+    sourceSets {
+        // The *what* of a sync (which repositories, fetched in parallel) is shared between
+        // platforms via core:data's DataSyncCoordinator/SyncManager contract; this module only
+        // holds the platform-specific *how* - WorkManager on Android, BGTaskScheduler on iOS.
+        commonMain.dependencies {
+            implementation(projects.core.domain)
+            implementation(projects.core.data)
+            implementation(libs.koin.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.androidx.tracing.ktx)
+            implementation(libs.androidx.work.ktx)
+            implementation(libs.koin.android)
+            implementation(projects.core.analytics)
+        }
+        androidMain {
+            kotlin.srcDir("src/androidMain/kotlin")
+            resources.srcDir("src/androidMain/res")
+        }
+        androidDeviceTest.dependencies {
+            implementation(libs.androidx.work.testing)
+            implementation(libs.kotlinx.coroutines.guava)
+            implementation(projects.core.testing)
+            implementation(libs.junit4)
+        }
     }
-    namespace = "com.ngapp.metanmobile.sync"
 }
 
 dependencies {
-    implementation(libs.androidx.tracing.ktx)
-    implementation(libs.androidx.work.ktx)
-    implementation(libs.koin.android)
-    implementation(projects.core.analytics)
-    implementation(projects.core.data)
-
-    implementation(platform(libs.firebase.bom))
-
-    androidTestImplementation(libs.androidx.work.testing)
-    androidTestImplementation(libs.kotlinx.coroutines.guava)
-    androidTestImplementation(project(mapOf("path" to ":core:testing")))
+    // The `platform()` accessor resolves to the deprecated top-level Kotlin DSL overload (not the
+    // dependency-handler-scoped one) inside the sourceSets.androidMain.dependencies {} block above
+    // - see core:analytics' build.gradle.kts for the same workaround.
+    add("androidMainImplementation", platform(libs.firebase.bom))
 }

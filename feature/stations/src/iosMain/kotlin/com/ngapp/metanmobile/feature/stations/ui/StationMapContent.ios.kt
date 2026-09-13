@@ -1,29 +1,18 @@
 package com.ngapp.metanmobile.feature.stations.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.ngapp.metanmobile.SharedRes
-import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
-import com.ngapp.metanmobile.core.designsystem.theme.Gray400
-import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import com.ngapp.metanmobile.core.model.station.UserStationResource
-import dev.icerock.moko.resources.compose.stringResource
+import com.ngapp.metanmobile.core.ui.util.LocalPermissionsState
 
-/**
- * No MapKit interop wired up yet on iOS — a real map view here would need a `UIKitView` wrapping
- * `MKMapView` with its own camera/marker plumbing (a project of its own, not a Compose-code port
- * like the rest of this screen). Placeholder until that's built.
- */
+private val DEFAULT_CENTER = 53.90309661691656 to 27.55363993274304
+
 @Composable
 actual fun StationMapContent(
     modifier: Modifier,
@@ -32,17 +21,39 @@ actual fun StationMapContent(
     bottomSheetPartiallyExpanded: Boolean,
     onDetailClick: (String) -> Unit,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Icon(imageVector = MMIcons.LocationDisabled, contentDescription = null, tint = Gray400)
-        Text(
-            text = stringResource(SharedRes.strings.feature_stations_text_map_unavailable_ios),
-            style = MMTypography.bodyLarge,
-            color = Gray400,
-            textAlign = TextAlign.Center,
-        )
+    val permissionsState = LocalPermissionsState.current
+    var center by rememberSaveable { mutableStateOf(DEFAULT_CENTER) }
+    // Once-only flag: center on the user the first time a location fix actually arrives, same
+    // "fly to user on load" moment as Android's shouldAnimateCamera — but folded into `center`
+    // itself here (rather than a parallel one-shot camera animation) so a later bottom-sheet
+    // expand/collapse re-centers on the user's location too, not back on the map's hardcoded
+    // fallback coordinates.
+    var hasCenteredOnUser by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(userLocation, permissionsState.hasLocationPermissions) {
+        if (!hasCenteredOnUser && permissionsState.hasLocationPermissions && userLocation != null) {
+            center = userLocation.latitude to userLocation.longitude
+            hasCenteredOnUser = true
+        }
     }
+
+    MapKitView(
+        modifier = modifier,
+        mapItems = stationList,
+        center = center,
+        bottomSheetPartiallyExpanded = bottomSheetPartiallyExpanded,
+        locationPermissionGranted = permissionsState.hasLocationPermissions,
+        onRequirePermissions = { permissionsState.requestPermissions() },
+        onMyLocationClick = {
+            val lat = userLocation?.latitude
+            val long = userLocation?.longitude
+            if (lat != null && long != null) center = lat to long
+        },
+        onDetailClick = { code, latitude, longitude ->
+            onDetailClick(code)
+            val lat = latitude.toDoubleOrNull()
+            val long = longitude.toDoubleOrNull()
+            if (lat != null && long != null) center = lat to long
+        },
+    )
 }

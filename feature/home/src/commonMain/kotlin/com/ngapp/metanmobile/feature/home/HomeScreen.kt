@@ -66,6 +66,7 @@ fun HomeRoute(
 ) {
     val permissionsState = LocalPermissionsState.current
     LaunchedEffect(permissionsState.hasLocationPermissions) {
+        println("HomeScreen: hasLocationPermissions = ${permissionsState.hasLocationPermissions}")
         if (permissionsState.hasLocationPermissions) {
             viewModel.triggerAction(HomeAction.UpdateLocation(true))
         }

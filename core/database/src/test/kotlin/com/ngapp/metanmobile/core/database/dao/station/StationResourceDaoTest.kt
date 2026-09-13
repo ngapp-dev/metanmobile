@@ -66,7 +66,7 @@ class StationResourceDaoTest {
     fun `getStationResourcesAsc sorts by title ascending`() = runTest {
         dao.upsertStationResources(listOf(station(code = "b", title = "Beta"), station(code = "a", title = "Alpha")))
 
-        val result = dao.getStationResourcesAsc(sortingType = "STATION_NAME", searchQuery = "").first()
+        val result = dao.getStationResourcesAsc(sortingType = "STATION_NAME").first()
 
         assertEquals(listOf("Alpha", "Beta"), result.map { it.title })
     }
@@ -75,7 +75,7 @@ class StationResourceDaoTest {
     fun `getStationResourcesDesc sorts by title descending`() = runTest {
         dao.upsertStationResources(listOf(station(code = "a", title = "Alpha"), station(code = "b", title = "Beta")))
 
-        val result = dao.getStationResourcesDesc(sortingType = "STATION_NAME", searchQuery = "").first()
+        val result = dao.getStationResourcesDesc(sortingType = "STATION_NAME").first()
 
         assertEquals(listOf("Beta", "Alpha"), result.map { it.title })
     }

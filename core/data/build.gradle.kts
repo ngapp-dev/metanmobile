@@ -27,7 +27,6 @@ kotlin {
             kotlin.exclude("com/ngapp/metanmobile/core/data/di/LocationKoinModule.kt")
             kotlin.exclude("com/ngapp/metanmobile/core/data/util/ConnectivityManagerNetworkMonitor.kt")
             kotlin.exclude("com/ngapp/metanmobile/core/data/repository/location/PlatformLocationSource.android.kt")
-            kotlin.exclude("com/ngapp/metanmobile/core/data/util/GoogleServicesAvailabilityChecker.kt")
             kotlin.exclude("com/ngapp/metanmobile/core/data/util/TimeZoneMonitor.kt")
             dependencies {
                 api(projects.core.common)
@@ -44,7 +43,6 @@ kotlin {
             kotlin.include("com/ngapp/metanmobile/core/data/di/LocationKoinModule.kt")
             kotlin.include("com/ngapp/metanmobile/core/data/util/ConnectivityManagerNetworkMonitor.kt")
             kotlin.include("com/ngapp/metanmobile/core/data/repository/location/PlatformLocationSource.android.kt")
-            kotlin.include("com/ngapp/metanmobile/core/data/util/GoogleServicesAvailabilityChecker.kt")
             kotlin.include("com/ngapp/metanmobile/core/data/util/TimeZoneMonitor.kt")
             dependencies {
                 implementation(libs.koin.android)

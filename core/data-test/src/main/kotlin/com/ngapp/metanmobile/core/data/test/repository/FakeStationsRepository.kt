@@ -77,7 +77,11 @@ internal class FakeStationsRepository constructor(
         return this
             .filter { station ->
                 (query.filterStationCodes?.contains(station.code) ?: true) &&
-                        (station.title.contains(query.searchQuery, ignoreCase = true))
+                        (
+                            station.title.contains(query.searchQuery, ignoreCase = true) ||
+                                station.address.contains(query.searchQuery, ignoreCase = true) ||
+                                station.region.contains(query.searchQuery, ignoreCase = true)
+                            )
             }
     }
 

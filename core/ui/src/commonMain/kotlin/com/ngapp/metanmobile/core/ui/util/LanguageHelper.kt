@@ -18,3 +18,14 @@ expect class LanguageHelper() {
 }
 
 expect fun isPerAppLanguageConfigSupported(): Boolean
+
+/**
+ * Whether the language row should instead open the OS's own per-app language screen (via
+ * [openAppSettings]) rather than staying hidden — true only on iOS 13+, where Apple gives apps no
+ * in-app language-override API, but does let the user pick a language for this specific app from
+ * Settings once the app declares `CFBundleLocalizations` (which it now does). `false` everywhere
+ * [isPerAppLanguageConfigSupported] is also false for another reason (pre-13 Android has no
+ * per-app language screen to send the user to either), so the row simply stays hidden there,
+ * unchanged from before.
+ */
+expect fun isSystemLanguageSettingsAvailable(): Boolean

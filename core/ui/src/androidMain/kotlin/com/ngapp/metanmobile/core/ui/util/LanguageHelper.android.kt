@@ -32,3 +32,7 @@ actual class LanguageHelper actual constructor() {
 }
 
 actual fun isPerAppLanguageConfigSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+// Android always has the in-app dialog when it has per-app language support at all (see above) -
+// there's no separate "no in-app UI, but Settings works" state here like there is on iOS.
+actual fun isSystemLanguageSettingsAvailable(): Boolean = false

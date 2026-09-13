@@ -48,6 +48,10 @@ class OfflineFirstLocationsRepository(
     }
 
     override suspend fun updateLocation(locationPermissionGranted: Boolean) {
+        println(
+            "OfflineFirstLocationsRepository: updateLocation(locationPermissionGranted=" +
+                "$locationPermissionGranted), isPlatformLocationAvailable=${isPlatformLocationAvailable()}",
+        )
         if (locationPermissionGranted && isPlatformLocationAvailable()) {
             fetchAndStoreLocationWithRetry()
         }
@@ -62,6 +66,7 @@ class OfflineFirstLocationsRepository(
     private suspend fun fetchAndStoreLocationWithRetry() {
         for (attempt in 1..MAX_LOCATION_FETCH_ATTEMPTS) {
             val location = withContext(ioDispatcher) { locationSource.getCurrentLocation() }
+            println("OfflineFirstLocationsRepository: fetch attempt $attempt/$MAX_LOCATION_FETCH_ATTEMPTS -> $location")
             if (location != null) {
                 locationResourceDao.upsertLocationResources(
                     LocationResourceEntity(
