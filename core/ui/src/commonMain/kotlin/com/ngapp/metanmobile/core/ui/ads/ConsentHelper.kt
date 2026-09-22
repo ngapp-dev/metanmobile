@@ -19,8 +19,9 @@ package com.ngapp.metanmobile.core.ui.ads
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Wraps the platform ad-consent flow (Google's UMP SDK on Android; a no-op on iOS, where this
- * app currently shows no ads). [canShowAds] gates [MainBannerAd].
+ * Wraps the platform ad-consent flow (Google's UMP SDK on both platforms - on iOS via a Swift-side
+ * bridge, see core:ui's iosMain NativeAdsBridge.kt, since the SDK is only linked through the Xcode
+ * project's own SPM dependencies). [canShowAds] gates [MainBannerAd].
  */
 expect class ConsentHelper() {
     val canShowAds: StateFlow<Boolean>

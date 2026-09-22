@@ -22,5 +22,5 @@ import org.koin.dsl.module
 
 /** Shared on both platforms — registered alongside every other `core:data` module. */
 val syncDataModule = module {
-    single { DataSyncCoordinator(get(), get(), get(), get(), get(), get(), get()) }
+    single { DataSyncCoordinator(get(), get(), get(), get(), get(), get()) }
 }

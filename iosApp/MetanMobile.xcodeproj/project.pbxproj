@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9BA5DD23C6DEE96577A08F3C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = EB4A5C817817A5D0F58389B6 /* Lottie */; };
+		49CD5C84EB9425A9FEEE64AB /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */; };
+		60A1B8F8958CE4CF8F2CCBBE /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9E297E26986DF1807E8564 /* GoogleMobileAds */; };
+		F4B7081A9D3C617E2B5A4E90 /* YandexMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = F4B7081B9D3C617E2B5A4E90 /* YandexMobileAds */; };
+		72B72A1852479A8B9A20444B /* MobileAdsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2552AAA736136ED28D7BF3 /* MobileAdsBridge.swift */; };
 		A10000010000000000000001 /* MetanMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000110000000000000011 /* MetanMobileApp.swift */; };
 		A10000020000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000012 /* ContentView.swift */; };
 		A10000030000000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000130000000000000013 /* Assets.xcassets */; };
@@ -19,6 +22,7 @@
 		A10000120000000000000012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A10000130000000000000013 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000140000000000000014 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF2552AAA736136ED28D7BF3 /* MobileAdsBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MobileAdsBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,7 +30,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BA5DD23C6DEE96577A08F3C /* Lottie in Frameworks */,
+				60A1B8F8958CE4CF8F2CCBBE /* GoogleMobileAds in Frameworks */,
+				49CD5C84EB9425A9FEEE64AB /* GoogleUserMessagingPlatform in Frameworks */,
+				F4B7081A9D3C617E2B5A4E90 /* YandexMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +54,7 @@
 				A10000120000000000000012 /* ContentView.swift */,
 				A10000130000000000000013 /* Assets.xcassets */,
 				A10000140000000000000014 /* Info.plist */,
+				EF2552AAA736136ED28D7BF3 /* MobileAdsBridge.swift */,
 			);
 			path = MetanMobileApp;
 			sourceTree = "<group>";
@@ -71,6 +78,7 @@
 				A10000500000000000000050 /* Sources */,
 				A10000200000000000000020 /* Frameworks */,
 				A10000600000000000000060 /* Resources */,
+				1013E7AC8C0E9E6A068E770F /* Inject Ads Secrets */,
 			);
 			buildRules = (
 			);
@@ -78,7 +86,9 @@
 			);
 			name = MetanMobile;
 			packageProductDependencies = (
-				EB4A5C817817A5D0F58389B6 /* Lottie */,
+				6F9E297E26986DF1807E8564 /* GoogleMobileAds */,
+				EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */,
+				F4B7081B9D3C617E2B5A4E90 /* YandexMobileAds */,
 			);
 			productName = MetanMobile;
 			productReference = A10000100000000000000010 /* MetanMobile.app */;
@@ -107,7 +117,9 @@
 			);
 			mainGroup = A10000300000000000000030;
 			packageReferences = (
-				2993A6A1C5266792D89058D3 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				30654CF30238879FD0E5C311 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				A0E339719C9E2725DB625895 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
+				F4B7081C9D3C617E2B5A4E90 /* XCRemoteSwiftPackageReference "yandex-ads-sdk-ios" */,
 			);
 			productRefGroup = A10000320000000000000032 /* Products */;
 			projectDirPath = "";
@@ -130,6 +142,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1013E7AC8C0E9E6A068E770F /* Inject Ads Secrets */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Inject Ads Secrets";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Patches the just-built Info.plist with the real ad IDs from secrets.properties (gitignored,\n# local-only - see app/build.gradle.kts for the exact same pattern on the Android side). Runs\n# after Info.plist processing so $INFOPLIST_PATH already exists in the build output; safe to be\n# a no-op (falls back to the checked-in Google test IDs already in Info.plist) if\n# secrets.properties is missing, e.g. on a fresh checkout.\nSECRETS_FILE=\"$SRCROOT/../secrets.properties\"\nINFOPLIST=\"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n\nif [ -f \"$SECRETS_FILE\" ] && [ -f \"$INFOPLIST\" ]; then\n  ADS_ID_KEY=$(grep -E \"^ADS_ID_KEY=\" \"$SECRETS_FILE\" | head -1 | cut -d\"=\" -f2-)\n  MAIN_BANNER_AD_ID_KEY=$(grep -E \"^MAIN_BANNER_AD_ID_KEY=\" \"$SECRETS_FILE\" | head -1 | cut -d\"=\" -f2-)\n  YANDEX_RU_BANNER_AD_ID_KEY=$(grep -E \"^YANDEX_RU_BANNER_AD_ID_KEY=\" \"$SECRETS_FILE\" | head -1 | cut -d\"=\" -f2-)\n\n  if [ -n \"$ADS_ID_KEY\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :GADApplicationIdentifier $ADS_ID_KEY\" \"$INFOPLIST\" || true\n  fi\n  if [ -n \"$MAIN_BANNER_AD_ID_KEY\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :MMMainBannerAdUnitID $MAIN_BANNER_AD_ID_KEY\" \"$INFOPLIST\" || true\n  fi\n  if [ \"$CONFIGURATION\" = \"Release\" ] && [ -n \"$YANDEX_RU_BANNER_AD_ID_KEY\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :MMYandexRuBannerAdUnitID $YANDEX_RU_BANNER_AD_ID_KEY\" \"$INFOPLIST\" || true\n  fi\nfi\n";
+		};
 		A10000700000000000000070 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,6 +183,7 @@
 			files = (
 				A10000010000000000000001 /* MetanMobileApp.swift in Sources */,
 				A10000020000000000000002 /* ContentView.swift in Sources */,
+				72B72A1852479A8B9A20444B /* MobileAdsBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +200,8 @@
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MetanMobileApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Metan Mobile - CNG Companion";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -178,6 +211,7 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					MetanMobileComposeApp,
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ngapp.metanmobile.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -198,6 +232,8 @@
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MetanMobileApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Metan Mobile - CNG Companion";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -206,6 +242,7 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					MetanMobileComposeApp,
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ngapp.metanmobile.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -262,21 +299,47 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2993A6A1C5266792D89058D3 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+		30654CF30238879FD0E5C311 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.4.3;
+				minimumVersion = 13.0.0;
+			};
+		};
+		A0E339719C9E2725DB625895 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		F4B7081C9D3C617E2B5A4E90 /* XCRemoteSwiftPackageReference "yandex-ads-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yandexmobile/yandex-ads-sdk-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EB4A5C817817A5D0F58389B6 /* Lottie */ = {
+		6F9E297E26986DF1807E8564 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2993A6A1C5266792D89058D3 /* XCRemoteSwiftPackageReference "lottie-spm" */;
-			productName = Lottie;
+			package = 30654CF30238879FD0E5C311 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A0E339719C9E2725DB625895 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			productName = GoogleUserMessagingPlatform;
+		};
+		F4B7081B9D3C617E2B5A4E90 /* YandexMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F4B7081C9D3C617E2B5A4E90 /* XCRemoteSwiftPackageReference "yandex-ads-sdk-ios" */;
+			productName = YandexMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

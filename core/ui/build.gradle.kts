@@ -1,7 +1,37 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.mm.kmp.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose)
+}
+
+// Reads the real banner ad unit id from the gitignored secrets.properties at the repo root (same
+// file :app already reads for MAPS_API_KEY/ADS_ID_KEY) and generates a tiny Kotlin constant from
+// it. MainBannerAd.android.kt used to hardcode Google's test unit id directly instead - the KMP
+// android library target has no BuildConfig-field mechanism to lean on here (see core:ui's own
+// R-class limitation for the same story with resources), so this is the equivalent for a plain
+// constant. Falls back to that same Google test id if secrets.properties or the key is missing
+// (mirrors app/build.gradle.kts's own getProperty(..., "") fallback), so a fresh checkout without
+// secrets.properties still builds and shows real test ads instead of failing.
+val generateAdsSecrets = tasks.register("generateAdsSecrets") {
+    val secretsFile = rootProject.file("secrets.properties")
+    val outputDir = layout.buildDirectory.dir("generated/adsSecrets/kotlin")
+    inputs.file(secretsFile).optional(true)
+    outputs.dir(outputDir)
+    doLast {
+        val props = Properties()
+        if (secretsFile.exists()) secretsFile.inputStream().use(props::load)
+        val adUnitId = props.getProperty("MAIN_BANNER_AD_ID_KEY", "ca-app-pub-3940256099942544/6300978111")
+        val yandexAdUnitId = props.getProperty("YANDEX_RU_BANNER_AD_ID_KEY", "demo-banner-yandex")
+        val outFile = outputDir.get().file("com/ngapp/metanmobile/core/ui/ads/AdsSecrets.kt").asFile
+        outFile.parentFile.mkdirs()
+        outFile.writeText(
+            "package com.ngapp.metanmobile.core.ui.ads\n\n" +
+                "internal const val MAIN_BANNER_AD_UNIT_ID = \"$adUnitId\"\n" +
+                "internal const val YANDEX_RU_BANNER_AD_UNIT_ID = \"$yandexAdUnitId\"\n"
+        )
+    }
 }
 
 kotlin {
@@ -31,12 +61,14 @@ kotlin {
             implementation(libs.androidx.appcompat)
             implementation(libs.google.services.ads)
             implementation(libs.google.services.base)
+            implementation(libs.yandex.mobile.ads)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.browser)
             implementation(libs.google.oss.licenses)
         }
         androidMain {
             kotlin.srcDir("src/androidMain/kotlin")
+            kotlin.srcDir(generateAdsSecrets)
             resources.srcDir("src/androidMain/res")
         }
         // See core:designsystem's androidDeviceTest block for why this is pinned to an explicit

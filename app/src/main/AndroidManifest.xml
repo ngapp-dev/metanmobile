@@ -67,6 +67,11 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${ADS_ID_KEY}" />
 
+        <!-- Keep Yandex manual initialization scoped to the RU banner branch. -->
+        <meta-data
+            android:name="com.yandex.mobile.ads.AUTOMATIC_SDK_INITIALIZATION"
+            android:value="false" />
+
         <activity
             android:name="com.ngapp.metanmobile.MainActivity"
             android:configChanges="uiMode"

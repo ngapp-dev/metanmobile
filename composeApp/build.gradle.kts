@@ -18,6 +18,10 @@ kotlin {
             // re-export :resources so its compiled resource bundle actually ships inside
             // MetanMobileComposeApp.framework instead of staying an internal-only dependency.
             export(projects.resources)
+            // core:ui's NativeAdsBridge interface (and registerNativeAdsBridge()) needs to reach
+            // the framework's generated Objective-C header so MobileAdsBridge.swift can actually
+            // implement it - same "export needs an api dependency" requirement as above.
+            export(projects.core.ui)
         }
     }
 
@@ -42,7 +46,7 @@ kotlin {
             implementation(projects.core.datastore)
             implementation(projects.core.analytics)
             implementation(projects.core.designsystem)
-            implementation(projects.core.ui)
+            api(projects.core.ui)
             // api, not implementation: binaries.framework { export(projects.resources) } above
             // requires the exported dependency to also be an API dependency of this source set.
             api(projects.resources)

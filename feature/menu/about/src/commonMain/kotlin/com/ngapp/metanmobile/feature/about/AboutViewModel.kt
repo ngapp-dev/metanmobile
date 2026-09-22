@@ -19,6 +19,7 @@ package com.ngapp.metanmobile.feature.about
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository
 import com.ngapp.metanmobile.core.data.util.SyncManager
 import com.ngapp.metanmobile.feature.about.state.AboutUiState
@@ -28,11 +29,26 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+/**
+ * Not part of [com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator] — see the note on that
+ * class for why. This screen is the only reader of [GithubUserRepository], so it syncs it itself
+ * on open instead; [Synchronizer] is a stateless marker interface (`sync()` just forwards to
+ * `syncWith(this)`), so a throwaway instance is all `updateSingleDataSync` needs.
+ */
+private object AboutScreenSynchronizer : Synchronizer
 
 class AboutViewModel(
-    githubUserRepository: GithubUserRepository,
+    private val githubUserRepository: GithubUserRepository,
     syncManager: SyncManager,
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            with(AboutScreenSynchronizer) { githubUserRepository.sync() }
+        }
+    }
 
     val uiState: StateFlow<AboutUiState> = githubUserRepository.getGithubUser()
         .map(::Success)

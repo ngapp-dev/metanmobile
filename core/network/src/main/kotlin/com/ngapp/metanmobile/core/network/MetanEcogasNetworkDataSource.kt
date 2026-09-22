@@ -29,11 +29,9 @@ import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
  */
 interface MetanEcogasNetworkDataSource {
     suspend fun getStations(): List<NetworkStationResource>
-    suspend fun getStation(stationCode: String): NetworkStationResource?
     suspend fun getFuelPrices(): List<NetworkPriceResource>
     suspend fun getFaqList(): List<NetworkFaqResource>
     suspend fun getContacts(): List<NetworkContactResource>
     suspend fun getNewsList(): List<NetworkNewsResource>
-    suspend fun getNews(newsId: String): NetworkNewsResource?
     suspend fun getCareerList(): List<NetworkCareerResource>
 }

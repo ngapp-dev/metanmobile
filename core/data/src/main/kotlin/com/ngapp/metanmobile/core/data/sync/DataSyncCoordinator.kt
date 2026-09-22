@@ -21,7 +21,6 @@ import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.repository.career.CareersRepository
 import com.ngapp.metanmobile.core.data.repository.contact.ContactsRepository
 import com.ngapp.metanmobile.core.data.repository.faq.FaqRepository
-import com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository
 import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
 import com.ngapp.metanmobile.core.data.repository.station.StationsRepository
@@ -30,12 +29,19 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
 /**
- * What a sync actually *does* — fetch the same 7 repositories in parallel that master's
+ * What a sync actually *does* — fetch the same repositories in parallel that master's
  * (Android-only, Hilt) `SyncWorker.doWork()` always synced. Pulled out of `sync:work` so it's not
  * duplicated: Android's [com.ngapp.metanmobile.sync.workers.SyncWorker] now just delegates to this
  * inside a `CoroutineWorker` (keeping WorkManager's constraints/retry/notification, which is the
  * platform-specific *mechanism*), and iOS's `IosSyncManager` drives the exact same coordinator
  * from a plain coroutine (its own, different mechanism — no WorkManager equivalent on iOS).
+ *
+ * [GithubUserRepository][com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository]
+ * is deliberately NOT part of this coordinator: it's only ever read by the About screen, and
+ * unauthenticated GitHub API calls are rate-limited per-IP (60/hour) — mobile carriers commonly
+ * NAT many subscribers behind one IP, so this call alone was flipping the whole [sync] result to
+ * `false` and sending `SyncWorker` into retry even though every real feed had synced fine. It's
+ * synced on demand from `AboutViewModel` instead, only when that screen is actually opened.
  */
 class DataSyncCoordinator(
     private val newsRepository: NewsRepository,
@@ -44,7 +50,6 @@ class DataSyncCoordinator(
     private val faqRepository: FaqRepository,
     private val careersRepository: CareersRepository,
     private val pricesRepository: PricesRepository,
-    private val githubUserRepository: GithubUserRepository,
 ) : Synchronizer {
     suspend fun sync(): Boolean = coroutineScope {
         awaitAll(
@@ -54,7 +59,6 @@ class DataSyncCoordinator(
             async { faqRepository.sync() },
             async { careersRepository.sync() },
             async { pricesRepository.sync() },
-            async { githubUserRepository.sync() },
         ).all { it }
     }
 }

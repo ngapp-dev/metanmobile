@@ -78,11 +78,14 @@ class OfflineFirstStationsRepository(
             dataFetcher = { network.getStations() },
             dataWriter = { networkStationList ->
                 val newData = networkStationList.map(NetworkStationResource::asEntity)
-                val newIds = newData.map { it.code }.toSet()
                 val existingIds = stationResourceDao.getAllStationIds().toSet()
-                val idsToDelete = existingIds - newIds
-                stationResourceDao.deleteStationResources(idsToDelete)
-                stationResourceDao.upsertStationResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.code }.toSet()
+                    stationResourceDao.deleteStationResources(idsToDelete)
+                    stationResourceDao.upsertStationResources(newData)
+                }
             }
         )
     }

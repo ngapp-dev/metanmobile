@@ -63,7 +63,11 @@ internal class FakeNewsRepository constructor(
     }.flowOn(ioDispatcher)
 
     override fun getNewsResource(newsId: String): Flow<NewsResource> = flow {
-        val newsResource = parser.getNews(newsId)
+        // No per-item network endpoint exists (nor does production use one — the real repository
+        // reads details from Room, already populated from the same list call). Find within the
+        // full list instead, same as the worker's own /api/news/:id does internally.
+        val newsResource = parser.getNewsList()
+            .find { it.id == newsId }
             ?.asEntity()
             ?.asExternalModel()
         emit(newsResource ?: NewsResource.init())

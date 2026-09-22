@@ -8,6 +8,8 @@ import com.ngapp.metanmobile.core.data.di.syncDataModule
 import com.ngapp.metanmobile.core.data.di.userDataModule
 import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
 import com.ngapp.metanmobile.core.domain.sync.SyncManager
+import com.ngapp.metanmobile.core.ui.ads.NativeAdsBridge
+import com.ngapp.metanmobile.core.ui.ads.registerNativeAdsBridge
 import com.ngapp.metanmobile.sync.di.iosSyncModule
 import com.ngapp.metanmobile.sync.schedulers.registerBackgroundSync
 import com.ngapp.metanmobile.core.datastore.di.userPreferencesDataStoreModule
@@ -34,8 +36,15 @@ import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-/** Initializes the shared graph before the SwiftUI host creates Compose content. */
-fun initSharedKoin() {
+/**
+ * Initializes the shared graph before the SwiftUI host creates Compose content.
+ *
+ * @param nativeAdsBridge Swift's real GoogleMobileAds/UserMessagingPlatform implementation
+ *   (MobileAdsBridge.swift) - see core:ui's NativeAdsBridge.kt for why this can't just be
+ *   resolved through Koin like everything else here.
+ */
+fun initSharedKoin(nativeAdsBridge: NativeAdsBridge) {
+    registerNativeAdsBridge(nativeAdsBridge)
     configureImageLoader()
     val koinApp = startKoin {
         modules(

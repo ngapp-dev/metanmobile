@@ -4,7 +4,7 @@ import MetanMobileComposeApp
 @main
 struct MetanMobileApp: App {
     init() {
-        SharedKoinKt.doInitSharedKoin()
+        SharedKoinKt.doInitSharedKoin(nativeAdsBridge: MobileAdsBridge())
     }
 
     var body: some Scene {

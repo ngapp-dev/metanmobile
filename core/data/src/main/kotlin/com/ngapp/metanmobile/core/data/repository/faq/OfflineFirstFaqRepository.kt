@@ -41,11 +41,14 @@ class OfflineFirstFaqRepository(
             dataFetcher = { network.getFaqList() },
             dataWriter = { networkFaqList ->
                 val newData = networkFaqList.map(NetworkFaqResource::asEntity)
-                val newIds = newData.map { it.id }.toSet()
                 val existingIds = faqResourceDao.getAllFaqIds().toSet()
-                val idsToDelete = existingIds - newIds
-                faqResourceDao.deleteFaqResources(idsToDelete)
-                faqResourceDao.upsertFaqResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.id }.toSet()
+                    faqResourceDao.deleteFaqResources(idsToDelete)
+                    faqResourceDao.upsertFaqResources(newData)
+                }
             }
         )
     }

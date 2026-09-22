@@ -30,7 +30,9 @@ object Sync {
             // Run sync on app startup and ensure only one sync worker runs at any time
             enqueueUniqueWork(
                 SYNC_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
+                // KEEP, not REPLACE: REPLACE cancels an in-flight sync and restarts it, so a
+                // quick process restart could keep resetting sync before it ever finishes.
+                ExistingWorkPolicy.KEEP,
                 SyncWorker.startUpSyncWork(),
             )
         }

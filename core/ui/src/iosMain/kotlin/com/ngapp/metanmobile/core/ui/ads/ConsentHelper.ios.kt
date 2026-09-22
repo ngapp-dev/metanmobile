@@ -20,15 +20,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-// This app shows no ads on iOS yet; kept as a real no-op implementation (not a stub) so
-// call sites don't need to special-case the platform.
+// Every method here just forwards to whatever Swift registered via registerNativeAdsBridge() -
+// see NativeAdsBridge.kt for why the real SDK calls have to live on the Swift side. If nothing
+// has been registered yet (shouldn't happen in practice - MetanMobileApp.swift registers it
+// before Compose ever mounts), every call is a safe no-op and canShowAds just stays false.
 actual class ConsentHelper actual constructor() {
     private val _canShowAds = MutableStateFlow(false)
     actual val canShowAds: StateFlow<Boolean> = _canShowAds.asStateFlow()
+    private val bridge get() = NativeAdsRegistry.bridge
 
-    actual fun initializeMobileAdsSdk() = Unit
-    actual fun isPrivacyOptionsRequired(): Boolean = false
-    actual fun updateConsent() = Unit
-    actual fun obtainConsentAndShow() = Unit
-    actual fun revokeConsent() = Unit
+    actual fun initializeMobileAdsSdk() {
+        bridge?.initializeMobileAdsSdk()
+    }
+
+    actual fun isPrivacyOptionsRequired(): Boolean = bridge?.isPrivacyOptionsRequired() ?: false
+
+    actual fun updateConsent() {
+        bridge?.updateConsent { canShow -> _canShowAds.value = canShow }
+    }
+
+    actual fun obtainConsentAndShow() {
+        bridge?.obtainConsentAndShow { canShow -> _canShowAds.value = canShow }
+    }
+
+    actual fun revokeConsent() {
+        bridge?.revokeConsent()
+        _canShowAds.value = false
+    }
 }

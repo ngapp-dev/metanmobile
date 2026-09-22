@@ -30,6 +30,11 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+val adsSecretsProperties = Properties().apply {
+    rootProject.file("secrets.properties").takeIf { it.exists() }
+        ?.inputStream()?.use(::load)
+}
+
 android {
     // Network endpoints are supplied by the Secrets Gradle plugin and consumed when
     // the shared Ktor client is registered in the Android application graph.
@@ -54,16 +59,12 @@ android {
         // provider to receive it, so mergeDebugUnitTestManifest fails to resolve
         // ${MAPS_API_KEY}/${ADS_ID_KEY}. Mirroring the two placeholders the manifest actually
         // uses into this classic map (which that merge does read) fixes it for unit tests too.
-        val secretsProperties = Properties().apply {
-            rootProject.file("secrets.properties").takeIf { it.exists() }
-                ?.inputStream()?.use(::load)
-        }
-        manifestPlaceholders["MAPS_API_KEY"] = secretsProperties.getProperty("MAPS_API_KEY", "")
-        manifestPlaceholders["ADS_ID_KEY"] = secretsProperties.getProperty("ADS_ID_KEY", "")
+        manifestPlaceholders["MAPS_API_KEY"] = adsSecretsProperties.getProperty("MAPS_API_KEY", "")
+        manifestPlaceholders["ADS_ID_KEY"] = adsSecretsProperties.getProperty("ADS_ID_KEY", "")
     }
 
     buildTypes {
-    debug {
+        debug {
             applicationIdSuffix = MMBuildType.DEBUG.applicationIdSuffix
         }
         release {

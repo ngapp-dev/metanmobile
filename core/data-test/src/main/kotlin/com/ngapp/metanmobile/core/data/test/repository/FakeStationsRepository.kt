@@ -65,7 +65,11 @@ internal class FakeStationsRepository constructor(
         }.flowOn(ioDispatcher)
 
     override fun getStationResource(stationCode: String): Flow<StationResource> = flow {
-        val stationResource = parser.getStation(stationCode)
+        // No per-item network endpoint exists (nor does production use one — the real repository
+        // reads details from Room, already populated from the same list call). Find within the
+        // full list instead, same as the worker's own /api/stations/:code does internally.
+        val stationResource = parser.getStations()
+            .find { it.code == stationCode }
             ?.asEntity()
             ?.asExternalModel()
         emit(stationResource ?: StationResource.init())

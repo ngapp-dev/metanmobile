@@ -62,11 +62,14 @@ class OfflineFirstNewsRepository(
             dataFetcher = { network.getNewsList() },
             dataWriter = { networkNewsList ->
                 val newData = networkNewsList.map(NetworkNewsResource::asEntity)
-                val newIds = newData.map { it.id }.toSet()
                 val existingIds = newsResourceDao.getAllNewsIds().toSet()
-                val idsToDelete = existingIds - newIds
-                newsResourceDao.deleteNewsResources(idsToDelete)
-                newsResourceDao.upsertNewsResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.id }.toSet()
+                    newsResourceDao.deleteNewsResources(idsToDelete)
+                    newsResourceDao.upsertNewsResources(newData)
+                }
             }
         )
     }

@@ -42,11 +42,14 @@ class OfflineFirstCareersRepository(
             dataFetcher = { network.getCareerList() },
             dataWriter = { networkCareerList ->
                 val newData = networkCareerList.map(NetworkCareerResource::asEntity)
-                val newIds = newData.map { it.id }.toSet()
                 val existingIds = careerResourceDao.getAllCareerIds().toSet()
-                val idsToDelete = existingIds - newIds
-                careerResourceDao.deleteCareerResources(idsToDelete.toList())
-                careerResourceDao.upsertCareerResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.id }.toSet()
+                    careerResourceDao.deleteCareerResources(idsToDelete.toList())
+                    careerResourceDao.upsertCareerResources(newData)
+                }
             }
         )
     }

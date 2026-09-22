@@ -48,6 +48,7 @@ googleServicesBase = "18.10.0"
 gmsPlugin = "4.4.4"
 googleOss = "17.1.0"
 googleOssPlugin = "0.12.0"
+yandexMobileAds = "8.5.0"
 googlePlayAppUpdate = "2.1.0"
 googlePlayReview = "2.0.2"
 googlePlayIntegrity = "1.4.0"
@@ -134,6 +135,7 @@ firebase-performance = { group = "com.google.firebase", name = "firebase-perf-kt
 google-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "googleAdmob" }
 google-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "googleServicesBase" }
 google-oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "googleOss" }
+yandex-mobile-ads = { module = "com.yandex.android:mobileads", version.ref = "yandexMobileAds" }
 google-play-app-update = { module = "com.google.android.play:app-update", version.ref = "googlePlayAppUpdate" }
 google-play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "googlePlayAppUpdate" }
 google-play-app-review = { module = "com.google.android.play:review", version.ref = "googlePlayReview" }

@@ -92,6 +92,15 @@ fun MetanMobileNavHost(
 
     val consentHelper = koinInject<ConsentHelper>()
     val canShowAds by consentHelper.canShowAds.collectAsStateWithLifecycle()
+    // canShowAds only ever flips to true from inside obtainConsentAndShow() (it requests the UMP
+    // consent info update, shows the consent form if required, and only then initializes the Mobile
+    // Ads SDK) - nothing was calling it, so the banner below was permanently gated off regardless
+    // of ad unit id. LaunchedEffect(Unit) fires this exactly once for as long as this composable
+    // stays in the composition, which is what we want - obtainConsentAndShow() itself isn't
+    // written to be safe to invoke concurrently.
+    LaunchedEffect(Unit) {
+        consentHelper.obtainConsentAndShow()
+    }
 
     MetanMobileBackground {
         MetanMobileGradientBackground(gradientColors = LocalGradientColors.current) {
