@@ -23,6 +23,7 @@ import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
+import com.ngapp.metanmobile.core.network.model.sync.NetworkSyncResponse
 
 /**
  * Interface representing network calls to the Metan Ecogas Api backend
@@ -34,4 +35,7 @@ interface MetanEcogasNetworkDataSource {
     suspend fun getContacts(): List<NetworkContactResource>
     suspend fun getNewsList(): List<NetworkNewsResource>
     suspend fun getCareerList(): List<NetworkCareerResource>
+
+    /** `GET /api/sync?since=<version>` — one call, delta for all feeds. `since = 0` for a full pull. */
+    suspend fun getSync(since: Long): NetworkSyncResponse
 }

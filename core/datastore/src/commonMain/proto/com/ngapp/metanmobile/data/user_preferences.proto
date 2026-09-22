@@ -22,4 +22,9 @@ message UserPreferences {
   bool is_review_shown = 13;
   repeated string home_reorderable = 14;
   bool is_home_last_news_expanded = 15;
+
+  // Последняя версия, полученная от GET /api/sync?since= (см. спеку синхронизации,
+  // Этап 2). 0 значит "ещё ни разу не синкались через этот эндпоинт" — сервер тогда
+  // отдаёт полный список, как и старые /api/news и т.п.
+  int64 sync_version = 16;
 }

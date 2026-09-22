@@ -9,6 +9,7 @@ import com.ngapp.metanmobile.core.network.model.faq.NetworkFaqResource
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
+import com.ngapp.metanmobile.core.network.model.sync.NetworkSyncResponse
 
 internal class KtorMetanEcogasNetwork(
     private val client: MetanEcogasHttpClient,
@@ -19,6 +20,7 @@ internal class KtorMetanEcogasNetwork(
     override suspend fun getContacts() = client.get<CloudflareResponse<List<NetworkContactResource>>>("api/contacts").items()
     override suspend fun getNewsList() = client.get<CloudflareResponse<List<NetworkNewsResource>>>("api/news").items()
     override suspend fun getCareerList() = client.get<CloudflareResponse<List<NetworkCareerResource>>>("api/career").items()
+    override suspend fun getSync(since: Long) = client.get<NetworkSyncResponse>("api/sync?since=$since")
 }
 
 private fun <T> CloudflareResponse<List<T>>.items(): List<T> {

@@ -9,6 +9,7 @@ import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.StationSortingConfig
 import com.ngapp.metanmobile.core.model.userdata.UserData
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class MetanMobilePreferencesDataSource(
@@ -96,6 +97,18 @@ class MetanMobilePreferencesDataSource(
     suspend fun setHomeExpandedLastNews(isExpanded: Boolean) {
         userPreferences.updateData {
             it.copy(is_home_last_news_expanded = isExpanded)
+        }
+    }
+
+    // Не часть [userData] нарочно: эта версия меняется на каждом успешном фоновом
+    // синке (минимум раз в 15 минут, см. спеку синхронизации), а [userData] — общий
+    // Flow, на который подписан почти весь UI. Если завести sync_version туда,
+    // каждый синк переэмитил бы его и лишний раз перерисовывал весь экран.
+    suspend fun getSyncVersion(): Long = userPreferences.data.first().sync_version
+
+    suspend fun setSyncVersion(version: Long) {
+        userPreferences.updateData {
+            it.copy(sync_version = version)
         }
     }
 
