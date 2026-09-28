@@ -22,8 +22,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
@@ -44,12 +42,6 @@ fun StationDetailBottomSheet(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetValue = bottomSheetState.bottomSheetState.currentValue
-    // LocalConfiguration is Android-only — LocalWindowInfo (Compose UI core, multiplatform) +
-    // density gives the same screen-height-in-dp cross-platform.
-    val density = LocalDensity.current
-    val windowInfo = LocalWindowInfo.current
-    val screenHeightDp = with(density) { windowInfo.containerSize.height.toDp() }
-
     val roundedCornerShape by animateDpAsState(
         targetValue = if (bottomSheetValue == SheetValue.Expanded) 0.dp else 16.dp,
         animationSpec = tween(durationMillis = 150)
@@ -62,11 +54,6 @@ fun StationDetailBottomSheet(
                 onShowBottomBar(false)
             }
 
-            SheetValue.PartiallyExpanded -> {
-                onShowTopAppBar(true)
-                onShowBottomBar(false)
-            }
-
             else -> {
                 onShowTopAppBar(true)
                 onShowBottomBar(true)
@@ -75,6 +62,13 @@ fun StationDetailBottomSheet(
     }
 
     LaunchedEffect(bottomSheetValue) {
+        // The sheet has no half-open resting point (peek height is 0), but the standard sheet
+        // still keeps a PartiallyExpanded anchor there - a swipe down can settle on it instead of
+        // Hidden. It's visually identical, so finish the close; otherwise the sheet stays "open"
+        // for back handling and the bars stay hidden.
+        if (bottomSheetValue == SheetValue.PartiallyExpanded) {
+            bottomSheetState.bottomSheetState.hide()
+        }
         updateUI()
     }
 
@@ -88,7 +82,8 @@ fun StationDetailBottomSheet(
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetState,
-        sheetPeekHeight = screenHeightDp * 0.4f,
+        // No half-open state: a single swipe down closes the sheet completely.
+        sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(
             topStart = roundedCornerShape,
             topEnd = roundedCornerShape,

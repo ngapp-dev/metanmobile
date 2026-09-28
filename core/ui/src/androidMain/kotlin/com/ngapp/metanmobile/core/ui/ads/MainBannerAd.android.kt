@@ -142,7 +142,7 @@ private fun YandexRuBannerAd(context: Context) {
     }
 }
 
-private object YandexAdsInitialization {
+internal object YandexAdsInitialization {
     var isInitialized by mutableStateOf(false)
         private set
     private var isInitializationStarted = false
@@ -156,7 +156,7 @@ private object YandexAdsInitialization {
     }
 }
 
-private fun isRussianAudience(context: Context): Boolean = countryCode(context) == RUSSIAN_COUNTRY_CODE
+internal fun isRussianAudience(context: Context): Boolean = countryCode(context) == RUSSIAN_COUNTRY_CODE
 
 private fun countryCode(context: Context): String {
     val networkCountry = runCatching {

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
@@ -91,7 +91,7 @@ private fun LegalRegulationsHeader(
     onBackClick: () -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

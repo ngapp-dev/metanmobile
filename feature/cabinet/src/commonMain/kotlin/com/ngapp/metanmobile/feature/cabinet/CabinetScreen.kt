@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +18,7 @@ import com.multiplatform.webview.web.rememberWebViewState
 import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.component.MMCabinetTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
 import com.ngapp.metanmobile.core.ui.animation.ErrorView
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetActions
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetUiState
@@ -67,7 +67,7 @@ private fun CabinetScreen(
         onAction(CabinetActions.UpdateUiState(uiState.copy(isLoading = isLoading, isError = hasMainFrameError)))
     }
 
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

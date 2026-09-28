@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.component.MMAsyncImage
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
@@ -145,7 +145,7 @@ private fun AboutHeader(
     onBackClick: () -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

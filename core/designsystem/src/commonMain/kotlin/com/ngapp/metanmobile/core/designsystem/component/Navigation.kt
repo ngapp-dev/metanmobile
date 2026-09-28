@@ -22,7 +22,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,12 +43,14 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaul
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemColors
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.kyant.backdrop.backdrops.layerBackdrop
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.navigationBarIndicatorColor
 
@@ -180,7 +188,8 @@ fun MMNavigationRail(
 
 /**
  * Metan Mobile navigation suite scaffold with item and content slots.
- * Wraps Material 3 [NavigationSuiteScaffold].
+ * Wraps Material 3 [NavigationSuiteScaffold] for the rail layout; on compact widths the bar is
+ * replaced by [MMFloatingNavigationBar] floating over the content, which scrolls underneath it.
  *
  * @param modifier Modifier to be applied to the navigation suite scaffold.
  * @param navigationSuiteItems A slot to display multiple items via [MMNavigationSuiteScope].
@@ -197,6 +206,8 @@ fun MMNavigationSuiteScaffold(
     content: @Composable () -> Unit,
 ) {
     val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
+    val isFloatingBar = showBottomBar && layoutType == NavigationSuiteType.NavigationBar
+    val items = MMNavigationSuiteScope().apply(navigationSuiteItems).items
     val navigationSuiteItemColors = NavigationSuiteItemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
             selectedIconColor = MMNavigationDefaults.navigationSelectedItemColor(),
@@ -219,14 +230,21 @@ fun MMNavigationSuiteScaffold(
             unselectedTextColor = MMNavigationDefaults.navigationContentColor(),
         ),
     )
+    val backdrop = rememberGlassBackdrop()
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            MMNavigationSuiteScope(
-                navigationSuiteScope = this,
-                navigationSuiteItemColors = navigationSuiteItemColors,
-            ).run(navigationSuiteItems)
+            items.forEach { item ->
+                item(
+                    selected = item.selected,
+                    onClick = item.onClick,
+                    icon = { if (item.selected) item.selectedIcon() else item.icon() },
+                    label = item.label,
+                    colors = navigationSuiteItemColors,
+                    modifier = item.modifier,
+                )
+            }
         },
-        layoutType = if (showBottomBar) layoutType else NavigationSuiteType.None,
+        layoutType = if (showBottomBar && !isFloatingBar) layoutType else NavigationSuiteType.None,
         containerColor = Color.Transparent,
         navigationSuiteColors = NavigationSuiteDefaults.colors(
             navigationBarContainerColor = MMNavigationDefaults.navigationContainerColor(),
@@ -236,30 +254,63 @@ fun MMNavigationSuiteScaffold(
         modifier = modifier,
     ) {
         Column {
-            Box(modifier = Modifier.weight(1f)) {
-                content()
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    // The ad strip below takes the system navigation bar inset, so screens must
+                    // not pad for it a second time.
+                    .then(
+                        if (showBottomBar) {
+                            Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(if (isFloatingBar) Modifier.layerBackdrop(backdrop) else Modifier),
+                ) {
+                    CompositionLocalProvider(
+                        LocalMMFloatingBarPadding provides
+                            if (isFloatingBar) FloatingBarHeight + FloatingBarMargin * 2 else 0.dp,
+                    ) {
+                        content()
+                    }
+                }
+                if (isFloatingBar) {
+                    MMFloatingNavigationBar(
+                        backdrop = backdrop,
+                        items = items,
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(horizontal = 16.dp, vertical = FloatingBarMargin),
+                    )
+                }
             }
             if (showBottomBar) {
+                MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.onSurface)
+                        .windowInsetsPadding(WindowInsets.navigationBars),
                 ) {
                     adsContent()
                 }
-                MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
             }
         }
     }
 }
 
 /**
- * A wrapper around [NavigationSuiteScope] to declare navigation items.
+ * Collects the navigation destinations declared in [MMNavigationSuiteScaffold]'s
+ * `navigationSuiteItems` slot, so they can be rendered either by the rail or the floating bar.
  */
-class MMNavigationSuiteScope internal constructor(
-    private val navigationSuiteScope: NavigationSuiteScope,
-    private val navigationSuiteItemColors: NavigationSuiteItemColors,
-) {
+class MMNavigationSuiteScope internal constructor() {
+    internal val items = mutableListOf<MMNavigationItem>()
+
     fun item(
         selected: Boolean,
         onClick: () -> Unit,
@@ -267,14 +318,9 @@ class MMNavigationSuiteScope internal constructor(
         icon: @Composable () -> Unit,
         selectedIcon: @Composable () -> Unit = icon,
         label: @Composable (() -> Unit)? = null,
-    ) = navigationSuiteScope.item(
-        selected = selected,
-        onClick = onClick,
-        icon = { if (selected) selectedIcon() else icon() },
-        label = label,
-        colors = navigationSuiteItemColors,
-        modifier = modifier,
-    )
+    ) {
+        items += MMNavigationItem(selected, onClick, modifier, icon, selectedIcon, label)
+    }
 }
 
 /**

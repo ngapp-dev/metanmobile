@@ -142,6 +142,7 @@
     <string name="menu_theme_system">System default</string>
     <string name="menu_theme_light">Light</string>
     <string name="menu_theme_dark">Dark</string>
+    <string name="core_ui_ad_label">Ad</string>
     <string name="core_ui_request_timeout">The request timed out</string>
     <string name="core_ui_no_internet">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>
     <string name="core_ui_server_error">Oops! It seems like your internet connection is slow or disrupted. Please check your network connection and try again</string>

@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,11 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.SharedRes
+import com.ngapp.metanmobile.core.designsystem.component.LocalMMTopBarPadding
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
 import com.ngapp.metanmobile.core.designsystem.component.MMToolbarWithNavIcon
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.ngapp.metanmobile.core.designsystem.component.scrollbar.scrollbarState
+import com.ngapp.metanmobile.core.designsystem.component.withoutTop
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.TrackScrollJank
 import com.ngapp.metanmobile.core.ui.animation.EmptyView
@@ -83,15 +85,17 @@ private fun CareersScreen(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding.withoutTop())
         ) {
-            Column {
+            // Box, not Column: the list starts under the glass top bar, so the indicator
+            // overlays it (offset below the bar) instead of pushing it down.
+            Box {
                 AnimatedVisibility(
                     visible = isSyncing || isLoading,
                     enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
                     exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
                 ) {
-                    MMLinearWavyProgressIndicator()
+                    MMLinearWavyProgressIndicator(Modifier.padding(top = LocalMMTopBarPadding.current))
                 }
                 when (uiState) {
                     CareersUiState.Loading -> Unit
@@ -146,7 +150,7 @@ private fun CareersHeader(
     onBackClick: () -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

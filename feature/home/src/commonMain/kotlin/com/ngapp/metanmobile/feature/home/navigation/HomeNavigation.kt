@@ -11,4 +11,5 @@ fun HomeScreen(
     onCareersClick: () -> Unit = {},
     onCabinetClick: () -> Unit = {},
     onMenuClick: () -> Unit = {},
-) = HomeRoute(onNewsClick, onNewsDetailClick, onFaqClick, onCareersClick, onCabinetClick, onMenuClick)
+    onShowBottomBar: (Boolean) -> Unit = {},
+) = HomeRoute(onNewsClick, onNewsDetailClick, onFaqClick, onCareersClick, onCabinetClick, onMenuClick, onShowBottomBar)

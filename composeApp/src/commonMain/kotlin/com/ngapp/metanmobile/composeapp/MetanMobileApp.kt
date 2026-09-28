@@ -4,6 +4,7 @@ package com.ngapp.metanmobile.composeapp
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.designsystem.theme.shouldUseDarkTheme
 import com.ngapp.metanmobile.core.domain.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
 import com.ngapp.metanmobile.feature.onboarding.OnboardingViewModel
@@ -23,7 +24,9 @@ fun MetanMobileApp(
     mainViewModel: MainViewModel = koinInject(),
 ) {
     val userData = userDataRepository.userData.collectAsStateWithLifecycle(initialValue = null).value
-    MetanMobileTheme(userData?.darkThemeConfig ?: DarkThemeConfig.FOLLOW_SYSTEM) {
+    val darkThemeConfig = userData?.darkThemeConfig ?: DarkThemeConfig.FOLLOW_SYSTEM
+    SystemBarsAppearance(darkTheme = shouldUseDarkTheme(darkThemeConfig))
+    MetanMobileTheme(darkThemeConfig) {
         PermissionsManager {
             MetanMobileNavHost(
                 initialOnboarding = initialOnboarding,

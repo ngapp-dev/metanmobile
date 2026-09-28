@@ -22,14 +22,18 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.designsystem.component.LocalMMTopBarPadding
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMNavShareButtonsTopAppBar
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
+import com.ngapp.metanmobile.core.designsystem.component.withoutTop
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailAction
 import com.ngapp.metanmobile.feature.news.detail.state.NewsDetailUiState
@@ -61,26 +65,33 @@ internal fun NewsDetailScreen(
     onBackClick: () -> Unit,
     onAction: (NewsDetailAction) -> Unit,
 ) {
-    // The top app bar must render regardless of uiState — otherwise, while Loading, nothing
-    // consumes the top window insets and the content draws straight under the status bar.
-    Column(modifier) {
-        MMNavShareButtonsTopAppBar(
-            onNavigationClick = onBackClick,
-            onShareActionClick = { onAction(NewsDetailAction.ShareNews) },
-        )
-        when (uiState) {
-            NewsDetailUiState.Loading -> {
-                AnimatedVisibility(
-                    visible = true,
-                    enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-                    exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-                ) {
-                    MMLinearWavyProgressIndicator()
+    // The header image runs up under the glass buttons and the status bar (hence no scrim and
+    // no top content padding); the bar renders regardless of uiState.
+    MMScaffold(
+        modifier = modifier,
+        topBar = {
+            MMNavShareButtonsTopAppBar(
+                onNavigationClick = onBackClick,
+                onShareActionClick = { onAction(NewsDetailAction.ShareNews) },
+                showScrim = false,
+            )
+        },
+    ) { padding ->
+        Box(modifier = Modifier.padding(padding.withoutTop())) {
+            when (uiState) {
+                NewsDetailUiState.Loading -> {
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+                        exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+                    ) {
+                        MMLinearWavyProgressIndicator(Modifier.padding(top = LocalMMTopBarPadding.current))
+                    }
                 }
-            }
 
-            is NewsDetailUiState.Success -> {
-                NewsDetailContent(news = uiState.news)
+                is NewsDetailUiState.Success -> {
+                    NewsDetailContent(news = uiState.news)
+                }
             }
         }
     }

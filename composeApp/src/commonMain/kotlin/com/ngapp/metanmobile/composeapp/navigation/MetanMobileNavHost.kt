@@ -3,8 +3,12 @@ package com.ngapp.metanmobile.composeapp.navigation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +22,7 @@ import com.ngapp.metanmobile.core.designsystem.component.MetanMobileGradientBack
 import com.ngapp.metanmobile.core.designsystem.theme.LocalGradientColors
 import com.ngapp.metanmobile.core.ui.ads.ConsentGatedBannerAd
 import com.ngapp.metanmobile.core.ui.ads.ConsentHelper
+import com.ngapp.metanmobile.core.ui.ads.LocalCanShowAds
 import com.ngapp.metanmobile.core.ui.ads.MainBannerAd
 import com.ngapp.metanmobile.feature.about.navigation.aboutScreen
 import com.ngapp.metanmobile.feature.about.navigation.navigateToAbout
@@ -89,6 +94,12 @@ fun MetanMobileNavHost(
     val entry by navController.currentBackStackEntryAsState()
     val isOnboarding = entry?.destination?.hasRoute<OnboardingNavigationRoute>() == true
     val selectedDestination = TopLevelDestination.entries.firstOrNull { entry?.destination?.route == it.route }
+    // Top-level screens hide the bar while their station-detail bottom sheet is expanded. The
+    // floating bar is drawn over the content, so without this it would sit on top of the sheet.
+    // Reset on every destination change so a sheet left open can't strand the bar hidden.
+    var isBottomBarRequested by remember { mutableStateOf(true) }
+    LaunchedEffect(selectedDestination) { isBottomBarRequested = true }
+    val onShowBottomBar: (Boolean) -> Unit = { isBottomBarRequested = it }
 
     val consentHelper = koinInject<ConsentHelper>()
     val canShowAds by consentHelper.canShowAds.collectAsStateWithLifecycle()
@@ -102,107 +113,116 @@ fun MetanMobileNavHost(
         consentHelper.obtainConsentAndShow()
     }
 
-    MetanMobileBackground {
-        MetanMobileGradientBackground(gradientColors = LocalGradientColors.current) {
-            // Navigation-Compose locks NavHost's startDestination in at its first composition and
-            // never re-evaluates it on a later value change, so the NavHost can't be mounted until
-            // we actually know whether to show onboarding — otherwise it's stuck on whatever the
-            // very first (often still-Loading) read produced, same bug as above. Master sidesteps
-            // this with a splash screen that stays up until userData loads (MainActivity's
-            // installSplashScreen + setKeepOnScreenCondition); here it's enough to just hold off
-            // mounting the NavHost for that one frame — the backgrounds below still render, so
-            // there's no blank/white flash, and a cold DataStore read is normally sub-frame fast.
-            if (onboardingUiState !is com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState.Loading) {
-                val showOnboarding =
-                    initialOnboarding &&
-                        onboardingUiState is com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState.Shown
+    CompositionLocalProvider(LocalCanShowAds provides canShowAds) {
+        MetanMobileBackground {
+            MetanMobileGradientBackground(gradientColors = LocalGradientColors.current) {
+                // Navigation-Compose locks NavHost's startDestination in at its first composition and
+                // never re-evaluates it on a later value change, so the NavHost can't be mounted until
+                // we actually know whether to show onboarding — otherwise it's stuck on whatever the
+                // very first (often still-Loading) read produced, same bug as above. Master sidesteps
+                // this with a splash screen that stays up until userData loads (MainActivity's
+                // installSplashScreen + setKeepOnScreenCondition); here it's enough to just hold off
+                // mounting the NavHost for that one frame — the backgrounds below still render, so
+                // there's no blank/white flash, and a cold DataStore read is normally sub-frame fast.
+                if (onboardingUiState !is com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState.Loading) {
+                    val showOnboarding =
+                        initialOnboarding &&
+                            onboardingUiState is com.ngapp.metanmobile.feature.onboarding.state.OnboardingUiState.Shown
 
-                MMNavigationSuiteScaffold(
-                    navigationSuiteItems = {
-                        TopLevelDestination.entries.forEach { destination ->
-                            val selected = destination == selectedDestination
-                            item(
-                                selected = selected,
-                                onClick = { appState.navigateToTopLevelDestination(destination) },
-                                icon = { Icon(destination.unselectedIcon, contentDescription = null) },
-                                selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
-                                label = { Text(stringResource(destination.title)) },
+                    MMNavigationSuiteScaffold(
+                        navigationSuiteItems = {
+                            TopLevelDestination.entries.forEach { destination ->
+                                val selected = destination == selectedDestination
+                                item(
+                                    selected = selected,
+                                    onClick = { appState.navigateToTopLevelDestination(destination) },
+                                    icon = { Icon(destination.unselectedIcon, contentDescription = null) },
+                                    selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
+                                    label = { Text(stringResource(destination.title)) },
+                                )
+                            }
+                        },
+                        showBottomBar = !isOnboarding && selectedDestination != null && isBottomBarRequested,
+                        adsContent = { ConsentGatedBannerAd(canShowAds = canShowAds, bannerAd = { MainBannerAd() }) },
+                    ) {
+                        // Split into two statically-typed NavHost calls instead of one call fed a
+                        // shared `startDestination: Any` — with an Any-typed value, Kotlin resolves
+                        // the single generic overload for *both* branches, but this graph mixes a
+                        // String-registered destination (Home, via the classic `composable(route:
+                        // String)`) with a Kotlin-Serialization/KClass one (Onboarding, via
+                        // `composable<OnboardingNavigationRoute>()`); starting from a plain String in
+                        // that generic path crashed with "Cannot find startDestination kotlin.String
+                        // from NavGraph. Ensure the starting NavDestination was added with route from
+                        // KClass." Each call below is statically typed to the destination's own
+                        // registration style, so the compiler — and the library — never has to guess.
+                        val graphContent: androidx.navigation.NavGraphBuilder.() -> Unit = {
+                            onboardingScreen(appState::navigateFromOnboardingToHome)
+                            composable(TopLevelDestination.HOME.route) {
+                            HomeScreen(
+                                onNewsClick = { appState.navigateToTopLevelDestination(TopLevelDestination.NEWS) },
+                                onNewsDetailClick = navController::navigateToNewsDetail,
+                                onFaqClick = navController::navigateToFaq,
+                                onCareersClick = navController::navigateToCareers,
+                                onCabinetClick = navController::navigateToCabinet,
+                                onMenuClick = navController::navigateToMenu,
+                                onShowBottomBar = onShowBottomBar,
                             )
                         }
-                    },
-                    showBottomBar = !isOnboarding && selectedDestination != null,
-                    adsContent = { ConsentGatedBannerAd(canShowAds = canShowAds, bannerAd = { MainBannerAd() }) },
-                ) {
-                    // Split into two statically-typed NavHost calls instead of one call fed a
-                    // shared `startDestination: Any` — with an Any-typed value, Kotlin resolves
-                    // the single generic overload for *both* branches, but this graph mixes a
-                    // String-registered destination (Home, via the classic `composable(route:
-                    // String)`) with a Kotlin-Serialization/KClass one (Onboarding, via
-                    // `composable<OnboardingNavigationRoute>()`); starting from a plain String in
-                    // that generic path crashed with "Cannot find startDestination kotlin.String
-                    // from NavGraph. Ensure the starting NavDestination was added with route from
-                    // KClass." Each call below is statically typed to the destination's own
-                    // registration style, so the compiler — and the library — never has to guess.
-                    val graphContent: androidx.navigation.NavGraphBuilder.() -> Unit = {
-                        onboardingScreen(appState::navigateFromOnboardingToHome)
-                        composable(TopLevelDestination.HOME.route) {
-                        HomeScreen(
-                            onNewsClick = { appState.navigateToTopLevelDestination(TopLevelDestination.NEWS) },
-                            onNewsDetailClick = navController::navigateToNewsDetail,
+                        composable(TopLevelDestination.STATIONS.route) {
+                            StationsScreen(
+                                onNewsDetailClick = navController::navigateToNewsDetail,
+                                onShowBottomBar = onShowBottomBar,
+                            )
+                        }
+                        composable(TopLevelDestination.NEWS.route) { NewsScreen(navController::navigateToNewsDetail) }
+                        composable(TopLevelDestination.FAVORITES.route) {
+                            FavoritesScreen(
+                                onNewsDetailClick = navController::navigateToNewsDetail,
+                                onShowBottomBar = onShowBottomBar,
+                            )
+                        }
+
+                        stationDetailScreen(navController::navigateToNewsDetail, navController::navigateUp)
+                        newsDetailScreen(navController::navigateUp)
+                        menuScreen(
+                            onContactsClick = navController::navigateToContacts,
                             onFaqClick = navController::navigateToFaq,
+                            onCalculatorsClick = navController::navigateToCalculators,
+                            onAboutClick = navController::navigateToAbout,
+                            onLegalClick = navController::navigateToLegalRegulations,
                             onCareersClick = navController::navigateToCareers,
-                            onCabinetClick = navController::navigateToCabinet,
-                            onMenuClick = navController::navigateToMenu,
+                            onBackClick = navController::navigateUp,
                         )
-                    }
-                    composable(TopLevelDestination.STATIONS.route) {
-                        StationsScreen(onNewsDetailClick = navController::navigateToNewsDetail)
-                    }
-                    composable(TopLevelDestination.NEWS.route) { NewsScreen(navController::navigateToNewsDetail) }
-                    composable(TopLevelDestination.FAVORITES.route) {
-                        FavoritesScreen(onNewsDetailClick = navController::navigateToNewsDetail)
-                    }
+                        faqScreen(navController::navigateUp)
+                        cabinetScreen(navController::navigateUp)
+                        contactsScreen(navController::navigateUp)
+                        calculatorsScreen(navController::navigateUp)
+                        aboutScreen(navController::navigateUp)
+                        legalRegulationsScreen(
+                            onTermsAndConditionsPageClick = navController::navigateToTermsAndConditions,
+                            onPrivacyPolicyPageClick = navController::navigateToPrivacyPolicy,
+                            onLocationInformationPageClick = navController::navigateToLocationInformation,
+                            onBackClick = navController::navigateUp,
+                        )
+                        locationInformationScreen(navController::navigateUp)
+                        privacyPolicyScreen(navController::navigateUp)
+                        termsAndConditionsScreen(navController::navigateUp)
+                        careersScreen(navController::navigateUp)
+                        }
 
-                    stationDetailScreen(navController::navigateToNewsDetail, navController::navigateUp)
-                    newsDetailScreen(navController::navigateUp)
-                    menuScreen(
-                        onContactsClick = navController::navigateToContacts,
-                        onFaqClick = navController::navigateToFaq,
-                        onCalculatorsClick = navController::navigateToCalculators,
-                        onAboutClick = navController::navigateToAbout,
-                        onLegalClick = navController::navigateToLegalRegulations,
-                        onCareersClick = navController::navigateToCareers,
-                        onBackClick = navController::navigateUp,
-                    )
-                    faqScreen(navController::navigateUp)
-                    cabinetScreen(navController::navigateUp)
-                    contactsScreen(navController::navigateUp)
-                    calculatorsScreen(navController::navigateUp)
-                    aboutScreen(navController::navigateUp)
-                    legalRegulationsScreen(
-                        onTermsAndConditionsPageClick = navController::navigateToTermsAndConditions,
-                        onPrivacyPolicyPageClick = navController::navigateToPrivacyPolicy,
-                        onLocationInformationPageClick = navController::navigateToLocationInformation,
-                        onBackClick = navController::navigateUp,
-                    )
-                    locationInformationScreen(navController::navigateUp)
-                    privacyPolicyScreen(navController::navigateUp)
-                    termsAndConditionsScreen(navController::navigateUp)
-                    careersScreen(navController::navigateUp)
-                    }
-
-                    if (showOnboarding) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = OnboardingNavigationRoute,
-                            builder = graphContent,
-                        )
-                    } else {
-                        NavHost(
-                            navController = navController,
-                            startDestination = TopLevelDestination.HOME.route,
-                            builder = graphContent,
-                        )
+                        if (showOnboarding) {
+                            NavHost(
+                                navController = navController,
+                                startDestination = OnboardingNavigationRoute,
+                                builder = graphContent,
+                            )
+                        } else {
+                            NavHost(
+                                navController = navController,
+                                startDestination = TopLevelDestination.HOME.route,
+                                builder = graphContent,
+                            )
+                        }
                     }
                 }
             }

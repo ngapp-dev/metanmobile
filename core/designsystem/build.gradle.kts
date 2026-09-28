@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.moko.compose)
             implementation(libs.coil3.core)
             implementation(libs.coil3.compose)
+            implementation(libs.kyant.backdrop)
             api(libs.compose.material3.adaptive)
             api(libs.compose.material3.adaptive.layout)
             api(libs.compose.material3.adaptive.navigation)

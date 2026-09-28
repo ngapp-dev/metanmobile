@@ -28,10 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
+import com.ngapp.metanmobile.core.designsystem.component.mmScrollContentPadding
 import com.ngapp.metanmobile.core.model.news.UserNewsResource
+import com.ngapp.metanmobile.core.ui.ads.NativeBanner
+import com.ngapp.metanmobile.core.ui.ads.isNativeBannerSlot
 import com.ngapp.metanmobile.core.ui.logNewsResourceOpened
 import com.ngapp.metanmobile.core.ui.news.NewsRow
 import com.ngapp.metanmobile.core.ui.news.PinnedNewsScreen
+
+/** A NativeBanner after every this many news. */
+private const val NATIVE_BANNER_INTERVAL = 6
 
 @Composable
 internal fun NewsContent(
@@ -47,6 +53,7 @@ internal fun NewsContent(
         state = gridState,
         modifier = modifier.animateContentSize(),
         columns = GridCells.Adaptive(300.dp),
+        contentPadding = mmScrollContentPadding(),
     ) {
         if (pinnedNewsList.isNotEmpty()) {
             item(key = "contentHeader", span = { GridItemSpan(maxLineSpan) }) {
@@ -61,15 +68,22 @@ internal fun NewsContent(
             item(key = "newsSubHeader", span = { GridItemSpan(maxLineSpan) }) {
                 NewsSubHeader()
             }
-            items(items = newsList, key = { news -> news.id }) { news ->
-                NewsRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    news = news,
-                    onDetailClick = {
-                        analyticsHelper.logNewsResourceOpened(newsId = news.id)
-                        onDetailClick(news.id)
+            newsList.forEachIndexed { index, news ->
+                item(key = news.id) {
+                    NewsRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        news = news,
+                        onDetailClick = {
+                            analyticsHelper.logNewsResourceOpened(newsId = news.id)
+                            onDetailClick(news.id)
+                        }
+                    )
+                }
+                if (isNativeBannerSlot(index, NATIVE_BANNER_INTERVAL, newsList.size)) {
+                    item(key = "nativeBanner-$index", span = { GridItemSpan(maxLineSpan) }) {
+                        NativeBanner(slotKey = "news-$index")
                     }
-                )
+                }
             }
         }
     }

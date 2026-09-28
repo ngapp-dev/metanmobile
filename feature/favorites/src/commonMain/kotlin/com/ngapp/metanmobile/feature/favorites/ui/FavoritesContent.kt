@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
+import com.ngapp.metanmobile.core.designsystem.component.mmScrollContentPadding
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.model.station.UserStationResource
@@ -43,6 +44,7 @@ internal fun FavoritesContent(
             .fillMaxSize()
             .animateContentSize(),
         columns = GridCells.Adaptive(300.dp),
+        contentPadding = mmScrollContentPadding(),
     ) {
         items(items = favoriteStationsList, key = { station -> station.code }) { station ->
             Column(

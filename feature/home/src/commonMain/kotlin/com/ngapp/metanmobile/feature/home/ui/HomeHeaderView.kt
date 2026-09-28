@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.SharedRes
@@ -51,8 +50,9 @@ internal fun HomeHeaderView(
     val analyticsHelper = LocalAnalyticsHelper.current
 
     Column(
+        // No shadow: this card sits right under the glass top bar, where its top shadow edge read
+        // as a grey divider line.
         modifier = modifier
-            .shadow(4.dp)
             .fillMaxWidth()
             .background(color = MMColors.cardBackgroundColor)
     ) {

@@ -138,6 +138,7 @@
     <string name="menu_theme_system">Як у сістэме</string>
     <string name="menu_theme_light">Светлая</string>
     <string name="menu_theme_dark">Цёмная</string>
+    <string name="core_ui_ad_label">Рэклама</string>
     <string name="core_ui_request_timeout">Час чакання запыту скончыўся</string>
     <string name="core_ui_no_internet">Няма падлучэння да інтэрнэту</string>
     <string name="core_ui_server_error">Памылка сервера</string>

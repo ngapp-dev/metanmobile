@@ -24,12 +24,18 @@ val generateAdsSecrets = tasks.register("generateAdsSecrets") {
         if (secretsFile.exists()) secretsFile.inputStream().use(props::load)
         val adUnitId = props.getProperty("MAIN_BANNER_AD_ID_KEY", "ca-app-pub-3940256099942544/6300978111")
         val yandexAdUnitId = props.getProperty("YANDEX_RU_BANNER_AD_ID_KEY", "demo-banner-yandex")
+        // Native "NativeBanner" units; fallbacks are Google's public native test unit and Yandex's
+        // native demo unit.
+        val nativeAdUnitId = props.getProperty("NATIVE_BANNER_AD_ID_KEY", "ca-app-pub-3940256099942544/2247696110")
+        val yandexNativeAdUnitId = props.getProperty("YANDEX_RU_NATIVE_BANNER_AD_ID_KEY", "demo-native-app-yandex")
         val outFile = outputDir.get().file("com/ngapp/metanmobile/core/ui/ads/AdsSecrets.kt").asFile
         outFile.parentFile.mkdirs()
         outFile.writeText(
             "package com.ngapp.metanmobile.core.ui.ads\n\n" +
                 "internal const val MAIN_BANNER_AD_UNIT_ID = \"$adUnitId\"\n" +
-                "internal const val YANDEX_RU_BANNER_AD_UNIT_ID = \"$yandexAdUnitId\"\n"
+                "internal const val YANDEX_RU_BANNER_AD_UNIT_ID = \"$yandexAdUnitId\"\n" +
+                "internal const val NATIVE_BANNER_AD_UNIT_ID = \"$nativeAdUnitId\"\n" +
+                "internal const val YANDEX_RU_NATIVE_BANNER_AD_UNIT_ID = \"$yandexNativeAdUnitId\"\n"
         )
     }
 }

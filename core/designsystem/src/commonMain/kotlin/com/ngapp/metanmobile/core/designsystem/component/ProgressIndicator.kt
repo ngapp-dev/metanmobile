@@ -98,11 +98,11 @@ fun FullScreenLoading(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MMLinearWavyProgressIndicator() {
+fun MMLinearWavyProgressIndicator(modifier: Modifier = Modifier) {
     LinearWavyProgressIndicator(
         color = MaterialTheme.colorScheme.primary,
         trackColor = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
     )

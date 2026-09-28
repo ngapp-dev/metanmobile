@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ngapp.metanmobile.core.designsystem.component.mmScrollContentPadding
 import com.ngapp.metanmobile.core.designsystem.component.reorderable.ReorderHapticFeedbackType
 import com.ngapp.metanmobile.core.designsystem.component.reorderable.ReorderableItem
 import com.ngapp.metanmobile.core.designsystem.component.reorderable.rememberReorderHapticFeedback
@@ -63,6 +64,7 @@ internal fun HomeContent(
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = mmScrollContentPadding(),
         modifier = modifier.fillMaxSize()
     ) {
         item("contentHeader") {

@@ -1,5 +1,6 @@
 package com.ngapp.metanmobile.feature.menu
 
+import com.ngapp.metanmobile.core.ui.ads.NativeBanner
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +24,7 @@ import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
 import com.ngapp.metanmobile.core.data.repository.logLanguageConfigChanged
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
 import com.ngapp.metanmobile.core.designsystem.component.MMMenuTopAppBar
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
@@ -175,6 +176,8 @@ private fun MenuScreen(
                     title = SharedRes.strings.feature_menu_main_title_legal_regulations,
                     onPageItemClick = onLegalRegulationsPageClick
                 )
+                MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                NativeBanner(slotKey = "menu")
             }
         }
     }
@@ -188,7 +191,7 @@ private fun MenuHeader(
     onBackClick: () -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

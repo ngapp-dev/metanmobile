@@ -34,7 +34,7 @@ internal fun NewsDetailContent(
 
     LazyColumn(
         state = listState,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         item("detailImage") {
             ItemDetailImageView(imageUrl = news.detailPicture)

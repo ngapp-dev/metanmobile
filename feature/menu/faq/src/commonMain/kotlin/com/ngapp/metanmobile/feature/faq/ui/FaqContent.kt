@@ -10,18 +10,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.component.MMDivider
+import com.ngapp.metanmobile.core.designsystem.component.mmScrollContentPadding
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
 import com.ngapp.metanmobile.core.model.faq.FaqResource
+import com.ngapp.metanmobile.core.ui.ads.NativeBanner
+import com.ngapp.metanmobile.core.ui.ads.isNativeBannerSlot
 import com.ngapp.metanmobile.core.ui.faq.FaqRow
 import com.ngapp.metanmobile.core.ui.faq.FaqRowShimmer
+
+/** A NativeBanner after every this many questions. */
+private const val NATIVE_BANNER_INTERVAL = 8
 
 @Composable
 internal fun FaqContent(
     modifier: Modifier = Modifier,
     faqList: List<FaqResource>,
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier, contentPadding = mmScrollContentPadding()) {
         if (faqList.isNotEmpty()) {
             itemsIndexed(items = faqList, key = { _, faq -> faq.id }) { i, faqItem ->
                 Column {
@@ -32,6 +38,10 @@ internal fun FaqContent(
                             .background(MMColors.cardBackgroundColor)
                     )
                     if (i < faqList.size - 1) {
+                        MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                    if (isNativeBannerSlot(i, NATIVE_BANNER_INTERVAL, faqList.size)) {
+                        NativeBanner(slotKey = "faq-$i")
                         MMDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     }
                 }

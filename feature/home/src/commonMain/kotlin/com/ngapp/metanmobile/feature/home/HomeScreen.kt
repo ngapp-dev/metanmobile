@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -36,8 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ngapp.metanmobile.SharedRes
+import com.ngapp.metanmobile.core.designsystem.component.LocalMMTopBarPadding
 import com.ngapp.metanmobile.core.designsystem.component.MMHomeTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
+import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
+import com.ngapp.metanmobile.core.designsystem.component.withoutTop
 import com.ngapp.metanmobile.core.designsystem.theme.Green
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
@@ -142,17 +145,19 @@ internal fun HomeScreen(
         onSettingsClick = onSettingsClick,
         onAction = onAction,
     ) { padding ->
-        Column(
+        // Box, not Column: the list starts under the glass top bar, so the indicator overlays
+        // it (offset below the bar) instead of pushing it down.
+        Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding.withoutTop())
         ) {
             AnimatedVisibility(
                 visible = isSyncing || isLoading,
                 enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
             ) {
-                MMLinearWavyProgressIndicator()
+                MMLinearWavyProgressIndicator(Modifier.padding(top = LocalMMTopBarPadding.current))
             }
             if (!isContentPending) {
                 when (uiState) {
@@ -224,7 +229,7 @@ private fun HomeHeader(
     onAction: (HomeAction) -> Unit,
     pageContent: @Composable (PaddingValues) -> Unit,
 ) {
-    Scaffold(
+    MMScaffold(
         modifier = modifier,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,

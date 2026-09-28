@@ -9,27 +9,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ngapp.metanmobile.SharedRes
-import com.ngapp.metanmobile.core.designsystem.component.ButtonWithIcon
-import com.ngapp.metanmobile.core.designsystem.component.MMFilledIconButton
+import com.ngapp.metanmobile.core.designsystem.component.MMGlassButton
+import com.ngapp.metanmobile.core.designsystem.component.MMGlassIconButton
 import com.ngapp.metanmobile.core.designsystem.component.htmltext.HtmlText
 import com.ngapp.metanmobile.core.designsystem.icon.MMIcons
-import com.ngapp.metanmobile.core.designsystem.theme.Black
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
-import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.Green
-import com.ngapp.metanmobile.core.designsystem.theme.LightBlue
 import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import dev.icerock.moko.resources.compose.stringResource
@@ -65,19 +60,15 @@ internal fun HeaderWithStatusAndActions(
             stationStatus()
         }
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(end = 4.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(start = 8.dp)
         ) {
-            MMFilledIconButton(
-                modifier = Modifier.size(32.dp),
-                iconModifier = Modifier.size(18.dp),
+            MMGlassIconButton(
                 imageVector = MMIcons.Share,
                 contentDescription = stringResource(SharedRes.strings.feature_stationdetail_description_share_station),
                 onClick = onShareClick,
             )
-            MMFilledIconButton(
-                modifier = Modifier.size(32.dp),
-                iconModifier = Modifier.size(18.dp),
+            MMGlassIconButton(
                 imageVector = MMIcons.Close,
                 contentDescription = stringResource(SharedRes.strings.designsystem_description_back),
                 onClick = onCloseClick,
@@ -173,42 +164,35 @@ internal fun HeaderButtons(
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+            // Vertical room so the scroll container doesn't clip the glass shadows.
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ButtonWithIcon(
+        MMGlassButton(
             imageVector = MMIcons.DirectionsFilled,
             textRes = SharedRes.strings.feature_stationdetail_button_directions,
-            containerColor = Blue,
             contentColor = White,
-            shape = ShapeDefaults.ExtraLarge,
-            onClick = { onDirectionsClick() }
+            tint = Blue.copy(alpha = 0.85f),
+            onClick = onDirectionsClick,
         )
-        ButtonWithIcon(
+        MMGlassButton(
             imageVector = MMIcons.CallFilled,
             textRes = SharedRes.strings.feature_stationdetail_button_call,
-            containerColor = LightBlue,
             contentColor = Blue,
-            shape = ShapeDefaults.ExtraLarge,
-            onClick = { onCallClick() }
+            onClick = onCallClick,
         )
-        ButtonWithIcon(
+        MMGlassButton(
             imageVector = if (isFavorite) MMIcons.Bookmark else MMIcons.BookmarkBorder,
             textRes = if (isFavorite) SharedRes.strings.feature_stationdetail_button_saved else SharedRes.strings.feature_stationdetail_button_save,
-            containerColor = if (isFavorite) LightBlue.copy(alpha = 0.8f)
-                .compositeOver(Gray500) else LightBlue,
-            contentColor = if (isFavorite) Black else Blue,
-            shape = ShapeDefaults.ExtraLarge,
-            onClick = { onToggleBookmark() }
+            contentColor = Blue,
+            onClick = onToggleBookmark,
         )
-        ButtonWithIcon(
+        MMGlassButton(
             imageVector = MMIcons.Share,
             textRes = SharedRes.strings.feature_stationdetail_button_share,
-            containerColor = LightBlue,
             contentColor = Blue,
-            shape = ShapeDefaults.ExtraLarge,
-            onClick = { onShareClick() }
+            onClick = onShareClick,
         )
     }
 }
