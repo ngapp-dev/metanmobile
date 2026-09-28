@@ -30,4 +30,5 @@ actual fun databaseInstance(): MetanMobileDatabase =
     )
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(dropAllTables = true)
         .build()

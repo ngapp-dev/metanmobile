@@ -55,3 +55,16 @@ kotlin {
         }
     }
 }
+
+kotlin {
+    sourceSets {
+        // Plain JVM tests (ViewModels etc.) - the KMP Android target only picks these up from
+        // src/androidHostTest, not the classic src/test.
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.junit4)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(projects.core.testing)
+        }
+    }
+}

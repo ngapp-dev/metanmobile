@@ -23,13 +23,10 @@ import com.ngapp.metanmobile.core.data.model.faq.asEntity
 import com.ngapp.metanmobile.core.data.model.news.asEntity
 import com.ngapp.metanmobile.core.data.model.price.asEntity
 import com.ngapp.metanmobile.core.data.model.station.asEntity
-import com.ngapp.metanmobile.core.database.dao.career.CareerResourceDao
-import com.ngapp.metanmobile.core.database.dao.contact.ContactResourceDao
-import com.ngapp.metanmobile.core.database.dao.faq.FaqResourceDao
-import com.ngapp.metanmobile.core.database.dao.news.NewsResourceDao
-import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
-import com.ngapp.metanmobile.core.database.dao.station.StationResourceDao
-import com.ngapp.metanmobile.core.datastore.MetanMobilePreferencesDataSource
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import com.ngapp.metanmobile.core.database.MetanMobileDatabase
+import com.ngapp.metanmobile.core.database.model.syncmeta.SyncMetaEntity
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import com.ngapp.metanmobile.core.network.model.contact.NetworkContactResource
@@ -38,9 +35,6 @@ import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
 import com.ngapp.metanmobile.core.network.model.price.NetworkPriceResource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import kotlin.coroutines.cancellation.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 
 /**
  * What a sync actually *does* — one `GET /api/sync?since=<version>` call (see the sync spec's
@@ -59,11 +53,13 @@ import kotlinx.coroutines.coroutineScope
  * or "the feed briefly failed" (see BUG-1/BUG-2 in the sync spec). Deletion is now something only
  * the server declares (`feeds.<key>.deleted`); the client never computes it itself again.
  *
- * `deleted` is always empty for now — the worker doesn't have tombstones yet (Этап 3 of the sync
- * spec, needs a full site-listing crawl). So today this is functionally a smaller-payload,
- * one-request replacement for the old seven-repository parallel sync — real incremental deletion
- * starts working the moment the worker starts sending non-empty `deleted` lists, with no client
- * change needed.
+ * Only news ever gets a non-empty `deleted` (tombstones from the worker's nightly full-listing
+ * crawl, Этап 3), and those rows are hidden rather than deleted — see `is_in_feed` on
+ * `NewsResourceEntity`. The other feeds' deletes are wired up but the server never sends any.
+ *
+ * The whole delta and the new version are written in one transaction, so a failure halfway (a bad
+ * item that fails to map, the process being killed) can't leave the database holding part of a
+ * delta under the old version — or, worse, all of it under the new one with rows missing.
  *
  * [GithubUserRepository][com.ngapp.metanmobile.core.data.repository.githubuser.GithubUserRepository]
  * is deliberately NOT part of this coordinator: it's only ever read by the About screen, and
@@ -74,53 +70,49 @@ import kotlinx.coroutines.coroutineScope
  */
 class DataSyncCoordinator(
     private val network: MetanEcogasNetworkDataSource,
-    private val preferences: MetanMobilePreferencesDataSource,
-    private val newsResourceDao: NewsResourceDao,
-    private val stationResourceDao: StationResourceDao,
-    private val contactResourceDao: ContactResourceDao,
-    private val faqResourceDao: FaqResourceDao,
-    private val careerResourceDao: CareerResourceDao,
-    private val priceResourceDao: PriceResourceDao,
+    private val database: MetanMobileDatabase,
 ) {
+    private val syncMetaDao = database.syncMetaDao()
+    private val newsResourceDao = database.newsResourceDao()
+    private val stationResourceDao = database.stationResourceDao()
+    private val contactResourceDao = database.contactResourceDao()
+    private val faqResourceDao = database.faqResourceDao()
+    private val careerResourceDao = database.careerResourceDao()
+    private val priceResourceDao = database.priceResourceDao()
+
     suspend fun sync(): Boolean = try {
-        val since = preferences.getSyncVersion()
+        // null = this database was never synced (fresh install, or dropped by a schema change).
+        val since = syncMetaDao.getSyncVersion() ?: 0L
         val response = network.getSync(since)
         val feeds = response.feeds
 
-        coroutineScope {
-            awaitAll(
-                async {
-                    newsResourceDao.deleteNewsResources(feeds.news.deleted.toSet())
-                    newsResourceDao.upsertNewsResources(feeds.news.upserted.map(NetworkNewsResource::asEntity))
-                },
-                async {
-                    // Локальный PK у станций — code, а не id (см. StationResourceDao). Сервер
-                    // сейчас всегда шлёт deleted=[] (тумбстоунов ещё нет), так что расхождение
-                    // id/code пока ни на что не влияет — но когда тумбстоуны появятся, их придётся
-                    // резолвить в code перед тем, как передавать сюда.
-                    stationResourceDao.deleteStationResources(feeds.stations.deleted.toSet())
-                    stationResourceDao.upsertStationResources(feeds.stations.upserted.map(NetworkStationResource::asEntity))
-                },
-                async {
-                    contactResourceDao.deleteContactResources(feeds.contacts.deleted)
-                    contactResourceDao.upsertContactResources(feeds.contacts.upserted.map(NetworkContactResource::asEntity))
-                },
-                async {
-                    faqResourceDao.deleteFaqResources(feeds.faq.deleted.toSet())
-                    faqResourceDao.upsertFaqResources(feeds.faq.upserted.map(NetworkFaqResource::asEntity))
-                },
-                async {
-                    careerResourceDao.deleteCareerResources(feeds.career.deleted)
-                    careerResourceDao.upsertCareerResources(feeds.career.upserted.map(NetworkCareerResource::asEntity))
-                },
-                async {
-                    priceResourceDao.deletePriceResources(feeds.prices.deleted)
-                    priceResourceDao.upsertPriceResources(feeds.prices.upserted.map(NetworkPriceResource::asEntity))
-                },
-            )
-        }
+        database.useWriterConnection { transactor ->
+            transactor.immediateTransaction {
+                newsResourceDao.markNewsResourcesNotInFeed(feeds.news.deleted.toSet())
+                newsResourceDao.upsertNewsResources(feeds.news.upserted.map(NetworkNewsResource::asEntity))
 
-        preferences.setSyncVersion(response.version)
+                // Локальный PK у станций — code, а не id (см. StationResourceDao). Сервер
+                // сейчас всегда шлёт deleted=[] (тумбстоунов ещё нет), так что расхождение
+                // id/code пока ни на что не влияет — но когда тумбстоуны появятся, их придётся
+                // резолвить в code перед тем, как передавать сюда.
+                stationResourceDao.deleteStationResources(feeds.stations.deleted.toSet())
+                stationResourceDao.upsertStationResources(feeds.stations.upserted.map(NetworkStationResource::asEntity))
+
+                contactResourceDao.deleteContactResources(feeds.contacts.deleted)
+                contactResourceDao.upsertContactResources(feeds.contacts.upserted.map(NetworkContactResource::asEntity))
+
+                faqResourceDao.deleteFaqResources(feeds.faq.deleted.toSet())
+                faqResourceDao.upsertFaqResources(feeds.faq.upserted.map(NetworkFaqResource::asEntity))
+
+                careerResourceDao.deleteCareerResources(feeds.career.deleted)
+                careerResourceDao.upsertCareerResources(feeds.career.upserted.map(NetworkCareerResource::asEntity))
+
+                priceResourceDao.deletePriceResources(feeds.prices.deleted)
+                priceResourceDao.upsertPriceResources(feeds.prices.upserted.map(NetworkPriceResource::asEntity))
+
+                syncMetaDao.upsertSyncMeta(SyncMetaEntity(syncVersion = response.version))
+            }
+        }
         true
     } catch (e: CancellationException) {
         throw e

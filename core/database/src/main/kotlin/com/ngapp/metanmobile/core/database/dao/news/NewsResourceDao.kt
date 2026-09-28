@@ -40,7 +40,8 @@ interface NewsResourceDao {
         value = """
         SELECT * FROM news_resources
         WHERE 
-            (CASE WHEN :useFilterNewsIds
+            is_in_feed = 1
+            AND (CASE WHEN :useFilterNewsIds
                 THEN id IN (:filterNewsIds)
                 ELSE 1=1
             END)
@@ -84,7 +85,8 @@ interface NewsResourceDao {
         value = """
         SELECT * FROM news_resources
         WHERE 
-            (CASE WHEN :useFilterNewsIds
+            is_in_feed = 1
+            AND (CASE WHEN :useFilterNewsIds
                 THEN id IN (:filterNewsIds)
                 ELSE 1=1
             END)
@@ -143,4 +145,11 @@ interface NewsResourceDao {
      */
     @Query(value = """DELETE FROM news_resources WHERE id in (:ids)""")
     suspend fun deleteNewsResources(ids: Set<String>)
+
+    /**
+     * Hides rows matching the specified [ids] from lists without deleting them, so the detail
+     * screen ([getNewsResource]) still resolves them
+     */
+    @Query(value = """UPDATE news_resources SET is_in_feed = 0 WHERE id in (:ids)""")
+    suspend fun markNewsResourcesNotInFeed(ids: Set<String>)
 }

@@ -9,6 +9,7 @@ import com.ngapp.metanmobile.core.database.dao.location.LocationResourceDao
 import com.ngapp.metanmobile.core.database.dao.news.NewsResourceDao
 import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
 import com.ngapp.metanmobile.core.database.dao.station.StationResourceDao
+import com.ngapp.metanmobile.core.database.dao.syncmeta.SyncMetaDao
 import com.ngapp.metanmobile.core.database.databaseInstance
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -24,4 +25,5 @@ fun databaseModule(): Module = module {
     single<CareerResourceDao> { get<MetanMobileDatabase>().careerResourceDao() }
     single<PriceResourceDao> { get<MetanMobileDatabase>().priceResourceDao() }
     single<LocationResourceDao> { get<MetanMobileDatabase>().locationResourceDao() }
+    single<SyncMetaDao> { get<MetanMobileDatabase>().syncMetaDao() }
 }

@@ -26,6 +26,9 @@ android {
 
 dependencies {
     api(kotlin("test"))
+    // The compose convention adds the BOM as `implementation`, which consumers of this module
+    // don't see - export it so the versionless ui-test artifacts below resolve for them too.
+    api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.ui.test)
     api(projects.core.analytics)
     api(projects.core.data)

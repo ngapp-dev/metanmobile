@@ -8,4 +8,4 @@ actual fun databaseInstance(): MetanMobileDatabase =
         context = KoinPlatform.getKoin().get(),
         klass = MetanMobileDatabase::class.java,
         name = METAN_MOBILE_DATABASE_NAME,
-    ).fallbackToDestructiveMigration().build()
+    ).fallbackToDestructiveMigration(dropAllTables = true).build()

@@ -39,6 +39,9 @@ data class NewsResourceEntity(
     val content: String,
     val url: String,
     @ColumnInfo(name = "is_searchable") val isSearchable: Int,
+    // 0 = the server tombstoned this news (it's gone from metan.by). The row is kept rather than
+    // deleted so a deep link to it still opens the detail screen; lists filter it out.
+    @ColumnInfo(name = "is_in_feed", defaultValue = "1") val isInFeed: Int = 1,
 )
 
 fun NewsResourceEntity.asExternalModel() = NewsResource(

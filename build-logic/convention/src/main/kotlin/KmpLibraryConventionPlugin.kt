@@ -33,7 +33,9 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<KotlinMultiplatformExtension> {
                 targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
-                    namespace = "com.ngapp.metanmobile" + path.replace(':', '.')
+                    // Module names like network-client aren't valid package segments - AAPT rejects
+                    // the host-test manifest's "<namespace>.test" package if the hyphen is kept.
+                    namespace = "com.ngapp.metanmobile" + path.replace(':', '.').replace('-', '_')
                     compileSdk = libs.findVersion("androidCompileSdk").get().toString().toInt()
                     minSdk = libs.findVersion("androidMinSdk").get().toString().toInt()
                     compilerOptions {

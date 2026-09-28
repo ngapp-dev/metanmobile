@@ -15,12 +15,25 @@
  *
  */
 
-package com.ngapp.metanmobile.core.data.di
+package com.ngapp.metanmobile.core.database.dao.syncmeta
 
-import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
-import org.koin.dsl.module
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Upsert
+import com.ngapp.metanmobile.core.database.model.syncmeta.SyncMetaEntity
 
-/** Shared on both platforms — registered alongside every other `core:data` module. */
-val syncDataModule = module {
-    single { DataSyncCoordinator(get(), get()) }
+/**
+ * DAO for [SyncMetaEntity] access
+ */
+@Dao
+interface SyncMetaDao {
+
+    /**
+     * Returns the stored sync version, or null if this database has never been synced
+     */
+    @Query(value = """SELECT sync_version FROM sync_meta WHERE id = 0""")
+    suspend fun getSyncVersion(): Long?
+
+    @Upsert
+    suspend fun upsertSyncMeta(entity: SyncMetaEntity)
 }

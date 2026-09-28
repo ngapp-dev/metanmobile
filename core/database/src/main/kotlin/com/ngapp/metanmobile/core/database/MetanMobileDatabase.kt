@@ -30,6 +30,7 @@ import com.ngapp.metanmobile.core.database.dao.location.LocationResourceDao
 import com.ngapp.metanmobile.core.database.dao.news.NewsResourceDao
 import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
 import com.ngapp.metanmobile.core.database.dao.station.StationResourceDao
+import com.ngapp.metanmobile.core.database.dao.syncmeta.SyncMetaDao
 import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.contact.ContactResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
@@ -38,6 +39,7 @@ import com.ngapp.metanmobile.core.database.model.location.LocationResourceEntity
 import com.ngapp.metanmobile.core.database.model.news.NewsResourceEntity
 import com.ngapp.metanmobile.core.database.model.price.PriceResourceEntity
 import com.ngapp.metanmobile.core.database.model.station.StationResourceEntity
+import com.ngapp.metanmobile.core.database.model.syncmeta.SyncMetaEntity
 import com.ngapp.metanmobile.core.database.util.InstantConverter
 import com.ngapp.metanmobile.core.database.util.ListStringConverter
 
@@ -51,10 +53,11 @@ import com.ngapp.metanmobile.core.database.util.ListStringConverter
         CareerResourceEntity::class,
         PriceResourceEntity::class,
         LocationResourceEntity::class,
+        SyncMetaEntity::class,
     ],
     version = METAN_MOBILE_DATABASE_VERSION,
-    // Keep the v8 schema in source control before moving this database to Room Multiplatform.
-    // Future KMP schema changes must be accompanied by an explicit migration.
+    // Schemas are kept in source control so changes stay reviewable. A version bump needs no
+    // Migration — see METAN_MOBILE_DATABASE_VERSION.
     exportSchema = true,
 )
 @TypeConverters(
@@ -71,6 +74,7 @@ abstract class MetanMobileDatabase : RoomDatabase() {
     abstract fun careerResourceDao(): CareerResourceDao
     abstract fun priceResourceDao(): PriceResourceDao
     abstract fun locationResourceDao(): LocationResourceDao
+    abstract fun syncMetaDao(): SyncMetaDao
 }
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")

@@ -66,3 +66,12 @@
 -keepclassmembers class com.ngapp.metanmobile.sync.workers.** {
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
+
+# Firebase Performance ships protobuf-lite messages (com.google.firebase.perf.v1.*) that
+# protobuf-lite reads by field name via reflection. Without this R8 strips/renames those fields
+# and the release build crashes on startup ("Field packageName_ for ... not found"). This used to
+# come for free from core:datastore's consumer rules, back when DataStore itself was
+# protobuf-lite; it's Wire now, so the rule lives here with the dependency that needs it.
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite {
+   <fields>;
+}

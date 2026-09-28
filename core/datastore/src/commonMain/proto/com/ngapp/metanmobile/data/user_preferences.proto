@@ -6,7 +6,10 @@ import "com/ngapp/metanmobile/data/dark_theme_config.proto";
 import "com/ngapp/metanmobile/data/sorting_config.proto";
 
 message UserPreferences {
-  reserved 2;
+  // 7: language_config (removed after 2.1.5).
+  // 16: sync_version (never released; moved to the Room table sync_meta so it's dropped together
+  //     with the cache it describes).
+  reserved 2, 7, 16;
 
   bool has_done_int_to_string_id_migration = 1;
   repeated string deprecated_favorite_station_resource_codes = 3;
@@ -22,9 +25,4 @@ message UserPreferences {
   bool is_review_shown = 13;
   repeated string home_reorderable = 14;
   bool is_home_last_news_expanded = 15;
-
-  // Последняя версия, полученная от GET /api/sync?since= (см. спеку синхронизации,
-  // Этап 2). 0 значит "ещё ни разу не синкались через этот эндпоинт" — сервер тогда
-  // отдаёт полный список, как и старые /api/news и т.п.
-  int64 sync_version = 16;
 }

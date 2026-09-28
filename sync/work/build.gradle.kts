@@ -15,11 +15,18 @@
  *
  */
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+
 plugins {
     alias(libs.plugins.mm.kmp.library)
 }
 
 kotlin {
+    // core:testing (androidDeviceTest below) is a classic Android library built with core library
+    // desugaring, and AGP refuses to consume it from a module that doesn't desugar too.
+    targets.withType<KotlinMultiplatformAndroidLibraryTarget>().configureEach {
+        enableCoreLibraryDesugaring = true
+    }
     sourceSets {
         // The *what* of a sync (which repositories, fetched in parallel) is shared between
         // platforms via core:data's DataSyncCoordinator/SyncManager contract; this module only
@@ -53,4 +60,5 @@ dependencies {
     // dependency-handler-scoped one) inside the sourceSets.androidMain.dependencies {} block above
     // - see core:analytics' build.gradle.kts for the same workaround.
     add("androidMainImplementation", platform(libs.firebase.bom))
+    add("coreLibraryDesugaring", libs.android.desugarJdkLibs)
 }

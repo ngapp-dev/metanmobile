@@ -51,5 +51,13 @@ kotlin {
                 implementation(libs.androidx.tracing.ktx)
             }
         }
+        // Room on the JVM needs an Android Context, hence Robolectric rather than plain commonTest.
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.junit4)
+            implementation(libs.robolectric)
+            implementation(libs.androidx.test.core)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }

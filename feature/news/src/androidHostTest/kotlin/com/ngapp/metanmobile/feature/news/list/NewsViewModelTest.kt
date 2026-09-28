@@ -26,7 +26,6 @@ import com.ngapp.metanmobile.core.testing.repository.TestNewsRepository
 import com.ngapp.metanmobile.core.testing.repository.TestUserDataRepository
 import com.ngapp.metanmobile.core.testing.repository.emptyUserData
 import com.ngapp.metanmobile.core.testing.util.MainDispatcherRule
-import com.ngapp.metanmobile.core.testing.util.TestSyncManager
 import com.ngapp.metanmobile.feature.news.list.state.NewsAction
 import com.ngapp.metanmobile.feature.news.list.state.NewsUiState
 import kotlinx.coroutines.flow.collect
@@ -51,15 +50,13 @@ class NewsViewModelTest {
         newsRepository = newsRepository,
         userDataRepository = userDataRepository,
     )
-    private val syncManager = TestSyncManager()
 
     private lateinit var viewModel: NewsViewModel
 
     @Before
     fun setup() {
         viewModel = NewsViewModel(
-            syncManager = syncManager,
-            userNewsResourceRepository = userNewsResourceRepository,
+            userNewsRepository = userNewsResourceRepository,
             userDataRepository = userDataRepository,
         )
     }
@@ -75,8 +72,8 @@ class NewsViewModelTest {
 
         val item = viewModel.uiState.value
         assertIs<NewsUiState.Success>(item)
-        assertEquals(emptyList(), item.newsList)
-        assertEquals(emptyList(), item.pinnedNewsList)
+        assertEquals(emptyList(), item.news)
+        assertEquals(emptyList(), item.pinnedNews)
     }
 
     @Test
@@ -92,8 +89,8 @@ class NewsViewModelTest {
 
         val item = viewModel.uiState.value
         assertIs<NewsUiState.Success>(item)
-        assertEquals(listOf("1"), item.pinnedNewsList.map { it.id })
-        assertEquals(setOf("1", "2"), item.newsList.map { it.id }.toSet())
+        assertEquals(listOf("1"), item.pinnedNews.map { it.id })
+        assertEquals(setOf("1", "2"), item.news.map { it.id }.toSet())
     }
 
     @Test
@@ -109,7 +106,7 @@ class NewsViewModelTest {
 
             val item = viewModel.uiState.value
             assertIs<NewsUiState.Success>(item)
-            assertEquals(1, item.newsList.size)
+            assertEquals(1, item.news.size)
         }
 
     @Test
@@ -121,7 +118,7 @@ class NewsViewModelTest {
 
         val item = viewModel.uiState.value
         assertIs<NewsUiState.Success>(item)
-        assertTrue(item.newsList.single().hasBeenViewed)
+        assertTrue(item.news.single().hasBeenViewed)
     }
 
     @Test
@@ -136,7 +133,7 @@ class NewsViewModelTest {
 
         val item = viewModel.uiState.value
         assertIs<NewsUiState.Success>(item)
-        assertEquals(sortingConfig, item.newsSortingConfig)
+        assertEquals(sortingConfig, item.sorting)
     }
 
     @Test
@@ -152,32 +149,35 @@ class NewsViewModelTest {
                 ),
             )
 
-            viewModel.triggerAction(NewsAction.UpdateSearchQuery("oak"))
+            viewModel.dispatch(NewsAction.UpdateSearchQuery("oak"))
 
             val item = viewModel.uiState.value
             assertIs<NewsUiState.Success>(item)
-            assertEquals(setOf("1", "2"), item.newsList.map { it.id }.toSet())
+            assertEquals(setOf("1", "2"), item.news.map { it.id }.toSet())
             // The pinned list query never carries searchQuery, so it stays unfiltered.
-            assertEquals(listOf("1"), item.pinnedNewsList.map { it.id })
+            assertEquals(listOf("1"), item.pinnedNews.map { it.id })
         }
 
     @Test
     fun `UpdateSearchQuery action updates searchQuery`() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.searchQuery.collect() }
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.search.collect() }
 
-        viewModel.triggerAction(NewsAction.UpdateSearchQuery("oak"))
+        viewModel.dispatch(NewsAction.UpdateSearchQuery("oak"))
 
-        assertEquals("oak", viewModel.searchQuery.value)
+        assertEquals("oak", viewModel.search.value)
     }
 
     @Test
-    fun `ShowAlertDialog action updates showDialog`() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.showDialog.collect() }
-        assertEquals(false, viewModel.showDialog.value)
+    fun `SetSortingVisible action shows and hides the sorting sheet`() = runTest {
+        assertEquals(false, viewModel.isSortingVisible.value)
 
-        viewModel.triggerAction(NewsAction.ShowAlertDialog(true))
+        viewModel.dispatch(NewsAction.SetSortingVisible(true))
 
-        assertEquals(true, viewModel.showDialog.value)
+        assertEquals(true, viewModel.isSortingVisible.value)
+
+        viewModel.dispatch(NewsAction.SetSortingVisible(false))
+
+        assertEquals(false, viewModel.isSortingVisible.value)
     }
 
     @Test
@@ -188,35 +188,13 @@ class NewsViewModelTest {
             sortingType = NewsSortingType.NAME,
             sortingOrder = SortingOrder.ASC,
         )
-        viewModel.triggerAction(NewsAction.UpdateSortingConfig(newConfig))
+        viewModel.dispatch(NewsAction.SetSortingVisible(true))
+        viewModel.dispatch(NewsAction.UpdateSortingConfig(newConfig))
 
         val item = viewModel.uiState.value
         assertIs<NewsUiState.Success>(item)
-        assertEquals(newConfig, item.newsSortingConfig)
-    }
-
-    @Test
-    fun `isSyncing reflects the sync manager once collected`() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.isSyncing.collect() }
-
-        syncManager.setSyncing(true)
-
-        assertEquals(true, viewModel.isSyncing.value)
-    }
-
-    @Test
-    fun `syncFailed reflects the sync manager once collected`() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.syncFailed.collect() }
-
-        syncManager.setSyncFailed(true)
-
-        assertEquals(true, viewModel.syncFailed.value)
-    }
-
-    @Test
-    fun `RetrySync action delegates to the sync manager`() = runTest {
-        viewModel.triggerAction(NewsAction.RetrySync)
-
-        assertEquals(1, syncManager.requestSyncCallCount)
+        assertEquals(newConfig, item.sorting)
+        // Picking a sorting option closes the sheet.
+        assertEquals(false, viewModel.isSortingVisible.value)
     }
 }
