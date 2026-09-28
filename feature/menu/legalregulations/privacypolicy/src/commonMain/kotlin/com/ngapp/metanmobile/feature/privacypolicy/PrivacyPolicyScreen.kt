@@ -33,8 +33,8 @@ import com.ngapp.metanmobile.feature.privacypolicy.state.PrivacyPolicyAction
 import dev.icerock.moko.resources.compose.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-private const val urlEn = "https://metan.by/upload/metanmobile/privacypolicy.html"
-private const val urlRu = "https://metan.by/upload/metanmobile/privacypolicy_ru.html"
+private const val urlEn = "https://metanmobile.pages.dev/privacypolicy"
+private const val urlRu = "https://metanmobile.pages.dev/privacypolicy_ru"
 
 @Composable
 fun PrivacyPolicyRoute(

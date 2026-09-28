@@ -18,8 +18,8 @@ import com.ngapp.metanmobile.core.model.userdata.LanguageConfig
 import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.util.LanguageHelper
 
-private const val urlEn = "https://metan.by/upload/metanmobile/termsandconditions.html"
-private const val urlRu = "https://metan.by/upload/metanmobile/termsandconditions_ru.html"
+private const val urlEn = "https://metanmobile.pages.dev/termsandconditions"
+private const val urlRu = "https://metanmobile.pages.dev/termsandconditions_ru"
 
 @Composable
 fun TermsAndConditionsScreen(
