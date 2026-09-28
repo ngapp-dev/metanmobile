@@ -25,8 +25,8 @@ import platform.UIKit.UIView
  * invisible to the separate Kotlin/Native compilation of this shared framework, which has no
  * cinterop bindings for them. This interface is the seam: implemented in Swift
  * (MobileAdsBridge.swift) and handed to Kotlin once via [registerNativeAdsBridge], called from
- * MetanMobileApp.swift right alongside initSharedKoin(). [ConsentHelper] and [MainBannerAd] on
- * iOS both just forward to whatever is registered here.
+ * MetanMobileApp.swift right alongside initSharedKoin(). [ConsentHelper], [MainBannerAd] and
+ * [NativeBanner] on iOS all just forward to whatever is registered here.
  */
 interface NativeAdsBridge {
     fun initializeMobileAdsSdk()
@@ -42,7 +42,39 @@ interface NativeAdsBridge {
      * [MainBannerAd]).
      */
     fun makeBannerAdView(adUnitId: String, onAdLoadResult: (loaded: Boolean) -> Unit): UIView
+
+    /**
+     * A NativeBanner row for [NativeBanner] (AdMob, or Yandex for Russian users), laid out like
+     * the surrounding list's rows per [style]. The loaded ad is cached per [slotKey] for the app's
+     * lifetime, so a lazy-list slot recreated on scroll doesn't request a new ad.
+     * [onAdLoadResult] reports the row's height in points once an ad is bound to the returned
+     * view, and 0 on a failed/no-fill load - the view is only shown after a positive height.
+     */
+    fun makeNativeAdView(
+        slotKey: String,
+        style: NativeAdViewStyle,
+        onAdLoadResult: (heightPoints: Double) -> Unit,
+    ): UIView
 }
+
+/**
+ * Look of a native ad row, resolved from the Compose theme on the Kotlin side. Colors are ARGB.
+ *
+ * @property isStationLayout StationRow-like (one-line title + description) instead of NewsRow-like.
+ */
+class NativeAdViewStyle(
+    val isStationLayout: Boolean,
+    val background: Long,
+    val titleColor: Long,
+    val titleSize: Double,
+    val descriptionColor: Long,
+    val descriptionSize: Double,
+    val metaColor: Long,
+    val metaSize: Double,
+    val accent: Long,
+    val onAccent: Long,
+    val adLabel: String,
+)
 
 /** Set exactly once, from Swift, before any of [ConsentHelper]'s methods are used for real. */
 object NativeAdsRegistry {

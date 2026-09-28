@@ -7,9 +7,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
@@ -18,10 +20,16 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.ngapp.metanmobile.core.designsystem.theme.Gray500
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
@@ -41,6 +49,7 @@ fun StationDetailBottomSheet(
     content: @Composable (Boolean) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val density = LocalDensity.current
     val bottomSheetValue = bottomSheetState.bottomSheetState.currentValue
     val roundedCornerShape by animateDpAsState(
         targetValue = if (bottomSheetValue == SheetValue.Expanded) 0.dp else 16.dp,
@@ -80,7 +89,18 @@ fun StationDetailBottomSheet(
         }
     }
 
+    // The sheet only ever rests fully expanded, i.e. at the top of this scaffold. Whether that is
+    // under the status bar depends on the host screen (Home lets content run under its glass top
+    // bar, Stations still starts below the status bar), so pad the sheet content by exactly the
+    // part of the status bar it overlaps.
+    val statusBarTopPx = WindowInsets.statusBars.getTop(density)
+    var scaffoldTopPx by remember { mutableStateOf(0f) }
+    val sheetTopInset = with(density) {
+        (statusBarTopPx - scaffoldTopPx).coerceAtLeast(0f).toDp()
+    }
+
     BottomSheetScaffold(
+        modifier = Modifier.onGloballyPositioned { scaffoldTopPx = it.positionInWindow().y },
         scaffoldState = bottomSheetState,
         // No half-open state: a single swipe down closes the sheet completely.
         sheetPeekHeight = 0.dp,
@@ -92,7 +112,7 @@ fun StationDetailBottomSheet(
         sheetContainerColor = MMColors.cardBackgroundColor,
         sheetTonalElevation = 10.dp,
         sheetContent = {
-            Column {
+            Column(modifier = Modifier.padding(top = sheetTopInset)) {
                 BottomSheetDragHandle()
                 if (!stationCode.isNullOrEmpty()) {
                     StationDetailRoute(

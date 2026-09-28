@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
  * Keeps the system bar icons readable against the app theme. The user's theme preference can
  * differ from the OS one (e.g. app forced light while the phone is dark), so the platform default
  * - which follows the OS - would leave white icons on a light app bar.
+ *
+ * @param followsSystem the user left the theme on "follow system", so [darkTheme] is the OS one.
  */
 @Composable
-expect fun SystemBarsAppearance(darkTheme: Boolean)
+expect fun SystemBarsAppearance(darkTheme: Boolean, followsSystem: Boolean)

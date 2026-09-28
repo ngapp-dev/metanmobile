@@ -27,7 +27,7 @@ import androidx.compose.runtime.DisposableEffect
 
 /** Same parameters as master's MainActivity, resolved from the user's theme instead of the OS. */
 @Composable
-actual fun SystemBarsAppearance(darkTheme: Boolean) {
+actual fun SystemBarsAppearance(darkTheme: Boolean, followsSystem: Boolean) {
     val activity = LocalActivity.current as? ComponentActivity ?: return
     DisposableEffect(activity, darkTheme) {
         activity.enableEdgeToEdge(

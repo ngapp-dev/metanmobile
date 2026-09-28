@@ -154,11 +154,13 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
             views.callToAction.setTextOrGone(ad.callToAction)
             views.domain.setTextOrGone(ad.advertiser)
             views.sponsored.text = style.adLabel
-            // The thumbnail shows the ad's icon; ads without one show their media there instead.
+            // The thumbnail shows the ad's icon at the list rows' own size; ads without an icon
+            // show their media there instead, at the 120dp minimum MediaView size.
             val icon = ad.icon?.drawable
             views.icon.setImageDrawable(icon)
             views.icon.visibility = if (icon != null) View.VISIBLE else View.GONE
             views.media.visibility = if (icon != null) View.GONE else View.VISIBLE
+            views.setMediaSized(icon == null)
             views.age.visibility = View.GONE
             views.warning.visibility = View.GONE
             views.feedback.visibility = View.GONE
@@ -200,6 +202,8 @@ private fun YandexNativeBanner(slotKey: String, style: NativeBannerStyle, modifi
         factory = { viewContext ->
             val adView = YandexNativeAdView(viewContext)
             val views = NativeBannerViews.create(viewContext, style, YandexMediaView(viewContext))
+            // Any Yandex ad may carry media, so the thumbnail always has media size.
+            views.setMediaSized(true)
             adView.addView(views.root)
             adView.tag = views
             adView
@@ -245,12 +249,16 @@ private class NativeBannerStyle(
 
 /**
  * The NativeBanner row, built in code (neither SDK ships a ready template in the versions we use)
- * to match NewsRow / StationRow: 82dp row with the same asymmetric-rounded thumbnail on the left,
- * title (+ description for stations) and a meta line with the "Ad" label, advertiser and the
- * call-to-action.
+ * to match NewsRow / StationRow: the same asymmetric-rounded thumbnail on the left, title
+ * (+ description) and a meta line with the "Ad" label, advertiser and the call-to-action. With an
+ * icon it's exactly a list row's size; showing media it grows to fit a 120x120dp thumbnail - the
+ * minimum media size the ad networks allow - and uses the extra height for the ad's text.
  */
 private class NativeBannerViews(
     val root: LinearLayout,
+    val thumbnail: FrameLayout,
+    private val isStation: Boolean,
+    private val density: Float,
     val icon: ImageView,
     val media: View,
     val favicon: ImageView,
@@ -263,6 +271,18 @@ private class NativeBannerViews(
     val callToAction: TextView,
     val warning: TextView,
 ) {
+    fun setMediaSized(mediaSized: Boolean) {
+        fun dp(value: Int) = (value * density).toInt()
+        thumbnail.layoutParams = (thumbnail.layoutParams as LinearLayout.LayoutParams).apply {
+            width = if (mediaSized) dp(120) else dp(74)
+            height = if (mediaSized) dp(120) else dp(66)
+            marginEnd = if (mediaSized) dp(12) else dp(8)
+        }
+        description.maxLines = if (mediaSized) 2 else 1
+        // News rows only have room for the ad text once the thumbnail makes the row taller.
+        if (!isStation && !mediaSized) description.visibility = View.GONE
+    }
+
     companion object {
         fun create(context: Context, style: NativeBannerStyle, media: View): NativeBannerViews {
             fun dp(value: Int) = TypedValue.applyDimension(
@@ -282,16 +302,19 @@ private class NativeBannerViews(
 
             val isStation = style.layout == NativeBannerLayout.Station
 
-            // Same shape as the rows' images: RoundedCornerShape(20.dp, 0.dp, 20.dp, 0.dp).
+            // Only the icon gets the rows' image shape (RoundedCornerShape(20.dp, 0.dp, 20.dp,
+            // 0.dp)); media stays square-cornered so the creative and its video controls are
+            // never clipped.
             val corner = dp(20).toFloat()
-            val thumbnail = FrameLayout(context).apply {
+            val thumbnail = FrameLayout(context)
+            val icon = ImageView(context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
                 background = GradientDrawable().apply {
                     cornerRadii = floatArrayOf(corner, corner, 0f, 0f, corner, corner, 0f, 0f)
                     setColor(style.metaColor and 0x33FFFFFF)
                 }
                 clipToOutline = true
             }
-            val icon = ImageView(context).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
             thumbnail.addView(media, FrameLayout.LayoutParams(MATCH, MATCH))
             thumbnail.addView(icon, FrameLayout.LayoutParams(MATCH, MATCH))
 
@@ -323,13 +346,10 @@ private class NativeBannerViews(
             val texts = LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 addView(title)
-                if (isStation) {
-                    addView(description, LinearLayout.LayoutParams(MATCH, WRAP).apply { topMargin = dp(2) })
-                }
+                addView(description, LinearLayout.LayoutParams(MATCH, WRAP).apply { topMargin = dp(2) })
                 addView(meta, LinearLayout.LayoutParams(MATCH, WRAP).apply { topMargin = dp(6) })
                 addView(warning)
             }
-            if (!isStation) description.visibility = View.GONE
 
             val root = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -343,14 +363,16 @@ private class NativeBannerViews(
                     marginEnd = dp(8)
                 })
                 addView(texts, LinearLayout.LayoutParams(0, WRAP, 1f))
-                addView(feedback, LinearLayout.LayoutParams(dp(16), dp(16)).apply {
+                // Yandex requires every icon (the feedback/close control included) to be at least
+                // 32x32dp; with its 16dp padding the touch area reaches their 64x64dp minimum.
+                addView(feedback, LinearLayout.LayoutParams(dp(32), dp(32)).apply {
                     marginStart = dp(4)
                     gravity = Gravity.TOP
-                    topMargin = dp(8)
+                    topMargin = dp(4)
                 })
             }
             return NativeBannerViews(
-                root, icon, media, favicon, feedback, title, description, sponsored, domain, age,
+                root, thumbnail, isStation, context.resources.displayMetrics.density, icon, media, favicon, feedback, title, description, sponsored, domain, age,
                 callToAction, warning,
             )
         }

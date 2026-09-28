@@ -43,8 +43,12 @@
 	<true/>
 	<key>MMMainBannerAdUnitID</key>
 	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>MMNativeBannerAdUnitID</key>
+	<string>ca-app-pub-3940256099942544/3986624511</string>
 	<key>MMYandexRuBannerAdUnitID</key>
 	<string>demo-banner-yandex</string>
+	<key>MMYandexRuNativeBannerAdUnitID</key>
+	<string>demo-native-app-yandex</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Metan Mobile uses your location to show the distance to each gas station on the map and in the list. It's only read while the app is open and never shared.</string>
 	<key>NSUserTrackingUsageDescription</key>

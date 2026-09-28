@@ -17,14 +17,60 @@
 
 package com.ngapp.metanmobile.core.ui.ads
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.interop.UIKitView
+import androidx.compose.ui.unit.dp
+import com.ngapp.metanmobile.SharedRes
+import com.ngapp.metanmobile.core.designsystem.theme.Blue
+import com.ngapp.metanmobile.core.designsystem.theme.Gray400
+import com.ngapp.metanmobile.core.designsystem.theme.MMColors
+import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
+import com.ngapp.metanmobile.core.designsystem.theme.White
+import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
+import dev.icerock.moko.resources.compose.stringResource
+import kotlinx.cinterop.ExperimentalForeignApi
 
-// TODO: native ads on iOS need a native-ad factory on the Swift NativeAdsBridge (the
-//  GoogleMobileAds SDK is only visible from Swift) - not wired up yet, so the slot stays empty.
+/** The row itself is built natively by the Swift bridge (see MobileAdsBridge.swift). */
+@OptIn(ExperimentalForeignApi::class)
 @Composable
 internal actual fun PlatformNativeBanner(
     slotKey: String,
     layout: NativeBannerLayout,
     modifier: Modifier,
-) = Unit
+) {
+    val bridge = NativeAdsRegistry.bridge ?: return
+    val style = NativeAdViewStyle(
+        isStationLayout = layout == NativeBannerLayout.Station,
+        background = MMColors.cardBackgroundColor.toArgb().toLong(),
+        titleColor = MMTypography.titleLarge.color.toArgb().toLong(),
+        titleSize = MMTypography.titleLarge.fontSize.value.toDouble(),
+        descriptionColor = MMTypography.titleMedium.color.toArgb().toLong(),
+        descriptionSize = MMTypography.titleMedium.fontSize.value.toDouble(),
+        metaColor = Gray400.toArgb().toLong(),
+        metaSize = MMTypography.bodySmall.fontSize.value.toDouble(),
+        accent = Blue.toArgb().toLong(),
+        onAccent = White.toArgb().toLong(),
+        adLabel = stringResource(SharedRes.strings.core_ui_ad_label),
+    )
+    // Like MainBannerAd: nothing is composed (or takes space) until an ad is actually bound.
+    var heightPoints by remember(slotKey, layout) { mutableStateOf(0.0) }
+    val adView = remember(slotKey, layout, style.background) {
+        bridge.makeNativeAdView(slotKey, style) { height -> heightPoints = height }
+    }
+    if (heightPoints > 0.0) {
+        UIKitView(
+            factory = { adView },
+            modifier = modifier
+                .fillMaxWidth()
+                .height(heightPoints.dp),
+        )
+    }
+}

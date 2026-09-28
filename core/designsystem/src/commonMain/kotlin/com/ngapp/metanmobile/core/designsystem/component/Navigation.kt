@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,9 +47,15 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
@@ -253,12 +260,20 @@ fun MMNavigationSuiteScaffold(
         ),
         modifier = modifier,
     ) {
+        // The ad strip only exists once a banner has actually loaded (the ad composable takes no
+        // space until then, e.g. on iOS without fill); until it does, the floating bar sits on
+        // the system navigation inset itself instead of above an empty coloured strip.
+        var isAdShown by remember { mutableStateOf(false) }
+        val navigationBarsBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
         Column {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    // The ad strip below takes the system navigation bar inset, so screens must
-                    // not pad for it a second time.
+                    // Keeps things parked just outside this area from showing, e.g. the glass
+                    // shadows of a hidden station-detail sheet under the bottom edge.
+                    .clipToBounds()
+                    // Screens never pad for the navigation inset here: either the ad strip below
+                    // takes it, or the floating bar padding (LocalMMFloatingBarPadding) includes it.
                     .then(
                         if (showBottomBar) {
                             Modifier.consumeWindowInsets(WindowInsets.navigationBars)
@@ -273,8 +288,12 @@ fun MMNavigationSuiteScaffold(
                         .then(if (isFloatingBar) Modifier.layerBackdrop(backdrop) else Modifier),
                 ) {
                     CompositionLocalProvider(
-                        LocalMMFloatingBarPadding provides
-                            if (isFloatingBar) FloatingBarHeight + FloatingBarMargin * 2 else 0.dp,
+                        LocalMMFloatingBarPadding provides if (isFloatingBar) {
+                            FloatingBarHeight + FloatingBarMargin * 2 +
+                                if (isAdShown) 0.dp else navigationBarsBottom
+                        } else {
+                            0.dp
+                        },
                     ) {
                         content()
                     }
@@ -285,19 +304,26 @@ fun MMNavigationSuiteScaffold(
                         items = items,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
+                            .padding(bottom = if (isAdShown) 0.dp else navigationBarsBottom)
                             .padding(horizontal = 16.dp, vertical = FloatingBarMargin),
                     )
                 }
             }
             if (showBottomBar) {
-                MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
+                if (isAdShown) MMDivider(color = MaterialTheme.colorScheme.surfaceTint)
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.onSurface)
-                        .windowInsetsPadding(WindowInsets.navigationBars),
+                    modifier = if (isAdShown) {
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.onSurface)
+                            .windowInsetsPadding(WindowInsets.navigationBars)
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
                 ) {
-                    adsContent()
+                    Box(modifier = Modifier.onSizeChanged { isAdShown = it.height > 0 }) {
+                        adsContent()
+                    }
                 }
             }
         }

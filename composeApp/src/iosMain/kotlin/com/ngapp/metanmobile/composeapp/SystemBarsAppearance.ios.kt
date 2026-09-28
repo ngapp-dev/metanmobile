@@ -18,8 +18,30 @@
 package com.ngapp.metanmobile.composeapp
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import platform.UIKit.UIApplication
+import platform.UIKit.UIUserInterfaceStyle
+import platform.UIKit.UIWindow
+import platform.UIKit.UIWindowScene
 
-// TODO: iOS status bar style is owned by the hosting UIViewController (preferredStatusBarStyle),
-//  not wired up yet - it currently follows the OS appearance.
+/**
+ * iOS derives the status bar style from the window's interface style, so a forced app theme
+ * overrides it on the app's windows. "Follow system" must go back to Unspecified rather than a
+ * fixed style: an override would also freeze what isSystemInDarkTheme() reads, and the app would
+ * stop following later OS theme changes.
+ */
 @Composable
-actual fun SystemBarsAppearance(darkTheme: Boolean) = Unit
+actual fun SystemBarsAppearance(darkTheme: Boolean, followsSystem: Boolean) {
+    DisposableEffect(darkTheme, followsSystem) {
+        val style = when {
+            followsSystem -> UIUserInterfaceStyle.UIUserInterfaceStyleUnspecified
+            darkTheme -> UIUserInterfaceStyle.UIUserInterfaceStyleDark
+            else -> UIUserInterfaceStyle.UIUserInterfaceStyleLight
+        }
+        UIApplication.sharedApplication.connectedScenes
+            .filterIsInstance<UIWindowScene>()
+            .flatMap { it.windows.filterIsInstance<UIWindow>() }
+            .forEach { it.overrideUserInterfaceStyle = style }
+        onDispose {}
+    }
+}

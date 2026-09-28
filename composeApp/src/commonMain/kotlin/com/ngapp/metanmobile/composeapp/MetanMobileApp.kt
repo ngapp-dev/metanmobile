@@ -25,7 +25,10 @@ fun MetanMobileApp(
 ) {
     val userData = userDataRepository.userData.collectAsStateWithLifecycle(initialValue = null).value
     val darkThemeConfig = userData?.darkThemeConfig ?: DarkThemeConfig.FOLLOW_SYSTEM
-    SystemBarsAppearance(darkTheme = shouldUseDarkTheme(darkThemeConfig))
+    SystemBarsAppearance(
+        darkTheme = shouldUseDarkTheme(darkThemeConfig),
+        followsSystem = darkThemeConfig == DarkThemeConfig.FOLLOW_SYSTEM,
+    )
     MetanMobileTheme(darkThemeConfig) {
         PermissionsManager {
             MetanMobileNavHost(

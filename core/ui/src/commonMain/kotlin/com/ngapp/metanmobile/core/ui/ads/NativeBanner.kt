@@ -53,9 +53,17 @@ fun NativeBanner(
     if (LocalCanShowAds.current) PlatformNativeBanner(slotKey, layout, modifier)
 }
 
-/** Whether a native banner goes after the item at [index] when shown every [interval] items. */
+/**
+ * Whether a native banner goes after the item at [index] when shown every [interval] items. A list
+ * shorter than one interval gets a single banner after its last item; otherwise banners never go
+ * last. Empty lists get none.
+ */
 fun isNativeBannerSlot(index: Int, interval: Int, itemCount: Int): Boolean =
-    (index + 1) % interval == 0 && index != itemCount - 1
+    if (itemCount < interval) {
+        index == itemCount - 1
+    } else {
+        (index + 1) % interval == 0 && index != itemCount - 1
+    }
 
 @Composable
 internal expect fun PlatformNativeBanner(
