@@ -17,6 +17,7 @@ import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
 import com.ngapp.metanmobile.core.designsystem.component.LocalMMFloatingBarPadding
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.ui.ads.NativeBanner
+import com.ngapp.metanmobile.core.ui.ads.NativeBannerLayout
 import com.ngapp.metanmobile.core.ui.ads.isNativeBannerSlot
 import com.ngapp.metanmobile.core.ui.logStationResourceOpened
 import com.ngapp.metanmobile.core.ui.stations.StationRow
@@ -72,7 +73,7 @@ internal fun StationListContent(
                 }
                 if (isNativeBannerSlot(index, NATIVE_BANNER_INTERVAL, stationsList.size)) {
                     item(key = "nativeBanner-$index", span = { GridItemSpan(maxLineSpan) }) {
-                        NativeBanner(slotKey = "stations-$index")
+                        NativeBanner(slotKey = "stations-$index", layout = NativeBannerLayout.Station)
                     }
                 }
             }

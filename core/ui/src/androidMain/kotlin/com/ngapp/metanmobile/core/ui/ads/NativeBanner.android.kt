@@ -46,6 +46,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd as GoogleNativeAd
 import com.google.android.gms.ads.nativead.MediaView as GoogleMediaView
+import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView as GoogleNativeAdView
 import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.theme.Blue
@@ -53,7 +54,7 @@ import com.ngapp.metanmobile.core.designsystem.theme.Gray400
 import com.ngapp.metanmobile.core.designsystem.theme.MMColors
 import com.ngapp.metanmobile.core.designsystem.theme.White
 import com.ngapp.metanmobile.core.designsystem.theme.cardBackgroundColor
-import com.ngapp.metanmobile.core.designsystem.theme.textColor
+import com.ngapp.metanmobile.core.designsystem.theme.MMTypography
 import com.yandex.mobile.ads.common.AdRequest as YandexAdRequest
 import com.yandex.mobile.ads.common.AdRequestError
 import com.yandex.mobile.ads.nativeads.MediaView as YandexMediaView
@@ -68,12 +69,21 @@ import dev.icerock.moko.resources.compose.stringResource
 // secrets.properties (see core/ui/build.gradle.kts's generateAdsSecrets task).
 
 @Composable
-internal actual fun PlatformNativeBanner(slotKey: String, modifier: Modifier) {
+internal actual fun PlatformNativeBanner(
+    slotKey: String,
+    layout: NativeBannerLayout,
+    modifier: Modifier,
+) {
     val context = LocalContext.current
     val style = NativeBannerStyle(
+        layout = layout,
         background = MMColors.cardBackgroundColor.toArgb(),
-        text = MMColors.textColor.toArgb(),
-        secondaryText = Gray400.toArgb(),
+        titleColor = MMTypography.titleLarge.color.toArgb(),
+        titleSizeSp = MMTypography.titleLarge.fontSize.value,
+        descriptionColor = MMTypography.titleMedium.color.toArgb(),
+        descriptionSizeSp = MMTypography.titleMedium.fontSize.value,
+        metaColor = Gray400.toArgb(),
+        metaSizeSp = MMTypography.bodySmall.fontSize.value,
         accent = Blue.toArgb(),
         onAccent = White.toArgb(),
         adLabel = stringResource(SharedRes.strings.core_ui_ad_label),
@@ -109,6 +119,12 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
                 // A failed slot simply stays empty - no retry loop.
                 override fun onAdFailedToLoad(error: LoadAdError) = Unit
             })
+            // The row thumbnail is square; ask for media that fits it.
+            .withNativeAdOptions(
+                NativeAdOptions.Builder()
+                    .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_SQUARE)
+                    .build(),
+            )
             .build()
             .loadAd(AdRequest.Builder().build())
     }
@@ -123,7 +139,7 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
             val views = NativeBannerViews.create(viewContext, style, mediaView)
             adView.addView(views.root)
             adView.headlineView = views.title
-            adView.bodyView = views.body
+            adView.bodyView = views.description
             adView.iconView = views.icon
             adView.callToActionView = views.callToAction
             adView.advertiserView = views.domain
@@ -134,16 +150,19 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
         update = { adView ->
             val views = adView.tag as NativeBannerViews
             views.title.text = ad.headline
-            views.body.setTextOrGone(ad.body)
+            views.description.setTextOrGone(ad.body)
             views.callToAction.setTextOrGone(ad.callToAction)
             views.domain.setTextOrGone(ad.advertiser)
             views.sponsored.text = style.adLabel
+            // The thumbnail shows the ad's icon; ads without one show their media there instead.
             val icon = ad.icon?.drawable
             views.icon.setImageDrawable(icon)
             views.icon.visibility = if (icon != null) View.VISIBLE else View.GONE
+            views.media.visibility = if (icon != null) View.GONE else View.VISIBLE
             views.age.visibility = View.GONE
             views.warning.visibility = View.GONE
             views.feedback.visibility = View.GONE
+            views.favicon.visibility = View.GONE
             adView.setNativeAd(ad)
         },
     )
@@ -187,12 +206,13 @@ private fun YandexNativeBanner(slotKey: String, style: NativeBannerStyle, modifi
         },
         update = { adView ->
             val views = adView.tag as NativeBannerViews
-            // Yandex fills every bound view itself and requires all of them to be present.
+            // Yandex fills every bound view itself (hiding the ones the ad has no asset for) and
+            // requires all of them to be bound.
             runCatching {
                 ad.bindNativeAd(
                     NativeAdViewBinder.Builder(adView)
                         .setAgeView(views.age)
-                        .setBodyView(views.body)
+                        .setBodyView(views.description)
                         .setCallToActionView(views.callToAction)
                         .setDomainView(views.domain)
                         .setFaviconView(views.favicon)
@@ -210,29 +230,36 @@ private fun YandexNativeBanner(slotKey: String, style: NativeBannerStyle, modifi
 }
 
 private class NativeBannerStyle(
+    val layout: NativeBannerLayout,
     val background: Int,
-    val text: Int,
-    val secondaryText: Int,
+    val titleColor: Int,
+    val titleSizeSp: Float,
+    val descriptionColor: Int,
+    val descriptionSizeSp: Float,
+    val metaColor: Int,
+    val metaSizeSp: Float,
     val accent: Int,
     val onAccent: Int,
     val adLabel: String,
 )
 
 /**
- * The NativeBanner layout, built in code (neither SDK ships a ready template in the versions we
- * use): header with icon, title, "Ad" label and advertiser; body; media; call-to-action button.
+ * The NativeBanner row, built in code (neither SDK ships a ready template in the versions we use)
+ * to match NewsRow / StationRow: 82dp row with the same asymmetric-rounded thumbnail on the left,
+ * title (+ description for stations) and a meta line with the "Ad" label, advertiser and the
+ * call-to-action.
  */
 private class NativeBannerViews(
     val root: LinearLayout,
     val icon: ImageView,
+    val media: View,
     val favicon: ImageView,
     val feedback: ImageView,
     val title: TextView,
+    val description: TextView,
     val sponsored: TextView,
     val domain: TextView,
     val age: TextView,
-    val body: TextView,
-    val media: View,
     val callToAction: TextView,
     val warning: TextView,
 ) {
@@ -253,79 +280,83 @@ private class NativeBannerViews(
                     ellipsize = TextUtils.TruncateAt.END
                 }
 
+            val isStation = style.layout == NativeBannerLayout.Station
+
+            // Same shape as the rows' images: RoundedCornerShape(20.dp, 0.dp, 20.dp, 0.dp).
+            val corner = dp(20).toFloat()
+            val thumbnail = FrameLayout(context).apply {
+                background = GradientDrawable().apply {
+                    cornerRadii = floatArrayOf(corner, corner, 0f, 0f, corner, corner, 0f, 0f)
+                    setColor(style.metaColor and 0x33FFFFFF)
+                }
+                clipToOutline = true
+            }
             val icon = ImageView(context).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
-            val favicon = ImageView(context)
-            val feedback = ImageView(context)
-            val title = text(15f, style.text, bold = true)
-            val sponsored = text(11f, style.onAccent).apply {
+            thumbnail.addView(media, FrameLayout.LayoutParams(MATCH, MATCH))
+            thumbnail.addView(icon, FrameLayout.LayoutParams(MATCH, MATCH))
+
+            val title = text(style.titleSizeSp, style.titleColor, bold = true, lines = if (isStation) 1 else 2)
+            val description = text(style.descriptionSizeSp, style.descriptionColor)
+            val sponsored = text(style.metaSizeSp, style.onAccent).apply {
                 background = GradientDrawable().apply {
                     cornerRadius = dp(4).toFloat()
                     setColor(style.accent)
                 }
                 setPadding(dp(4), 0, dp(4), 0)
             }
-            val domain = text(12f, style.secondaryText)
-            val age = text(12f, style.secondaryText)
-            val body = text(14f, style.text, lines = 2)
-            val callToAction = text(14f, style.onAccent, bold = true).apply {
-                gravity = Gravity.CENTER
-                background = GradientDrawable().apply {
-                    cornerRadius = dp(20).toFloat()
-                    setColor(style.accent)
-                }
-            }
-            val warning = text(11f, style.secondaryText, lines = 2)
+            val favicon = ImageView(context)
+            val domain = text(style.metaSizeSp, style.metaColor)
+            val age = text(style.metaSizeSp, style.metaColor)
+            val callToAction = text(style.metaSizeSp + 1f, style.accent, bold = true)
+            val warning = text(style.metaSizeSp - 1f, style.metaColor)
+            val feedback = ImageView(context)
 
             val meta = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 addView(sponsored)
                 addView(favicon, LinearLayout.LayoutParams(dp(12), dp(12)).apply { marginStart = dp(6) })
-                addView(domain, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
-                    marginStart = dp(4)
-                })
+                addView(domain, LinearLayout.LayoutParams(0, WRAP, 1f).apply { marginStart = dp(4) })
+                addView(age, LinearLayout.LayoutParams(WRAP, WRAP).apply { marginStart = dp(6) })
+                addView(callToAction, LinearLayout.LayoutParams(WRAP, WRAP).apply { marginStart = dp(8) })
             }
-            val titleColumn = LinearLayout(context).apply {
+            val texts = LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 addView(title)
-                addView(meta)
+                if (isStation) {
+                    addView(description, LinearLayout.LayoutParams(MATCH, WRAP).apply { topMargin = dp(2) })
+                }
+                addView(meta, LinearLayout.LayoutParams(MATCH, WRAP).apply { topMargin = dp(6) })
+                addView(warning)
             }
-            val header = LinearLayout(context).apply {
+            if (!isStation) description.visibility = View.GONE
+
+            val root = LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                addView(icon, LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginEnd = dp(12) })
-                addView(titleColumn, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                addView(age, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                    marginStart = dp(8)
-                })
-                addView(feedback, LinearLayout.LayoutParams(dp(20), dp(20)).apply { marginStart = dp(8) })
-            }
-            val mediaContainer = FrameLayout(context).apply {
-                addView(media, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(180)))
-            }
-            val root = LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
                 setBackgroundColor(style.background)
-                setPadding(dp(16), dp(12), dp(16), dp(12))
-                addView(header)
-                addView(body, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                setPadding(dp(16), 0, dp(12), 0)
+                minimumHeight = dp(82)
+                addView(thumbnail, LinearLayout.LayoutParams(dp(74), dp(66)).apply {
                     topMargin = dp(8)
+                    bottomMargin = dp(8)
+                    marginEnd = dp(8)
                 })
-                addView(mediaContainer, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                addView(texts, LinearLayout.LayoutParams(0, WRAP, 1f))
+                addView(feedback, LinearLayout.LayoutParams(dp(16), dp(16)).apply {
+                    marginStart = dp(4)
+                    gravity = Gravity.TOP
                     topMargin = dp(8)
-                })
-                addView(callToAction, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(40)).apply {
-                    topMargin = dp(10)
-                })
-                addView(warning, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                    topMargin = dp(4)
                 })
             }
             return NativeBannerViews(
-                root, icon, favicon, feedback, title, sponsored, domain, age, body, media,
+                root, icon, media, favicon, feedback, title, description, sponsored, domain, age,
                 callToAction, warning,
             )
         }
+
+        private const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
+        private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 }
 

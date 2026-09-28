@@ -23,4 +23,8 @@ import androidx.compose.ui.Modifier
 // TODO: native ads on iOS need a native-ad factory on the Swift NativeAdsBridge (the
 //  GoogleMobileAds SDK is only visible from Swift) - not wired up yet, so the slot stays empty.
 @Composable
-internal actual fun PlatformNativeBanner(slotKey: String, modifier: Modifier) = Unit
+internal actual fun PlatformNativeBanner(
+    slotKey: String,
+    layout: NativeBannerLayout,
+    modifier: Modifier,
+) = Unit
