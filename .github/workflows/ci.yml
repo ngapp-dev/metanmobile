@@ -29,6 +29,17 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      # secrets.properties is gitignored, but the Secrets Gradle plugin fails without it.
+      # Real ad unit ids fall back to test ids in core:ui, so placeholders are enough.
+      - name: Create stub secrets.properties
+        run: |
+          cat > secrets.properties <<'EOF'
+          MAPS_API_KEY=ci-placeholder
+          ADS_ID_KEY=ca-app-pub-3940256099942544~3347511713
+          METAN_ECOGAS_API=https://example.com/
+          GITHUB_BASE_URL=https://example.com/
+          EOF
+
       # google-services.json is gitignored; the Google Services plugin only needs a file
       # with matching package names to build, so CI uses a stub without real keys.
       - name: Create stub google-services.json
@@ -89,6 +100,17 @@ jobs:
           java-version: 21
 
       - uses: gradle/actions/setup-gradle@v4
+
+      # secrets.properties is gitignored, but the Secrets Gradle plugin fails without it.
+      # Real ad unit ids fall back to test ids in core:ui, so placeholders are enough.
+      - name: Create stub secrets.properties
+        run: |
+          cat > secrets.properties <<'EOF'
+          MAPS_API_KEY=ci-placeholder
+          ADS_ID_KEY=ca-app-pub-3940256099942544~3347511713
+          METAN_ECOGAS_API=https://example.com/
+          GITHUB_BASE_URL=https://example.com/
+          EOF
 
       - name: Compile shared code for iOS
         run: ./gradlew :composeApp:compileKotlinIosSimulatorArm64
