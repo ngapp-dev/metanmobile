@@ -17,10 +17,4 @@
 
 package com.ngapp.metanmobile.core.data.repository.contact
 
-import com.ngapp.metanmobile.core.data.Syncable
-import com.ngapp.metanmobile.core.model.contact.ContactResource
-import kotlinx.coroutines.flow.Flow
-
-interface ContactsRepository : Syncable {
-    fun getContactResource(): Flow<ContactResource?>
-}
+typealias ContactsRepository = com.ngapp.metanmobile.core.domain.repository.contact.ContactsRepository

@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.price
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,11 +26,3 @@ data class NetworkPriceResource(
     val dateCreated: String = "",
     val content: String = "",
 )
-
-fun RssItem.asNetworkPriceResource() = NetworkPriceResource(
-    id = categories[PriceCategoryValues.CATEGORY_ID].toInt(),
-    title = title ?: "",
-    dateCreated = pubDate ?: "",
-    content = content ?: ""
-)
-

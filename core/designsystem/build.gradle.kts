@@ -16,41 +16,54 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.compose)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.roborazzi)
+    alias(libs.plugins.mm.kmp.library)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose)
 }
 
-android {
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api("org.jetbrains.compose.runtime:runtime:${libs.versions.composePlugin.get()}")
+            api("org.jetbrains.compose.foundation:foundation:${libs.versions.composePlugin.get()}")
+            api(compose.material3)
+            api(compose.materialIconsExtended)
+            api("org.jetbrains.compose.ui:ui:${libs.versions.composePlugin.get()}")
+            api("org.jetbrains.compose.ui:ui-util:${libs.versions.composePlugin.get()}")
+            implementation(libs.moko.core)
+            implementation(libs.moko.compose)
+            implementation(libs.coil3.core)
+            implementation(libs.coil3.compose)
+            implementation(libs.kyant.backdrop)
+            api(libs.compose.material3.adaptive)
+            api(libs.compose.material3.adaptive.layout)
+            api(libs.compose.material3.adaptive.navigation)
+            api(libs.compose.material3.adaptive.navigation.suite)
+            implementation(projects.resources)
+            implementation(projects.core.model)
+        }
+        // The KMP Android library target's device-test (instrumented-test) compilation is a
+        // plain Android-target compilation, not part of the KMP graph — that's why it pulls in
+        // the real AndroidX Compose testing artifacts (no org.jetbrains.compose.ui equivalent
+        // exists) instead of composePlugin's own version catalog. Pinned to an explicit version
+        // rather than the usual androidx-compose-bom platform(): the KMP `dependencies {}` DSL
+        // here is `KotlinDependencyHandler`, which has no native `platform()` (unlike Gradle's own
+        // `DependencyHandler` that `mm.android.library.compose`'s convention plugin uses), so the
+        // only `platform()` in scope is kotlin-dsl's deprecated (error-level) extension function.
+        androidDeviceTest.dependencies {
+            implementation("androidx.compose.ui:ui-test-junit4:1.11.4")
+            implementation("androidx.compose.ui:ui-test-manifest:1.11.4")
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.junit4)
+        }
     }
-    namespace = "com.ngapp.metanmobile.core.designsystem"
 }
 
-dependencies {
-    lintPublish(projects.lint)
-
-    api(libs.androidx.compose.foundation)
-    api(libs.androidx.compose.foundation.layout)
-    api(libs.androidx.compose.material.iconsExtended)
-    api(libs.androidx.compose.material3)
-    api(libs.androidx.compose.material3.adaptive)
-    api(libs.androidx.compose.material3.navigationSuite)
-    api(libs.androidx.compose.runtime)
-    api(libs.androidx.compose.ui.util)
-
-    implementation(libs.coil.kt.compose)
-    implementation(libs.androidx.core.ktx)
-
-    testImplementation(libs.androidx.compose.ui.test)
-    testImplementation(libs.hilt.android.testing)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.roborazzi)
-    testImplementation(projects.core.screenshotTesting)
-    testImplementation(projects.core.testing)
-
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(projects.core.testing)
-}
+// The JetBrains Compose Resources plugin's asset-copying task doesn't know how to configure
+// itself for the KMP Android library target's androidDeviceTest variant (a newer AGP concept than
+// the plugin anticipates) and fails validation with an unset outputDirectory — this module doesn't
+// use Compose's own resources system at all (everything routes through moko-resources), so there's
+// nothing for this task to actually do; disable it rather than working around a misconfiguration
+// of a feature that's unused here.
+tasks.matching { it.name == "copyAndroidDeviceTestComposeResourcesToAndroidAssets" }
+    .configureEach { enabled = false }

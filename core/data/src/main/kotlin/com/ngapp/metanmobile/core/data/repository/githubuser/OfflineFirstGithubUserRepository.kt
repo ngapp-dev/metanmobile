@@ -24,9 +24,8 @@ import com.ngapp.metanmobile.core.database.dao.githubuser.GithubUserResourceDao
 import com.ngapp.metanmobile.core.database.model.githubuser.asExternalModel
 import com.ngapp.metanmobile.core.network.GithubNetworkDataSource
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstGithubUserRepository @Inject constructor(
+class OfflineFirstGithubUserRepository(
     private val network: GithubNetworkDataSource,
     private val githubUserResourceDao: GithubUserResourceDao,
 ) : GithubUserRepository {

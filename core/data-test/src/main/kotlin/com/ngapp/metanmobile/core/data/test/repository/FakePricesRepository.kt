@@ -17,19 +17,16 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.price.asEntity
 import com.ngapp.metanmobile.core.data.repository.price.PricesRepository
 import com.ngapp.metanmobile.core.database.model.price.asExternalModel
 import com.ngapp.metanmobile.core.model.price.PriceResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [PricesRepository] that retrieves the price resources from a JSON String.
@@ -37,9 +34,9 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakePricesRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+internal class FakePricesRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : PricesRepository {
 
     override fun getFuelPrice(): Flow<PriceResource?> = flow {

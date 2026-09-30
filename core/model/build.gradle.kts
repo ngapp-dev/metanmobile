@@ -16,9 +16,13 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.jvm.library)
+    alias(libs.plugins.mm.kmp.library)
 }
 
-dependencies {
-    api(libs.kotlinx.datetime)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.kotlinx.datetime)
+        }
+    }
 }

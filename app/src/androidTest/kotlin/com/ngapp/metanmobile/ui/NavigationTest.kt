@@ -27,49 +27,35 @@ import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
 import com.ngapp.metanmobile.MainActivity
+import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.rules.GrantLocationPermissionRule
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.ngapp.metanmobile.core.designsystem.R as DesignsystemR
 
 /**
  * Tests all the navigation flows that are handled by the navigation library.
  */
-@HiltAndroidTest
 class NavigationTest {
-
-    /**
-     * Manages the components' state and is used to perform injection on your test
-     */
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
 
     /**
      * Grants [ACCESS_COARSE_LOCATION] and [ACCESS_FINE_LOCATION] permissions.
      */
-    @get:Rule(order = 1)
+    @get:Rule(order = 0)
     val locationPermissionPermission = GrantLocationPermissionRule()
 
     /**
      * Use the primary activity to initialize the app normally.
      */
-    @get:Rule(order = 2)
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     // The strings used for matching in these tests
-    private val navigateUp by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_description_back)
-    private val home by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_home)
-    private val stations by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_stations)
-    private val news by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_news)
-    private val favorites by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_bottom_menu_favorites)
-    private val menu by composeTestRule.stringResource(DesignsystemR.string.core_designsystem_description_menu_icon)
-
-    @Before
-    fun setup() = hiltRule.inject()
-
+    private val navigateUp by composeTestRule.stringResource(SharedRes.strings.designsystem_description_back)
+    private val home by composeTestRule.stringResource(SharedRes.strings.designsystem_bottom_menu_home)
+    private val stations by composeTestRule.stringResource(SharedRes.strings.designsystem_bottom_menu_stations)
+    private val news by composeTestRule.stringResource(SharedRes.strings.designsystem_bottom_menu_news)
+    private val favorites by composeTestRule.stringResource(SharedRes.strings.designsystem_bottom_menu_favorites)
+    private val menu by composeTestRule.stringResource(SharedRes.strings.designsystem_description_menu_icon)
 
     @Test
     fun firstScreen_isHome() {

@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.news
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,25 +35,3 @@ data class NetworkNewsResource(
     val content: String = "",
     val url: String = "",
 )
-
-fun RssItem.asNetworkNewsResource(): NetworkNewsResource {
-    val contentImage =
-        this.content?.substringAfter("src=\"")?.substringBefore(".jpg")
-
-    return NetworkNewsResource(
-        id = categories[NewsCategoryValues.CATEGORY_ID],
-        code = categories[NewsCategoryValues.CATEGORY_CODE],
-        isPinned = if (categories[NewsCategoryValues.CATEGORY_PINNED] == "pinned") 1 else 0,
-        previewPicture = categories[NewsCategoryValues.CATEGORY_PREVIEW_PICTURE],
-        detailPicture = categories[NewsCategoryValues.CATEGORY_DETAIL_PICTURE].ifEmpty { "https://metan.by$contentImage.jpg" },
-        isActive = if (categories[NewsCategoryValues.CATEGORY_ACTIVE] == "active") 1 else 0,
-        isOperate = if (categories[NewsCategoryValues.CATEGORY_OPERATE] == "Работает") 1 else 0,
-        relatedStation = categories[NewsCategoryValues.CATEGORY_LABEL_NEWS],
-        title = title ?: "",
-        dateCreated = pubDate ?: "",
-        description = description ?: "",
-        content = content ?: "",
-        url = link ?: "",
-    )
-}
-

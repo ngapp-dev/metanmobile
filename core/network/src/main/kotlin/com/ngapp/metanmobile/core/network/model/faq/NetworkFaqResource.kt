@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.network.model.faq
 
-import com.prof18.rssparser.model.RssItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -29,13 +28,3 @@ data class NetworkFaqResource(
     val dateCreated: String = "",
     val content: String = "",
 )
-
-fun RssItem.asNetworkFaqResource() = NetworkFaqResource(
-    id = categories[FaqCategoryValues.CATEGORY_ID],
-    code = categories[FaqCategoryValues.CATEGORY_CODE],
-    isPinned = if (categories[FaqCategoryValues.CATEGORY_PINNED] == "pinned") 1 else 0,
-    title = title ?: "",
-    dateCreated = pubDate ?: "",
-    content = content ?: ""
-)
-

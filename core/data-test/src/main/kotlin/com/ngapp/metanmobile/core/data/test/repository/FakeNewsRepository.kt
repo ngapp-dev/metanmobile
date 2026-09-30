@@ -17,8 +17,6 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.news.asEntity
 import com.ngapp.metanmobile.core.data.repository.news.NewsRepository
@@ -29,12 +27,11 @@ import com.ngapp.metanmobile.core.model.news.NewsResource
 import com.ngapp.metanmobile.core.model.userdata.NewsSortingType
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.network.model.news.NetworkNewsResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [NewsRepository] that retrieves the news resources from a JSON String.
@@ -42,9 +39,9 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakeNewsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+internal class FakeNewsRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : NewsRepository {
 
     override fun getNewsResourcesAsc(query: NewsResourceQuery): Flow<List<NewsResource>> = flow {
@@ -66,7 +63,11 @@ internal class FakeNewsRepository @Inject constructor(
     }.flowOn(ioDispatcher)
 
     override fun getNewsResource(newsId: String): Flow<NewsResource> = flow {
-        val newsResource = parser.getNews(newsId)
+        // No per-item network endpoint exists (nor does production use one — the real repository
+        // reads details from Room, already populated from the same list call). Find within the
+        // full list instead, same as the worker's own /api/news/:id does internally.
+        val newsResource = parser.getNewsList()
+            .find { it.id == newsId }
             ?.asEntity()
             ?.asExternalModel()
         emit(newsResource ?: NewsResource.init())

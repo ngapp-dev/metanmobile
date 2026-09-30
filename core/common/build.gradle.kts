@@ -16,20 +16,21 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
+    alias(libs.plugins.mm.kmp.library)
 }
 
-android {
-    namespace = "com.ngapp.metanmobile.core.common"
-}
-
-dependencies {
-    implementation(libs.androidx.browser)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.coroutines.core)
-    testImplementation(libs.junit4)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.turbine)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
+    }
 }

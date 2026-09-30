@@ -28,9 +28,8 @@ import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class OfflineFirstCareersRepository @Inject constructor(
+class OfflineFirstCareersRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val careerResourceDao: CareerResourceDao,
 ) : CareersRepository {
@@ -43,11 +42,14 @@ class OfflineFirstCareersRepository @Inject constructor(
             dataFetcher = { network.getCareerList() },
             dataWriter = { networkCareerList ->
                 val newData = networkCareerList.map(NetworkCareerResource::asEntity)
-                val newIds = newData.map { it.id }.toSet()
                 val existingIds = careerResourceDao.getAllCareerIds().toSet()
-                val idsToDelete = existingIds - newIds
-                careerResourceDao.deleteCareerResources(idsToDelete.toList())
-                careerResourceDao.upsertCareerResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.id }.toSet()
+                    careerResourceDao.deleteCareerResources(idsToDelete.toList())
+                    careerResourceDao.upsertCareerResources(newData)
+                }
             }
         )
     }

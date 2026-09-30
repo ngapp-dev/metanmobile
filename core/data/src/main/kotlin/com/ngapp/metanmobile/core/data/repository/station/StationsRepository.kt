@@ -17,55 +17,12 @@
 
 package com.ngapp.metanmobile.core.data.repository.station
 
-import com.ngapp.metanmobile.core.data.Syncable
-import com.ngapp.metanmobile.core.model.station.StationResource
-import com.ngapp.metanmobile.core.model.station.StationType
-import com.ngapp.metanmobile.core.model.userdata.SortingOrder
-import com.ngapp.metanmobile.core.model.userdata.StationSortingType
-import kotlinx.coroutines.flow.Flow
+import com.ngapp.metanmobile.core.domain.repository.station.StationResourceQuery as DomainStationResourceQuery
+import com.ngapp.metanmobile.core.domain.repository.station.StationsRepository as DomainStationsRepository
 
 /**
- * Encapsulation class for query parameters for [StationResource]
+ * Compatibility aliases while callers move from the Android-only data package to the shared
+ * domain contract. One contract keeps Koin resolution identical on Android and iOS.
  */
-data class StationResourceQuery(
-    /**
-     * Station codes to filter for. Null means any station code will match.
-     * A set of specific station codes to include in the query.
-     */
-    val filterStationCodes: Set<String>? = null,
-
-    /**
-     * The sorting type to apply when fetching station resources.
-     * It determines the primary criterion for sorting the results.
-     * Default is [StationSortingType.STATION_NAME], which sorts stations by their names.
-     */
-    val sortingType: StationSortingType = StationSortingType.STATION_NAME,
-
-    /**
-     * The sorting order to apply to the results.
-     * It determines the direction of sorting (ascending or descending).
-     * Default is [SortingOrder.DESC], which sorts the results in descending order.
-     */
-    val sortingOrder: SortingOrder = SortingOrder.DESC,
-
-    /**
-     * Station types to filter for. Null means any station type will match.
-     * A set of specific station types (e.g., CNG or CLFS) to include in the query.
-     */
-    val filterStationTypes: Set<StationType>? = null,
-
-    /**
-     * A search query to filter station resources by name or other relevant fields.
-     * An empty string means no search filter will be applied.
-     */
-    val searchQuery: String = "",
-)
-
-/**
- * Data layer implementation for [StationResource]
- */
-interface StationsRepository : Syncable {
-    fun getStationResourcesAsc(query: StationResourceQuery = StationResourceQuery()): Flow<List<StationResource>>
-    fun getStationResourcesDesc(query: StationResourceQuery = StationResourceQuery()): Flow<List<StationResource>>
-    fun getStationResource(stationCode: String): Flow<StationResource>
-}
+typealias StationResourceQuery = DomainStationResourceQuery
+typealias StationsRepository = DomainStationsRepository

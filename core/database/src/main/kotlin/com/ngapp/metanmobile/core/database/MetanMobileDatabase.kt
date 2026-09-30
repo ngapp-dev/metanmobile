@@ -18,7 +18,9 @@
 package com.ngapp.metanmobile.core.database
 
 import androidx.room.Database
+import androidx.room.ConstructedBy
 import androidx.room.RoomDatabase
+import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import com.ngapp.metanmobile.core.database.dao.career.CareerResourceDao
 import com.ngapp.metanmobile.core.database.dao.contact.ContactResourceDao
@@ -28,6 +30,7 @@ import com.ngapp.metanmobile.core.database.dao.location.LocationResourceDao
 import com.ngapp.metanmobile.core.database.dao.news.NewsResourceDao
 import com.ngapp.metanmobile.core.database.dao.price.PriceResourceDao
 import com.ngapp.metanmobile.core.database.dao.station.StationResourceDao
+import com.ngapp.metanmobile.core.database.dao.syncmeta.SyncMetaDao
 import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.contact.ContactResourceEntity
 import com.ngapp.metanmobile.core.database.model.faq.FaqResourceEntity
@@ -36,6 +39,7 @@ import com.ngapp.metanmobile.core.database.model.location.LocationResourceEntity
 import com.ngapp.metanmobile.core.database.model.news.NewsResourceEntity
 import com.ngapp.metanmobile.core.database.model.price.PriceResourceEntity
 import com.ngapp.metanmobile.core.database.model.station.StationResourceEntity
+import com.ngapp.metanmobile.core.database.model.syncmeta.SyncMetaEntity
 import com.ngapp.metanmobile.core.database.util.InstantConverter
 import com.ngapp.metanmobile.core.database.util.ListStringConverter
 
@@ -49,14 +53,18 @@ import com.ngapp.metanmobile.core.database.util.ListStringConverter
         CareerResourceEntity::class,
         PriceResourceEntity::class,
         LocationResourceEntity::class,
+        SyncMetaEntity::class,
     ],
-    version = 8,
-    exportSchema = false,
+    version = METAN_MOBILE_DATABASE_VERSION,
+    // Schemas are kept in source control so changes stay reviewable. A version bump needs no
+    // Migration — see METAN_MOBILE_DATABASE_VERSION.
+    exportSchema = true,
 )
 @TypeConverters(
     InstantConverter::class,
     ListStringConverter::class,
 )
+@ConstructedBy(MetanMobileDatabaseConstructor::class)
 abstract class MetanMobileDatabase : RoomDatabase() {
     abstract fun stationResourceDao(): StationResourceDao
     abstract fun newsResourceDao(): NewsResourceDao
@@ -66,4 +74,10 @@ abstract class MetanMobileDatabase : RoomDatabase() {
     abstract fun careerResourceDao(): CareerResourceDao
     abstract fun priceResourceDao(): PriceResourceDao
     abstract fun locationResourceDao(): LocationResourceDao
+    abstract fun syncMetaDao(): SyncMetaDao
+}
+
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object MetanMobileDatabaseConstructor : RoomDatabaseConstructor<MetanMobileDatabase> {
+    override fun initialize(): MetanMobileDatabase
 }

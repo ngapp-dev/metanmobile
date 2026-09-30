@@ -16,35 +16,48 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
-    id("kotlinx-serialization")
+    alias(libs.plugins.mm.kmp.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
-android {
-    namespace = "com.ngapp.metanmobile.core.data"
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-            isReturnDefaultValues = true
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.exclude("com/ngapp/metanmobile/core/data/di/LocationKoinModule.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/data/util/ConnectivityManagerNetworkMonitor.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/data/repository/location/PlatformLocationSource.android.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/data/util/TimeZoneMonitor.kt")
+            dependencies {
+                api(projects.core.common)
+                api(projects.core.domain)
+                api(projects.core.database)
+                api(projects.core.datastore)
+                api(projects.core.network)
+                implementation(projects.core.analytics)
+                implementation(libs.koin.core)
+            }
+        }
+        androidMain {
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.include("com/ngapp/metanmobile/core/data/di/LocationKoinModule.kt")
+            kotlin.include("com/ngapp/metanmobile/core/data/util/ConnectivityManagerNetworkMonitor.kt")
+            kotlin.include("com/ngapp/metanmobile/core/data/repository/location/PlatformLocationSource.android.kt")
+            kotlin.include("com/ngapp/metanmobile/core/data/util/TimeZoneMonitor.kt")
+            dependencies {
+                implementation(libs.koin.android)
+                implementation(libs.play.services.location)
+                implementation(libs.androidx.localbroadcastmanager)
+                implementation(libs.androidx.tracing.ktx)
+            }
+        }
+        // Room on the JVM needs an Android Context, hence Robolectric rather than plain commonTest.
+        getByName("androidHostTest").dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.junit4)
+            implementation(libs.robolectric)
+            implementation(libs.androidx.test.core)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
-}
-
-dependencies {
-    api(projects.core.common)
-    api(projects.core.database)
-    api(projects.core.datastore)
-    api(projects.core.network)
-
-    implementation(projects.core.analytics)
-    implementation(libs.play.services.location)
-    implementation(libs.androidx.localbroadcastmanager)
-
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotlinx.serialization.json)
-    testImplementation(projects.core.datastoreTest)
-    testImplementation(projects.core.testing)
 }

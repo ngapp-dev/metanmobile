@@ -17,7 +17,6 @@
 
 package com.ngapp.metanmobile.core.testing.repository
 
-import android.location.Location
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.channels.BufferOverflow
@@ -53,8 +52,6 @@ class TestLocationsRepository : LocationsRepository {
 
     override fun getLocationResource(): Flow<LocationResource?> =
         locationResourcesFlow.map { locationResources -> locationResources.firstOrNull() }
-
-    override suspend fun getLocationData(): Location = Location("test")
 
     /**
      * The permission values passed to successive [updateLocation] calls, in order, for

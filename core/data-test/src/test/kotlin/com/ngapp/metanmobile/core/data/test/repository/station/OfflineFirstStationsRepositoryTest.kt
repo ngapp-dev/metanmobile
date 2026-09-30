@@ -77,7 +77,7 @@ class OfflineFirstStationsRepositoryTest {
     @Test
     fun `getStationResourcesAsc maps a default query to the dao's default parameters`() = runTest {
         every {
-            dao.getStationResourcesAsc(any(), any(), any(), any(), any(), any())
+            dao.getStationResourcesAsc(any(), any(), any(), any(), any())
         } returns flowOf(emptyList())
 
         repository.getStationResourcesAsc(StationResourceQuery()).first()
@@ -89,7 +89,6 @@ class OfflineFirstStationsRepositoryTest {
                 useFilterStationTypes = false,
                 filterStationTypes = emptySet(),
                 sortingType = "STATION_NAME",
-                searchQuery = "",
             )
         }
     }
@@ -97,7 +96,7 @@ class OfflineFirstStationsRepositoryTest {
     @Test
     fun `getStationResourcesAsc passes filterStationCodes through and flips useFilterStationCodes`() = runTest {
         every {
-            dao.getStationResourcesAsc(any(), any(), any(), any(), any(), any())
+            dao.getStationResourcesAsc(any(), any(), any(), any(), any())
         } returns flowOf(emptyList())
 
         repository.getStationResourcesAsc(
@@ -111,7 +110,6 @@ class OfflineFirstStationsRepositoryTest {
                 useFilterStationTypes = false,
                 filterStationTypes = emptySet(),
                 sortingType = "STATION_NAME",
-                searchQuery = "",
             )
         }
     }
@@ -120,7 +118,7 @@ class OfflineFirstStationsRepositoryTest {
     fun `getStationResourcesAsc maps filterStationTypes to their type names and flips useFilterStationTypes`() =
         runTest {
             every {
-                dao.getStationResourcesAsc(any(), any(), any(), any(), any(), any())
+                dao.getStationResourcesAsc(any(), any(), any(), any(), any())
             } returns flowOf(emptyList())
 
             repository.getStationResourcesAsc(
@@ -134,7 +132,6 @@ class OfflineFirstStationsRepositoryTest {
                     useFilterStationTypes = true,
                     filterStationTypes = setOf(StationType.CNG.typeName),
                     sortingType = "STATION_NAME",
-                    searchQuery = "",
                 )
             }
         }
@@ -142,7 +139,7 @@ class OfflineFirstStationsRepositoryTest {
     @Test
     fun `getStationResourcesAsc maps dao entities to external models, preserving order`() = runTest {
         every {
-            dao.getStationResourcesAsc(any(), any(), any(), any(), any(), any())
+            dao.getStationResourcesAsc(any(), any(), any(), any(), any())
         } returns flowOf(listOf(entity(code = "a", title = "First"), entity(code = "b", title = "Second")))
 
         val result = repository.getStationResourcesAsc(StationResourceQuery()).first()
@@ -153,7 +150,7 @@ class OfflineFirstStationsRepositoryTest {
     @Test
     fun `getStationResourcesDesc calls the dao's descending query with the same parameter mapping`() = runTest {
         every {
-            dao.getStationResourcesDesc(any(), any(), any(), any(), any(), any())
+            dao.getStationResourcesDesc(any(), any(), any(), any(), any())
         } returns flowOf(listOf(entity(code = "a", title = "Only")))
 
         val result = repository.getStationResourcesDesc(
@@ -168,10 +165,39 @@ class OfflineFirstStationsRepositoryTest {
                 useFilterStationTypes = false,
                 filterStationTypes = emptySet(),
                 sortingType = "STATION_NAME",
-                searchQuery = "",
             )
         }
-        verify(exactly = 0) { dao.getStationResourcesAsc(any(), any(), any(), any(), any(), any()) }
+        verify(exactly = 0) { dao.getStationResourcesAsc(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `getStationResourcesAsc filters by search query against title, address and region, ignoring case`() =
+        runTest {
+            every {
+                dao.getStationResourcesAsc(any(), any(), any(), any(), any())
+            } returns flowOf(
+                listOf(
+                    entity(code = "a", title = "АГНКС Минск-1"),
+                    entity(code = "b", title = "АГНКС Гродно-2", address = "г. Минск, ул. Ленина"),
+                    entity(code = "c", title = "АГНКС Брест-1", region = "Минская область"),
+                    entity(code = "d", title = "АГНКС Брест-2"),
+                ),
+            )
+
+            val result = repository.getStationResourcesAsc(StationResourceQuery(searchQuery = "ми")).first()
+
+            assertEquals(setOf("a", "b", "c"), result.map { it.code }.toSet())
+        }
+
+    @Test
+    fun `getStationResourcesAsc does not filter anything when the search query is blank`() = runTest {
+        every {
+            dao.getStationResourcesAsc(any(), any(), any(), any(), any())
+        } returns flowOf(listOf(entity(code = "a", title = "Alpha"), entity(code = "b", title = "Beta")))
+
+        val result = repository.getStationResourcesAsc(StationResourceQuery(searchQuery = "")).first()
+
+        assertEquals(setOf("a", "b"), result.map { it.code }.toSet())
     }
 
     // endregion
@@ -244,7 +270,12 @@ class OfflineFirstStationsRepositoryTest {
 
     // endregion
 
-    private fun entity(code: String, title: String = "") = StationResourceEntity(
+    private fun entity(
+        code: String,
+        title: String = "",
+        address: String = "",
+        region: String = "",
+    ) = StationResourceEntity(
         id = code,
         code = code,
         previewPicture = "",
@@ -252,8 +283,8 @@ class OfflineFirstStationsRepositoryTest {
         isActive = 1,
         isOperate = 1,
         type = "",
-        address = "",
-        region = "",
+        address = address,
+        region = region,
         phones = "",
         service = "",
         workingTime = "",

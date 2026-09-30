@@ -17,8 +17,6 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.station.asEntity
 import com.ngapp.metanmobile.core.data.repository.station.StationResourceQuery
@@ -29,12 +27,11 @@ import com.ngapp.metanmobile.core.model.station.StationResource
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import com.ngapp.metanmobile.core.model.userdata.StationSortingType
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [StationsRepository] that retrieves the station resources from a JSON String.
@@ -42,9 +39,9 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakeStationsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+internal class FakeStationsRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : StationsRepository {
 
     override fun getStationResourcesAsc(query: StationResourceQuery): Flow<List<StationResource>> =
@@ -68,7 +65,11 @@ internal class FakeStationsRepository @Inject constructor(
         }.flowOn(ioDispatcher)
 
     override fun getStationResource(stationCode: String): Flow<StationResource> = flow {
-        val stationResource = parser.getStation(stationCode)
+        // No per-item network endpoint exists (nor does production use one — the real repository
+        // reads details from Room, already populated from the same list call). Find within the
+        // full list instead, same as the worker's own /api/stations/:code does internally.
+        val stationResource = parser.getStations()
+            .find { it.code == stationCode }
             ?.asEntity()
             ?.asExternalModel()
         emit(stationResource ?: StationResource.init())
@@ -80,7 +81,11 @@ internal class FakeStationsRepository @Inject constructor(
         return this
             .filter { station ->
                 (query.filterStationCodes?.contains(station.code) ?: true) &&
-                        (station.title.contains(query.searchQuery, ignoreCase = true))
+                        (
+                            station.title.contains(query.searchQuery, ignoreCase = true) ||
+                                station.address.contains(query.searchQuery, ignoreCase = true) ||
+                                station.region.contains(query.searchQuery, ignoreCase = true)
+                            )
             }
     }
 

@@ -46,7 +46,7 @@ The application architecture is based with respect to [Now in Android](https://d
 - 🌐 [Retrofit](https://square.github.io/retrofit/) - for networking
 - 🗞️ [RSS-Parser](https://github.com/prof18/RSS-Parser) - for parsing RSS
 - 📦 [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) - for content negotiation
-- 💉 [Hilt](https://dagger.dev/hilt/) - for dependency injection
+- 💉 [Koin](https://insert-koin.io/) - for dependency injection
 - 🗃️ [Data Store](https://developer.android.com/jetpack/androidx/releases/datastore) - for storage
 - 🛢️ [Room](https://developer.android.com/jetpack/androidx/releases/datastore) - for databasing
 - 🏞️ [Coil](https://github.com/coil-kt/coil) - for loading images

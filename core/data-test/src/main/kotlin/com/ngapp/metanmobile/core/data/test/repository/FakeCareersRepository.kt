@@ -17,8 +17,6 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.Synchronizer
 import com.ngapp.metanmobile.core.data.model.career.asEntity
 import com.ngapp.metanmobile.core.data.repository.career.CareersRepository
@@ -26,12 +24,11 @@ import com.ngapp.metanmobile.core.database.model.career.CareerResourceEntity
 import com.ngapp.metanmobile.core.database.model.career.asExternalModel
 import com.ngapp.metanmobile.core.model.career.CareerResource
 import com.ngapp.metanmobile.core.network.model.career.NetworkCareerResource
-import com.ngapp.metanmobile.core.network.network.MetanMobileParser
+import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [CareersRepository] that retrieves the career resources from a JSON String.
@@ -39,9 +36,9 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakeCareersRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-    private val parser: MetanMobileParser,
+internal class FakeCareersRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
+    private val parser: MetanEcogasNetworkDataSource,
 ) : CareersRepository {
 
     override fun getCareerList(): Flow<List<CareerResource>> = flow {

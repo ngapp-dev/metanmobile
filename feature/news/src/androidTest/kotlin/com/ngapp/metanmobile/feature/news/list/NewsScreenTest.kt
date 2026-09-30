@@ -38,10 +38,10 @@ import kotlin.test.assertTrue
 import com.ngapp.metanmobile.core.designsystem.R as DesignSystemR
 
 /**
- * UI tests for [NewsScreen], exercised directly (no Hilt/navigation) with a caller-supplied
+ * UI tests for [NewsScreen], exercised directly (no navigation) with a caller-supplied
  * [NewsUiState] and captured [NewsAction]s / detail clicks - the same approach as
  * `OnboardingScreenTest`. Unlike `FavoritesScreen`/`StationsScreen`, a row's detail click here is
- * just the plain `onDetailClick: (String) -> Unit` callback (no embedded Hilt bottom sheet), so
+ * just the plain `onDetailClick: (String) -> Unit` callback, so
  * it's safe to exercise directly.
  */
 class NewsScreenTest {

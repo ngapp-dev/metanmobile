@@ -1,43 +1,78 @@
-/*
- * Copyright 2024 NGApps Dev (https://github.com/ngapp-dev). All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 package com.ngapp.metanmobile
 
 import android.app.Application
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import com.ngapp.metanmobile.core.analytics.di.analyticsModule
+import com.ngapp.metanmobile.core.data.di.locationDataModule
+import com.ngapp.metanmobile.core.data.di.locationModule
+import com.ngapp.metanmobile.core.data.di.syncDataModule
+import com.ngapp.metanmobile.core.data.di.userDataModule
+import com.ngapp.metanmobile.core.database.di.databaseModule
+import com.ngapp.metanmobile.core.datastore.di.userPreferencesDataStoreModule
+import com.ngapp.metanmobile.core.network.client.di.networkClientModule
+import com.ngapp.metanmobile.core.network.di.metanEcogasNetworkModule
+import com.ngapp.metanmobile.core.common.util.UiAndroidPlatformContextProvider as CommonUiAndroidPlatformContextProvider
+import com.ngapp.metanmobile.core.ui.UiAndroidPlatformContextProvider
+import com.ngapp.metanmobile.core.ui.di.uiModule
+import com.ngapp.metanmobile.composeapp.configureImageLoader
+import com.ngapp.metanmobile.composeapp.di.mainModule
+import com.ngapp.metanmobile.sync.di.syncModule
 import com.ngapp.metanmobile.sync.initializers.Sync
-import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
+import com.ngapp.metanmobile.feature.onboarding.di.featureOnboardingModule
+import com.ngapp.metanmobile.feature.news.di.featureNewsModule
+import com.ngapp.metanmobile.feature.favorites.di.featureFavoritesModule
+import com.ngapp.metanmobile.feature.home.di.featureHomeModule
+import com.ngapp.metanmobile.feature.stationdetail.di.featureStationDetailModule
+import com.ngapp.metanmobile.feature.cabinet.di.featureCabinetModule
+import com.ngapp.metanmobile.feature.stations.di.featureStationsModule
+import com.ngapp.metanmobile.feature.menu.di.featureMenuModule
+import com.ngapp.metanmobile.feature.about.di.featureAboutModule
+import com.ngapp.metanmobile.feature.careers.di.featureCareersModule
+import com.ngapp.metanmobile.feature.contacts.di.featureContactsModule
+import com.ngapp.metanmobile.feature.faq.di.featureFaqModule
+import com.ngapp.metanmobile.feature.privacypolicy.di.featurePrivacyPolicyModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-/**
- * [Application] class for Metan Mobile
- */
-@HiltAndroidApp
-class MetanMobileApplication : Application(), ImageLoaderFactory {
-
-    @Inject
-    lateinit var imageLoader: dagger.Lazy<ImageLoader>
-
+/** Android host for the shared KMP dependency graph. */
+class MetanMobileApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        UiAndroidPlatformContextProvider.setContext(this)
+        // core:data can't see core:ui (wrong dependency direction), so it has its own copy of
+        // this same provider for Android-only repos like PlatformLocationSource — both need
+        // their context set here, or whichever one a given call site resolves to stays null.
+        CommonUiAndroidPlatformContextProvider.setContext(this)
+        configureImageLoader()
+        startKoin {
+            androidContext(this@MetanMobileApplication)
+            modules(
+                networkClientModule(BuildConfig.METAN_ECOGAS_API, BuildConfig.GITHUB_BASE_URL),
+                metanEcogasNetworkModule(),
+                analyticsModule(),
+                databaseModule(),
+                userPreferencesDataStoreModule(),
+                userDataModule(),
+                locationModule(),
+                locationDataModule,
+                syncDataModule,
+                syncModule(),
+                mainModule,
+                uiModule,
+                featureOnboardingModule,
+                featureNewsModule,
+                featureFavoritesModule,
+                featureHomeModule,
+                featureStationDetailModule,
+                featureCabinetModule,
+                featureStationsModule,
+                featureMenuModule,
+                featureAboutModule,
+                featureCareersModule,
+                featureContactsModule,
+                featureFaqModule,
+                featurePrivacyPolicyModule,
+            )
+        }
         Sync.initialize(context = this)
     }
-
-    override fun newImageLoader(): ImageLoader = imageLoader.get()
-
 }

@@ -1,0 +1,23 @@
+<resources>
+    <string name="bottom_menu_home">Home</string>
+    <string name="bottom_menu_stations">Stations</string>
+    <string name="bottom_menu_news">News</string>
+    <string name="bottom_menu_favorites">Favorites</string>
+    <string name="button_open_in_browser">Open in browser</string>
+    <string name="button_how_to_get_access">How to get access?</string>
+    <string name="onboarding_button_skip">Skip</string>
+    <string name="description_share_icon">Toolbar share icon</string>
+    <string name="description_filter_icon">Toolbar filter icon</string>
+    <string name="description_search_icon">Toolbar search icon</string>
+    <string name="description_support_icon">Toolbar support icon</string>
+    <string name="description_cabinet_icon">Toolbar cabinet icon</string>
+    <string name="description_edit_icon">Toolbar edit icon</string>
+    <string name="description_menu_icon">Toolbar menu icon</string>
+    <string name="description_nav_icon">Toolbar nav icon</string>
+    <string name="description_clear_search_icon">Clear search</string>
+    <string name="description_toolbar_more_icon">Toolbar more icon</string>
+    <string name="description_toolbar_title_img">Toolbar title image</string>
+    <string name="description_car_icon">Car icon</string>
+    <string name="description_gas_station_icon">Gas station icon</string>
+    <string name="description_back">Navigate back</string>
+</resources>

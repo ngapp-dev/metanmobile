@@ -17,9 +17,4 @@
 
 package com.ngapp.metanmobile.core.data.repository.news
 
-import com.ngapp.metanmobile.core.model.news.UserNewsResource
-import kotlinx.coroutines.flow.Flow
-
-interface UserNewsResourceRepository {
-    fun observeAll(query: NewsResourceQuery): Flow<List<UserNewsResource>>
-}
+typealias UserNewsResourceRepository = com.ngapp.metanmobile.core.domain.repository.news.UserNewsResourceRepository

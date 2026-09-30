@@ -17,22 +17,19 @@
 
 package com.ngapp.metanmobile.core.data.test.repository.location
 
-import android.location.Location
-import android.util.Log
 import app.cash.turbine.test
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.tasks.CancellationToken
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.ngapp.metanmobile.core.data.repository.location.OfflineFirstLocationsRepository
-import com.ngapp.metanmobile.core.data.util.GoogleServicesChecker
+import com.ngapp.metanmobile.core.data.repository.location.PlatformLocationPoint
+import com.ngapp.metanmobile.core.data.repository.location.PlatformLocationSource
+import com.ngapp.metanmobile.core.data.repository.location.isPlatformLocationAvailable
 import com.ngapp.metanmobile.core.database.dao.location.LocationResourceDao
 import com.ngapp.metanmobile.core.database.model.location.LocationResourceEntity
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
-import io.mockk.verify
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -46,48 +43,45 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-// Mirrors the private LOCATION_RETRY_DELAY_MILLIS constant in OfflineFirstLocationsRepository.
+// Mirrors the private MAX_LOCATION_FETCH_ATTEMPTS/LOCATION_RETRY_DELAY_MILLIS constants in
+// OfflineFirstLocationsRepository.
+private const val MAX_ATTEMPTS = 3
 private const val RETRY_DELAY_MILLIS = 5_000L
 
 /**
- * Unit tests for the real [OfflineFirstLocationsRepository] implementation, exactly as it
- * stands today. [LocationResourceDao] and [GoogleServicesChecker] are covered with tiny
- * hand-written fakes (project convention), while the parts that genuinely can't be faked -
- * [FusedLocationProviderClient] and the static [Tasks.await] - are covered with MockK.
+ * Unit tests for the real [OfflineFirstLocationsRepository] implementation, exactly as it stands
+ * today - rewritten after the repository moved off `FusedLocationProviderClient`/
+ * `GoogleServicesChecker` onto the shared [PlatformLocationSource]/[isPlatformLocationAvailable]
+ * abstraction (the previous version of this file mocked a constructor shape and a `getLocationData()`
+ * method that no longer exist and had stopped compiling entirely). [LocationResourceDao] is covered
+ * with a tiny hand-written fake (project convention); [PlatformLocationSource] and the top-level
+ * [isPlatformLocationAvailable] function are covered with MockK, same as before.
  */
 class OfflineFirstLocationsRepositoryTest {
 
     private val dao = FakeLocationResourceDao()
-    private val googleServicesChecker = FakeGoogleServicesChecker()
-    private val locationClient = mockk<FusedLocationProviderClient>()
-    private val lastLocationTask = mockk<Task<Location>>()
-    private val currentLocationTask = mockk<Task<Location>>()
+    private val locationSource = mockk<PlatformLocationSource>()
 
-    // Shared with runTest(testDispatcher) below so getLocationData()'s withContext(ioDispatcher)
+    // Shared with runTest(testDispatcher) below so updateLocation()'s withContext(ioDispatcher)
     // and fetchAndStoreLocationWithRetry()'s delay() run on the same virtual clock - otherwise
     // the retry delays aren't reliably free in test time.
     private val testDispatcher = StandardTestDispatcher()
 
     private val repository = OfflineFirstLocationsRepository(
         locationResourceDao = dao,
-        locationClient = locationClient,
+        locationSource = locationSource,
         ioDispatcher = testDispatcher,
-        googleServicesChecker = googleServicesChecker,
     )
 
     @Before
     fun setUp() {
-        mockkStatic(Tasks::class)
-        mockkStatic(Log::class)
-        every { Log.e(any(), any()) } returns 0
-        every { locationClient.lastLocation } returns lastLocationTask
-        every { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) } returns currentLocationTask
+        mockkStatic(::isPlatformLocationAvailable)
+        every { isPlatformLocationAvailable() } returns true
     }
 
     @After
     fun tearDown() {
-        unmockkStatic(Tasks::class)
-        unmockkStatic(Log::class)
+        unmockkStatic(::isPlatformLocationAvailable)
     }
 
     // region getLocationResource / getLocationResources
@@ -134,8 +128,8 @@ class OfflineFirstLocationsRepositoryTest {
     @Test
     fun `an active subscriber sees the new location right after updateLocation, without resubscribing`() =
         runTest(testDispatcher) {
-            val location = fakeLocation(lat = 53.0, lon = 27.0, time = 42L)
-            every { Tasks.await(lastLocationTask) } returns location
+            coEvery { locationSource.getCurrentLocation() } returns
+                PlatformLocationPoint(latitude = 53.0, longitude = 27.0, time = 42L)
 
             repository.getLocationResource().test {
                 assertNull(awaitItem())
@@ -157,29 +151,17 @@ class OfflineFirstLocationsRepositoryTest {
         repository.updateLocation(locationPermissionGranted = false)
 
         assertEquals(0, dao.upsertCallCount)
-        verify(exactly = 0) { locationClient.lastLocation }
-        verify(exactly = 0) { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) }
+        coVerify(exactly = 0) { locationSource.getCurrentLocation() }
     }
 
     @Test
-    fun `updateLocation does not store anything when Google Services are unavailable`() = runTest(testDispatcher) {
-        googleServicesChecker.available = false
+    fun `updateLocation does not fetch when the platform location stack is unavailable`() = runTest(testDispatcher) {
+        every { isPlatformLocationAvailable() } returns false
 
         repository.updateLocation(locationPermissionGranted = true)
 
         assertEquals(0, dao.upsertCallCount)
-        verify(exactly = 0) { locationClient.lastLocation }
-        verify(exactly = 0) { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) }
-    }
-
-    @Test
-    fun `updateLocation swallows an exception from the availability check`() = runTest(testDispatcher) {
-        googleServicesChecker.error = IllegalStateException("boom")
-
-        // Must not throw.
-        repository.updateLocation(locationPermissionGranted = true)
-
-        assertEquals(0, dao.upsertCallCount)
+        coVerify(exactly = 0) { locationSource.getCurrentLocation() }
     }
 
     // endregion
@@ -188,8 +170,8 @@ class OfflineFirstLocationsRepositoryTest {
 
     @Test
     fun `updateLocation stores the location on the first successful attempt`() = runTest(testDispatcher) {
-        val location = fakeLocation(lat = 53.9, lon = 27.5, time = 999L)
-        every { Tasks.await(lastLocationTask) } returns location
+        coEvery { locationSource.getCurrentLocation() } returns
+            PlatformLocationPoint(latitude = 53.9, longitude = 27.5, time = 999L)
 
         repository.updateLocation(locationPermissionGranted = true)
 
@@ -197,35 +179,36 @@ class OfflineFirstLocationsRepositoryTest {
         val stored = repository.getLocationResource().first()
         assertEquals(53.9, stored?.latitude)
         assertEquals(27.5, stored?.longitude)
-        verify(exactly = 0) { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) }
+        coVerify(exactly = 1) { locationSource.getCurrentLocation() }
         // Succeeded on the very first attempt - no retry delay should have been waited at all.
         assertEquals(0L, currentTime)
     }
 
     @Test
     fun `updateLocation retries and succeeds once a location becomes available`() = runTest(testDispatcher) {
-        val location = fakeLocation(lat = 1.0, lon = 2.0, time = 5L)
-        every { Tasks.await(lastLocationTask) } returns null
-        every { Tasks.await(currentLocationTask) } returnsMany listOf(null, null, location)
+        coEvery { locationSource.getCurrentLocation() } returnsMany listOf(
+            null,
+            null,
+            PlatformLocationPoint(latitude = 1.0, longitude = 2.0, time = 5L),
+        )
 
         repository.updateLocation(locationPermissionGranted = true)
 
         assertEquals(1, dao.upsertCallCount)
         assertEquals(1.0, repository.getLocationResource().first()?.latitude)
-        verify(exactly = 3) { Tasks.await(currentLocationTask) }
+        coVerify(exactly = 3) { locationSource.getCurrentLocation() }
         // 2 failed attempts before the successful 3rd one -> 2 retry delays waited, virtually.
         assertEquals(2 * RETRY_DELAY_MILLIS, currentTime)
     }
 
     @Test
     fun `updateLocation gives up after the max attempts without crashing`() = runTest(testDispatcher) {
-        every { Tasks.await(lastLocationTask) } returns null
-        every { Tasks.await(currentLocationTask) } returns null
+        coEvery { locationSource.getCurrentLocation() } returns null
 
         repository.updateLocation(locationPermissionGranted = true)
 
         assertEquals(0, dao.upsertCallCount)
-        verify(exactly = 3) { Tasks.await(currentLocationTask) }
+        coVerify(exactly = MAX_ATTEMPTS) { locationSource.getCurrentLocation() }
         assertNull(repository.getLocationResource().first())
         // 3 attempts total -> only 2 gaps between them get a delay, none after the last one.
         assertEquals(2 * RETRY_DELAY_MILLIS, currentTime)
@@ -233,13 +216,10 @@ class OfflineFirstLocationsRepositoryTest {
 
     @Test
     fun `updateLocation propagates an exception thrown while storing the location`() = runTest(testDispatcher) {
-        val location = fakeLocation(lat = 1.0, lon = 1.0, time = 1L)
-        every { Tasks.await(lastLocationTask) } returns location
+        coEvery { locationSource.getCurrentLocation() } returns
+            PlatformLocationPoint(latitude = 1.0, longitude = 1.0, time = 1L)
         dao.upsertException = IllegalStateException("Room write failed")
 
-        // Documents current behavior, not a requirement: the availability check is the only
-        // thing wrapped in runCatching in updateLocation() - a failure while actually storing
-        // the location is not caught and propagates to the caller.
         assertFailsWith<IllegalStateException> {
             repository.updateLocation(locationPermissionGranted = true)
         }
@@ -248,9 +228,10 @@ class OfflineFirstLocationsRepositoryTest {
     @Test
     fun `updateLocation replaces the previously stored location, it does not ignore the update`() =
         runTest(testDispatcher) {
-            val first = fakeLocation(lat = 10.0, lon = 10.0, time = 1L)
-            val second = fakeLocation(lat = 20.0, lon = 20.0, time = 2L)
-            every { Tasks.await(lastLocationTask) } returnsMany listOf(first, second)
+            coEvery { locationSource.getCurrentLocation() } returnsMany listOf(
+                PlatformLocationPoint(latitude = 10.0, longitude = 10.0, time = 1L),
+                PlatformLocationPoint(latitude = 20.0, longitude = 20.0, time = 2L),
+            )
 
             repository.updateLocation(locationPermissionGranted = true)
             repository.updateLocation(locationPermissionGranted = true)
@@ -262,51 +243,6 @@ class OfflineFirstLocationsRepositoryTest {
         }
 
     // endregion
-
-    // region getLocationData
-
-    @Test
-    fun `getLocationData returns the cached last location without an active request`() = runTest(testDispatcher) {
-        val location = fakeLocation(lat = 3.0, lon = 4.0, time = 7L)
-        every { Tasks.await(lastLocationTask) } returns location
-
-        val result = repository.getLocationData()
-
-        assertEquals(location, result)
-        verify(exactly = 0) { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) }
-    }
-
-    @Test
-    fun `getLocationData falls back to an active request when there is no cached location`() =
-        runTest(testDispatcher) {
-            val location = fakeLocation(lat = 3.0, lon = 4.0, time = 7L)
-            every { Tasks.await(lastLocationTask) } returns null
-            every { Tasks.await(currentLocationTask) } returns location
-
-            val result = repository.getLocationData()
-
-            assertEquals(location, result)
-            verify(exactly = 1) { locationClient.getCurrentLocation(any<Int>(), any<CancellationToken>()) }
-        }
-
-    @Test
-    fun `getLocationData returns null when both the cache and the active request fail`() =
-        runTest(testDispatcher) {
-            every { Tasks.await(lastLocationTask) } throws RuntimeException("no cache")
-            every { Tasks.await(currentLocationTask) } throws RuntimeException("no fix")
-
-            assertNull(repository.getLocationData())
-        }
-
-    // endregion
-
-    private fun fakeLocation(lat: Double, lon: Double, time: Long): Location {
-        val location = mockk<Location>()
-        every { location.latitude } returns lat
-        every { location.longitude } returns lon
-        every { location.time } returns time
-        return location
-    }
 
     private fun entity(id: Int, time: Long, lat: Double, lon: Double) = LocationResourceEntity(
         id = id,
@@ -338,13 +274,4 @@ private class FakeLocationResourceDao : LocationResourceDao {
     }
 
     override fun getLocationResources(): Flow<List<LocationResourceEntity>> = state
-}
-
-/** Tiny hand-written fake, in keeping with the project's existing testing convention. */
-private class FakeGoogleServicesChecker : GoogleServicesChecker {
-    var available: Boolean = true
-    var error: Throwable? = null
-
-    override val isGoogleServicesAvailable: Boolean
-        get() = error?.let { throw it } ?: available
 }

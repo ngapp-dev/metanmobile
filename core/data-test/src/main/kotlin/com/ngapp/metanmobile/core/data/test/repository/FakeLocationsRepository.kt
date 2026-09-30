@@ -17,16 +17,12 @@
 
 package com.ngapp.metanmobile.core.data.test.repository
 
-import android.location.Location
-import com.ngapp.metanmobile.core.common.network.Dispatcher
-import com.ngapp.metanmobile.core.common.network.MMDispatchers.IO
 import com.ngapp.metanmobile.core.data.repository.location.LocationsRepository
 import com.ngapp.metanmobile.core.model.location.LocationResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 
 /**
  * Fake implementation of the [LocationsRepository] that retrieves the location resources.
@@ -34,8 +30,8 @@ import javax.inject.Inject
  * This allows us to run the app with fake data, without needing an internet connection or working
  * backend.
  */
-internal class FakeLocationsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+internal class FakeLocationsRepository constructor(
+    private val ioDispatcher: CoroutineDispatcher,
 ) : LocationsRepository {
 
     override fun getLocationResources(): Flow<List<LocationResource>> = flow {
@@ -45,8 +41,6 @@ internal class FakeLocationsRepository @Inject constructor(
     override fun getLocationResource(): Flow<LocationResource> = flow {
         emit(LocationResource.init())
     }.flowOn(ioDispatcher)
-
-    override suspend fun getLocationData(): Location = Location("fake")
 
     override suspend fun updateLocation(locationPermissionGranted: Boolean) {}
 }

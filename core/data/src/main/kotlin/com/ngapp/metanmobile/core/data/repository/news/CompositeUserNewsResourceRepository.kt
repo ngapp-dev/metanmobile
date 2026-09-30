@@ -24,13 +24,12 @@ import com.ngapp.metanmobile.core.model.userdata.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * Implements a [UserNewsResourceRepository] by combining a [NewsRepository] with a
  * [UserDataRepository].
  */
-class CompositeUserNewsResourceRepository @Inject constructor(
+class CompositeUserNewsResourceRepository(
     private val newsRepository: NewsRepository,
     private val userDataRepository: UserDataRepository,
 ) : UserNewsResourceRepository {

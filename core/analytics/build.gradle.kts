@@ -16,18 +16,29 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.compose)
-    alias(libs.plugins.mm.hilt)
+    alias(libs.plugins.mm.kmp.library)
 }
 
-android {
-    namespace = "com.ngapp.metanmobile.core.analytics"
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation("org.jetbrains.compose.runtime:runtime:${libs.versions.composePlugin.get()}")
+        }
+        androidMain {
+            kotlin.srcDir("src/main/kotlin")
+            kotlin.exclude("com/ngapp/metanmobile/core/analytics/AnalyticsEvent.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/analytics/AnalyticsHelper.kt")
+            kotlin.exclude("com/ngapp/metanmobile/core/analytics/NoOpAnalyticsHelper.kt")
+            dependencies {
+                implementation(libs.androidx.compose.runtime)
+                implementation(libs.firebase.analytics)
+            }
+        }
+    }
 }
 
 dependencies {
-    implementation(libs.androidx.compose.runtime)
-
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
+    add("androidMainImplementation", platform(libs.androidx.compose.bom))
+    add("androidMainImplementation", platform(libs.firebase.bom))
 }

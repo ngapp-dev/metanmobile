@@ -25,15 +25,13 @@ import com.ngapp.metanmobile.core.database.model.station.StationResourceEntity
 import com.ngapp.metanmobile.core.database.model.station.asExternalModel
 import com.ngapp.metanmobile.core.model.station.StationResource
 import com.ngapp.metanmobile.core.network.MetanEcogasNetworkDataSource
-import com.ngapp.metanmobile.core.network.MetanMobileParserDataSource
 import com.ngapp.metanmobile.core.network.model.station.NetworkStationResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 import kotlin.collections.map
 import kotlin.collections.toSet
 
-class OfflineFirstStationsRepository @Inject constructor(
+class OfflineFirstStationsRepository(
     private val network: MetanEcogasNetworkDataSource,
     private val stationResourceDao: StationResourceDao,
 ) : StationsRepository {
@@ -45,8 +43,7 @@ class OfflineFirstStationsRepository @Inject constructor(
             useFilterStationTypes = query.filterStationTypes != null,
             filterStationTypes = query.filterStationTypes?.map { it.typeName }?.toSet() ?: emptySet(),
             sortingType = query.sortingType.name,
-            searchQuery = query.searchQuery,
-        ).map { it.map(StationResourceEntity::asExternalModel) }
+        ).map { it.map(StationResourceEntity::asExternalModel).filterBySearchQuery(query.searchQuery) }
 
     override fun getStationResourcesDesc(query: StationResourceQuery): Flow<List<StationResource>> =
         stationResourceDao.getStationResourcesDesc(
@@ -55,23 +52,40 @@ class OfflineFirstStationsRepository @Inject constructor(
             useFilterStationTypes = query.filterStationTypes != null,
             filterStationTypes = query.filterStationTypes?.map { it.typeName }?.toSet() ?: emptySet(),
             sortingType = query.sortingType.name,
-            searchQuery = query.searchQuery,
-        ).map { it.map(StationResourceEntity::asExternalModel) }
+        ).map { it.map(StationResourceEntity::asExternalModel).filterBySearchQuery(query.searchQuery) }
 
     override fun getStationResource(stationCode: String) =
         stationResourceDao.getStationResource(stationCode)
             .map(StationResourceEntity::asExternalModel)
+
+    /**
+     * Matches [StationResourceQuery.searchQuery] against title, address and region — not just
+     * title, since that's where a city name (e.g. "Минск") usually actually shows up — using
+     * Kotlin's own `ignoreCase`, which correctly case-folds Cyrillic (unlike the SQL `LIKE` this
+     * used to run through, which only case-folds ASCII).
+     */
+    private fun List<StationResource>.filterBySearchQuery(searchQuery: String): List<StationResource> {
+        if (searchQuery.isBlank()) return this
+        return filter { station ->
+            station.title.contains(searchQuery, ignoreCase = true) ||
+                station.address.contains(searchQuery, ignoreCase = true) ||
+                station.region.contains(searchQuery, ignoreCase = true)
+        }
+    }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
         return synchronizer.updateDataSync(
             dataFetcher = { network.getStations() },
             dataWriter = { networkStationList ->
                 val newData = networkStationList.map(NetworkStationResource::asEntity)
-                val newIds = newData.map { it.code }.toSet()
                 val existingIds = stationResourceDao.getAllStationIds().toSet()
-                val idsToDelete = existingIds - newIds
-                stationResourceDao.deleteStationResources(idsToDelete)
-                stationResourceDao.upsertStationResources(newData)
+                // Пустой ответ при непустой локальной базе не удаляет всё — сервер может отдать
+                // 0 из-за временного сбоя фида (см. BUG-2/BUG-1 в спеке синхронизации).
+                if (newData.isNotEmpty() || existingIds.isEmpty()) {
+                    val idsToDelete = existingIds - newData.map { it.code }.toSet()
+                    stationResourceDao.deleteStationResources(idsToDelete)
+                    stationResourceDao.upsertStationResources(newData)
+                }
             }
         )
     }

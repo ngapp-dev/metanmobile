@@ -20,7 +20,6 @@ package com.ngapp.metanmobile.feature.home
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import com.ngapp.metanmobile.core.designsystem.theme.MMTheme
 import com.ngapp.metanmobile.core.model.home.HomeContentItem
@@ -121,12 +120,7 @@ class HomeScreenTest {
         setContent(uiState = emptySuccess(), isSyncing = false, syncFailed = true)
 
         composeTestRule.onNodeWithText(calculatorsTitle).assertDoesNotExist()
-        // The retry message sits behind an AnimatedVisibility gated on the Lottie animation's own
-        // playback state, not on recomposition - wait for it explicitly rather than relying on
-        // Compose Testing's regular idle sync, which doesn't track that clock.
-        composeTestRule.waitUntil(timeoutMillis = 5_000) {
-            composeTestRule.onAllNodesWithText(emptyMessage).fetchSemanticsNodes().isNotEmpty()
-        }
+        composeTestRule.onNodeWithText(emptyMessage).assertExists()
     }
 
     private fun emptySuccess() = HomeUiState.Success(

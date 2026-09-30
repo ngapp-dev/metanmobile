@@ -1,0 +1,133 @@
+package com.ngapp.metanmobile.feature.home.ui
+
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.ngapp.metanmobile.core.designsystem.component.mmScrollContentPadding
+import com.ngapp.metanmobile.core.designsystem.component.reorderable.ReorderHapticFeedbackType
+import com.ngapp.metanmobile.core.designsystem.component.reorderable.ReorderableItem
+import com.ngapp.metanmobile.core.designsystem.component.reorderable.rememberReorderHapticFeedback
+import com.ngapp.metanmobile.core.designsystem.component.reorderable.rememberReorderableLazyListState
+import com.ngapp.metanmobile.core.designsystem.component.reorderable.reorderableItemModifier
+import com.ngapp.metanmobile.core.model.career.CareerResource
+import com.ngapp.metanmobile.core.model.faq.FaqResource
+import com.ngapp.metanmobile.core.model.home.HomeContentItem
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.CALCULATORS
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.CAREER
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.FAQ
+import com.ngapp.metanmobile.core.model.home.HomeContentItem.USER_LOCATION
+import com.ngapp.metanmobile.core.model.news.UserNewsResource
+import com.ngapp.metanmobile.core.model.price.PriceResource
+import com.ngapp.metanmobile.core.model.station.UserStationResource
+import com.ngapp.metanmobile.feature.home.state.HomeAction
+
+@Composable
+internal fun HomeContent(
+    isEditingUi: Boolean,
+    isLastNewsExpended: Boolean,
+    reorderableList: List<HomeContentItem>,
+    pinnedNewsList: List<UserNewsResource>,
+    lastNewsList: List<UserNewsResource>,
+    nearestStation: UserStationResource?,
+    cngPrice: PriceResource?,
+    pinnedFaqList: List<FaqResource>,
+    career: CareerResource?,
+    onNewsDetailClick: (String) -> Unit,
+    onShowAllNewsClick: () -> Unit,
+    onSeeAllFaqClick: () -> Unit,
+    onSeeAllCareersClick: () -> Unit,
+    onStationDetailClick: (String) -> Unit,
+    onAction: (HomeAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val listState = rememberLazyListState()
+    val haptic = rememberReorderHapticFeedback()
+    val reorderableLazyColumnState = rememberReorderableLazyListState(listState) { from, to ->
+        val temporaryList = reorderableList.toMutableList().apply {
+            val fromIndex = indexOfFirst { it == from.key }
+            val toIndex = indexOfFirst { it == to.key }
+            add(toIndex, removeAt(fromIndex))
+        }
+        onAction(HomeAction.ReorderList(temporaryList))
+        haptic.performHapticFeedback(ReorderHapticFeedbackType.MOVE)
+    }
+
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = mmScrollContentPadding(),
+        modifier = modifier.fillMaxSize()
+    ) {
+        item("contentHeader") {
+            HomeHeaderView(
+                isEditingUi = isEditingUi,
+                isLastNewsExpended = isLastNewsExpended,
+                lastNewsItems = lastNewsList,
+                pinnedNews = pinnedNewsList,
+                onShowAllNewsClick = onShowAllNewsClick,
+                onNewsDetailClick = onNewsDetailClick,
+                onExpandLastNewsClick = { onAction(HomeAction.ExpandLastNews(it)) },
+            )
+        }
+        items(reorderableList, key = { it }) { item ->
+            ReorderableItem(reorderableLazyColumnState, item) {
+                val interactionSource = remember { MutableInteractionSource() }
+                val reorderableItemModifier = reorderableItemModifier(haptic, interactionSource)
+                when (item) {
+                    USER_LOCATION -> {
+                        HomeWidgetUserLocationView(
+                            isEditingUi = isEditingUi,
+                            nearestStation = nearestStation,
+                            cngPrice = cngPrice,
+                            onStationDetailClick = onStationDetailClick,
+                            modifier = reorderableItemModifier,
+                        )
+                    }
+
+                    CALCULATORS -> {
+                        HomeWidgetCalculatorsView(
+                            isEditingUi = isEditingUi,
+                            modifier = reorderableItemModifier,
+                        )
+                    }
+
+                    FAQ -> {
+                        if (pinnedFaqList.isNotEmpty()) {
+                            HomeWidgetFaqView(
+                                isEditingUi = isEditingUi,
+                                pinnedFaqItems = pinnedFaqList,
+                                onSeeAllClick = onSeeAllFaqClick,
+                                modifier = reorderableItemModifier,
+                            )
+                        }
+                    }
+
+                    CAREER -> {
+                        if (career != null) {
+                            CareerWidget(
+                                isEditingUi = isEditingUi,
+                                career = career,
+                                onSeeAllClick = onSeeAllCareersClick,
+                                modifier = reorderableItemModifier,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (isEditingUi) {
+            item("safeDrawing") {
+                Spacer(modifier = Modifier.height(72.dp))
+            }
+        }
+    }
+}

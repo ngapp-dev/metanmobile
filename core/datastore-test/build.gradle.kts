@@ -16,16 +16,17 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.hilt)
+    alias(libs.plugins.mm.kmp.library)
 }
 
-android {
-    namespace = "com.ngapp.metanmobile.core.datastore.test"
-}
-
-dependencies {
-    implementation(libs.hilt.android.testing)
-    implementation(projects.core.common)
-    implementation(projects.core.datastore)
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir("src/main/kotlin")
+            dependencies {
+                api(projects.core.datastore)
+                implementation(libs.koin.core)
+            }
+        }
+    }
 }

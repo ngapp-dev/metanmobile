@@ -34,7 +34,7 @@ import kotlin.test.assertTrue
 import com.ngapp.metanmobile.core.designsystem.R as DesignSystemR
 
 /**
- * UI tests for [NewsDetailScreen], exercised directly (no Hilt/navigation/SavedStateHandle) with
+ * UI tests for [NewsDetailScreen], exercised directly (no navigation/SavedStateHandle) with
  * a caller-supplied [NewsDetailUiState] and captured [NewsDetailAction]s - the same approach as
  * `OnboardingScreenTest`.
  */

@@ -1,0 +1,4 @@
+<resources>
+    <string name="bottom_menu_home">Главная</string><string name="bottom_menu_stations">Заправки</string><string name="bottom_menu_news">Новости</string><string name="bottom_menu_favorites">Избранное</string>
+    <string name="button_open_in_browser">Открыть в браузере</string><string name="button_how_to_get_access">Как получить доступ?</string><string name="onboarding_button_skip">Пропустить</string><string name="description_back">Вернуться назад</string>
+</resources>

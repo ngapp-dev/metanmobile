@@ -16,32 +16,32 @@
  */
 
 plugins {
-    alias(libs.plugins.mm.android.library)
-    alias(libs.plugins.mm.android.library.jacoco)
-    alias(libs.plugins.mm.hilt)
+    alias(libs.plugins.mm.kmp.library)
+    alias(libs.plugins.wire)
 }
 
-android {
-    defaultConfig {
-        consumerProguardFiles("consumer-proguard-rules.pro")
-    }
-    namespace = "com.ngapp.metanmobile.core.datastore"
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
+/**
+ * The Android proto module is retained only as a compatibility fixture while old releases
+ * remain installed. Runtime preferences now use the common Wire schema below, whose field
+ * numbers intentionally match the legacy `user_preferences.pb` file.
+ */
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.androidx.dataStore)
+            api(projects.core.model)
+            implementation(projects.core.common)
+            implementation(libs.koin.core)
+        }
+        androidMain.dependencies {
+            implementation(libs.koin.android)
         }
     }
 }
 
-dependencies {
-    api(libs.androidx.dataStore.core)
-    api(libs.androidx.dataStore.preferences)
-    api(libs.androidx.security)
-    api(projects.core.datastoreProto)
-    api(projects.core.model)
-
-    implementation(projects.core.common)
-
-    testImplementation(projects.core.datastoreTest)
-    testImplementation(libs.kotlinx.coroutines.test)
+wire {
+    kotlin {}
+    sourcePath {
+        srcDir("src/commonMain/proto")
+    }
 }
