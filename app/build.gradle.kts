@@ -100,6 +100,9 @@ dependencies {
     // Firebase Performance still uses lite generated protobuf messages at runtime. This was
     // previously brought in transitively by the Android-only DataStore proto module.
     implementation(libs.protobuf.kotlin.lite)
+    // OssLicensesMenuActivity/OssLicensesActivity are declared in this module's manifest, so the
+    // library has to be on app's own compile classpath (core:ui only has it as implementation).
+    implementation(libs.google.oss.licenses)
 
     implementation(projects.core.analytics)
     implementation(projects.core.common)
