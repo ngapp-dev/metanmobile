@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.mm.kmp.library)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -36,6 +37,17 @@ kotlin {
             implementation("org.jetbrains.compose.runtime:runtime:${libs.versions.composePlugin.get()}")
             implementation(projects.core.data)
             implementation(projects.widget.core)
+            implementation(libs.kotlinx.serialization.json)
+        }
+        iosMain.dependencies {
+            // :resources brings moko's compose 1.7.0 (foundation, ui, animation) transitively; on
+            // its own (without :composeApp forcing the app's version) that old UI stack next to
+            // compose-runtime 1.11 breaks linking the iOS test binary. Pin it to the version the
+            // app ships - foundation pulls ui and animation along.
+            implementation("org.jetbrains.compose.foundation:foundation:${libs.versions.composePlugin.get()}")
+            implementation(projects.resources)
+            implementation(libs.moko.core)
+            implementation(libs.koin.core)
         }
         androidMain.dependencies {
             implementation(projects.resources)

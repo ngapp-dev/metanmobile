@@ -22,6 +22,9 @@ kotlin {
             // the framework's generated Objective-C header so MobileAdsBridge.swift can actually
             // implement it - same "export needs an api dependency" requirement as above.
             export(projects.core.ui)
+            // widget:core's WidgetReloader is implemented in Swift (WidgetCenter is Swift-only),
+            // so it has to be visible in the framework header too.
+            export(projects.widget.core)
         }
     }
 
@@ -77,6 +80,8 @@ kotlin {
         // for Android's own WorkManager wiring via the :app module's own dependency on it.
         iosMain.dependencies {
             implementation(projects.sync.work)
+            api(projects.widget.core)
+            implementation(projects.widget.nearestStation)
         }
     }
 }

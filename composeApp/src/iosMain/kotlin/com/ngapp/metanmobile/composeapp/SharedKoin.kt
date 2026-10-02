@@ -35,6 +35,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import com.ngapp.metanmobile.widget.nearest.station.di.nearestStationWidgetModule
+import com.ngapp.metanmobile.widget.core.di.widgetCoreModule
+import com.ngapp.metanmobile.widget.core.WidgetReloader
+import com.ngapp.metanmobile.widget.core.WidgetPublisher
+import com.ngapp.metanmobile.core.data.di.widgetDataModule
 
 /**
  * Initializes the shared graph before the SwiftUI host creates Compose content.
@@ -42,8 +47,10 @@ import org.koin.dsl.module
  * @param nativeAdsBridge Swift's real GoogleMobileAds/UserMessagingPlatform implementation
  *   (MobileAdsBridge.swift) - see core:ui's NativeAdsBridge.kt for why this can't just be
  *   resolved through Koin like everything else here.
+ * @param widgetReloader Swift's WidgetCenter call (WidgetReloaderBridge.swift), used to redraw
+ *   the home-screen widgets after their data in the App Group changed.
  */
-fun initSharedKoin(nativeAdsBridge: NativeAdsBridge) {
+fun initSharedKoin(nativeAdsBridge: NativeAdsBridge, widgetReloader: WidgetReloader) {
     registerNativeAdsBridge(nativeAdsBridge)
     configureImageLoader()
     val koinApp = startKoin {
@@ -86,12 +93,19 @@ fun initSharedKoin(nativeAdsBridge: NativeAdsBridge) {
             featureContactsModule,
             featureFaqModule,
             featurePrivacyPolicyModule,
+            module { single<WidgetReloader> { widgetReloader } },
+            widgetDataModule,
+            widgetCoreModule,
+            nearestStationWidgetModule,
         )
     }
     // Mirrors Android's Sync.initialize(context) call right after startKoin{} in
     // MetanMobileApplication.onCreate() — same "sync once at app launch" behavior, just reached
     // through the SyncManager Koin already built instead of going straight to WorkManager.
     koinApp.koin.get<SyncManager>().requestSync()
+    // Mirrors Android's Widgets.initialize(): keeps the widgets' App Group data in step with the
+    // local database for as long as the app runs (foreground or a background sync).
+    koinApp.koin.get<WidgetPublisher>().start(CoroutineScope(SupervisorJob() + Dispatchers.Default))
     // BGTaskScheduler.registerForTaskWithIdentifier must run before the end of App.init() (this
     // SwiftUI app has no AppDelegate, so init() is the equivalent of applicationDidFinishLaunching)
     // — initSharedKoin() is called from exactly there (MetanMobileApp.swift), so this is the
