@@ -32,6 +32,14 @@ class LocationUtilsTest {
     }
 
     @Test
+    fun `distanceInKm is zero, not NaN, where rounding pushes the cosine past 1`() {
+        // Same point at latitude 12: the floating-point sum comes out just above 1.0.
+        val distance = distanceInKm(12.0, 27.0, 12.0, 27.0)
+
+        assertEquals(0.0, distance, 0.001)
+    }
+
+    @Test
     fun `distanceInKm matches the known great-circle distance between two cities`() {
         // Minsk to Grodno, roughly 260 km apart in a straight line.
         val minskLat = 53.9006

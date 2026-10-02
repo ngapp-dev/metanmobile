@@ -56,7 +56,9 @@ interface StationResourceDao {
             ORDER BY
             CASE
                 WHEN :sortingType = 'STATION_NAME' THEN title
-                ELSE NULL
+                -- DISTANCE is sorted in memory (it needs the user's position); the title keeps
+                -- stations with an unknown distance in a stable order.
+                ELSE title
             END
             DESC
     """,
@@ -86,7 +88,9 @@ interface StationResourceDao {
             ORDER BY
             CASE
                 WHEN :sortingType = 'STATION_NAME' THEN title
-                ELSE NULL
+                -- DISTANCE is sorted in memory (it needs the user's position); the title keeps
+                -- stations with an unknown distance in a stable order.
+                ELSE title
             END
             ASC
     """,

@@ -28,7 +28,8 @@ fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double
         sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
             deg2rad(theta)
         )
-    dist = acos(dist)
+    // Rounding can push identical points just past 1, where acos is NaN.
+    dist = acos(dist.coerceIn(-1.0, 1.0))
     dist = rad2deg(dist)
     dist *= 60 * 1.1515
     dist *= 1.609344

@@ -80,6 +80,15 @@ class StationResourceDaoTest {
         assertEquals(listOf("Beta", "Alpha"), result.map { it.title })
     }
 
+    @Test
+    fun `DISTANCE sorting falls back to title order (distance itself is sorted in memory)`() = runTest {
+        dao.upsertStationResources(listOf(station(code = "b", title = "Beta"), station(code = "a", title = "Alpha")))
+
+        val result = dao.getStationResourcesAsc(sortingType = "DISTANCE").first()
+
+        assertEquals(listOf("Alpha", "Beta"), result.map { it.title })
+    }
+
     private fun station(code: String, title: String) = StationResourceEntity(
         id = code,
         code = code,
