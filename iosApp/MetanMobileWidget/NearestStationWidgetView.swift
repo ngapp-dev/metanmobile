@@ -30,20 +30,11 @@ struct NearestStationWidgetView: View {
 
     private var configuration: NearestStationWidgetIntent { entry.configuration }
 
-    private var isDark: Bool {
-        switch configuration.theme {
-        case .system: systemColorScheme == .dark
-        case .light: false
-        case .dark: true
-        }
-    }
+    private var isDark: Bool { configuration.theme.isDark(systemIsDark: systemColorScheme == .dark) }
 
     private var isFullColor: Bool { renderingMode == .fullColor }
 
-    /// A small widget only has room for one tile; "both" keeps the price there.
-    private var tiles: TilesOption {
-        family == .systemSmall && configuration.tiles == .both ? .price : configuration.tiles
-    }
+    private var tiles: TilesOption { configuration.tiles.shown(isSmall: family == .systemSmall) }
 
     var body: some View {
         let palette = WidgetPalette(intent: configuration, isDark: isDark)
@@ -53,12 +44,12 @@ struct NearestStationWidgetView: View {
             .containerBackground(for: .widget) {
                 isFullColor ? palette.container : Color.clear
             }
-            .widgetURL(widgetURL)
+            .widgetURL(nearestStationWidgetURL(tiles: tiles, snapshot: entry.snapshot))
     }
 
     @ViewBuilder
     private func content(_ palette: WidgetPalette) -> some View {
-        if let snapshot = entry.snapshot, snapshot.price != nil || snapshot.station != nil {
+        if let snapshot = entry.snapshot, snapshot.hasContent {
             HStack(spacing: WidgetTokens.tileSpacing) {
                 if tiles != .distance {
                     PriceTile(snapshot: snapshot, palette: palette, isFullColor: isFullColor)
@@ -91,14 +82,6 @@ struct NearestStationWidgetView: View {
         } else {
             tile
         }
-    }
-
-    /// The station when it's the only thing shown, otherwise just the app.
-    private var widgetURL: URL? {
-        if tiles == .distance, let station = entry.snapshot?.station {
-            return URL(string: station.url)
-        }
-        return URL(string: "metanmobile://")
     }
 }
 

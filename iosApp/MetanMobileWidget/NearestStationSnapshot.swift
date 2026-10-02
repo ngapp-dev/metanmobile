@@ -67,7 +67,7 @@ struct NearestStationSnapshot: Codable, Equatable {
             ),
             let data = try? Data(contentsOf: container.appendingPathComponent(fileName))
         else { return nil }
-        return try? JSONDecoder().decode(NearestStationSnapshot.self, from: data)
+        return decode(data)
     }
 
     /// For the widget gallery, placeholders and Xcode previews.
