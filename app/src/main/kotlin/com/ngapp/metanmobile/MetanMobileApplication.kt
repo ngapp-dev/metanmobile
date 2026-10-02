@@ -6,6 +6,7 @@ import com.ngapp.metanmobile.core.data.di.locationDataModule
 import com.ngapp.metanmobile.core.data.di.locationModule
 import com.ngapp.metanmobile.core.data.di.syncDataModule
 import com.ngapp.metanmobile.core.data.di.userDataModule
+import com.ngapp.metanmobile.core.data.di.widgetDataModule
 import com.ngapp.metanmobile.core.database.di.databaseModule
 import com.ngapp.metanmobile.core.datastore.di.userPreferencesDataStoreModule
 import com.ngapp.metanmobile.core.network.client.di.networkClientModule
@@ -17,6 +18,9 @@ import com.ngapp.metanmobile.composeapp.configureImageLoader
 import com.ngapp.metanmobile.composeapp.di.mainModule
 import com.ngapp.metanmobile.sync.di.syncModule
 import com.ngapp.metanmobile.sync.initializers.Sync
+import com.ngapp.metanmobile.widget.core.di.widgetCoreModule
+import com.ngapp.metanmobile.widget.core.initializers.Widgets
+import com.ngapp.metanmobile.widget.nearest.station.di.nearestStationWidgetModule
 import com.ngapp.metanmobile.feature.onboarding.di.featureOnboardingModule
 import com.ngapp.metanmobile.feature.news.di.featureNewsModule
 import com.ngapp.metanmobile.feature.favorites.di.featureFavoritesModule
@@ -55,6 +59,7 @@ class MetanMobileApplication : Application() {
                 locationModule(),
                 locationDataModule,
                 syncDataModule,
+                widgetDataModule,
                 syncModule(),
                 mainModule,
                 uiModule,
@@ -71,8 +76,11 @@ class MetanMobileApplication : Application() {
                 featureContactsModule,
                 featureFaqModule,
                 featurePrivacyPolicyModule,
+                widgetCoreModule,
+                nearestStationWidgetModule,
             )
         }
         Sync.initialize(context = this)
+        Widgets.initialize()
     }
 }

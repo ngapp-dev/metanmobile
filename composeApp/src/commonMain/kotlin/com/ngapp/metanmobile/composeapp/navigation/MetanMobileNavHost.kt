@@ -84,14 +84,20 @@ fun MetanMobileNavHost(
     // ?.let { appState.navigateToDeepLink(it) } }, just fed by DeepLinkHolder instead of an
     // Android-only Intent so both platform entry points can push into the same place.
     val pendingDeepLink by DeepLinkHolder.pendingUrl.collectAsStateWithLifecycle()
-    LaunchedEffect(pendingDeepLink) {
+    val entry by navController.currentBackStackEntryAsState()
+    // On a cold start (the app opened straight from a link or a home-screen widget) the link
+    // arrives before the NavHost below is mounted — it waits for onboarding state to load — and
+    // navigating then crashes with "You must call setGraph() before calling getGraph()". Keep the
+    // link pending until the graph exists, i.e. the first back stack entry is there.
+    val isGraphReady = entry != null
+    LaunchedEffect(pendingDeepLink, isGraphReady) {
+        if (!isGraphReady) return@LaunchedEffect
         pendingDeepLink?.let {
             appState.navigateToDeepLink(it)
             DeepLinkHolder.consume()
         }
     }
 
-    val entry by navController.currentBackStackEntryAsState()
     val isOnboarding = entry?.destination?.hasRoute<OnboardingNavigationRoute>() == true
     val selectedDestination = TopLevelDestination.entries.firstOrNull { entry?.destination?.route == it.route }
     // Top-level screens hide the bar while their station-detail bottom sheet is expanded. The
