@@ -137,10 +137,13 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
                 setImageScaleType(ImageView.ScaleType.CENTER_CROP)
             }
             val views = NativeBannerViews.create(viewContext, style, mediaView)
+            // AdMob validates the registered MediaView: it must stay visible and at least
+            // 120x120dp, so the thumbnail is always the media and the icon goes to the meta line.
+            views.icon.visibility = View.GONE
             adView.addView(views.root)
             adView.headlineView = views.title
             adView.bodyView = views.description
-            adView.iconView = views.icon
+            adView.iconView = views.favicon
             adView.callToActionView = views.callToAction
             adView.advertiserView = views.domain
             adView.mediaView = mediaView
@@ -154,17 +157,12 @@ private fun AdMobNativeBanner(slotKey: String, style: NativeBannerStyle, modifie
             views.callToAction.setTextOrGone(ad.callToAction)
             views.domain.setTextOrGone(ad.advertiser)
             views.sponsored.text = style.adLabel
-            // The thumbnail shows the ad's icon at the list rows' own size; ads without an icon
-            // show their media there instead, at the 120dp minimum MediaView size.
             val icon = ad.icon?.drawable
-            views.icon.setImageDrawable(icon)
-            views.icon.visibility = if (icon != null) View.VISIBLE else View.GONE
-            views.media.visibility = if (icon != null) View.GONE else View.VISIBLE
-            views.setMediaSized(icon == null)
+            views.favicon.setImageDrawable(icon)
+            views.favicon.visibility = if (icon != null) View.VISIBLE else View.GONE
             views.age.visibility = View.GONE
             views.warning.visibility = View.GONE
             views.feedback.visibility = View.GONE
-            views.favicon.visibility = View.GONE
             adView.setNativeAd(ad)
         },
     )
@@ -202,8 +200,6 @@ private fun YandexNativeBanner(slotKey: String, style: NativeBannerStyle, modifi
         factory = { viewContext ->
             val adView = YandexNativeAdView(viewContext)
             val views = NativeBannerViews.create(viewContext, style, YandexMediaView(viewContext))
-            // Any Yandex ad may carry media, so the thumbnail always has media size.
-            views.setMediaSized(true)
             adView.addView(views.root)
             adView.tag = views
             adView
@@ -250,15 +246,12 @@ private class NativeBannerStyle(
 /**
  * The NativeBanner row, built in code (neither SDK ships a ready template in the versions we use)
  * to match NewsRow / StationRow: the same asymmetric-rounded thumbnail on the left, title
- * (+ description) and a meta line with the "Ad" label, advertiser and the call-to-action. With an
- * icon it's exactly a list row's size; showing media it grows to fit a 120x120dp thumbnail - the
- * minimum media size the ad networks allow - and uses the extra height for the ad's text.
+ * (+ description) and a meta line with the "Ad" label, advertiser and the call-to-action. The
+ * thumbnail is the ad's media at 120x120dp - the minimum media size the ad networks allow - so the
+ * row is taller than a list row and uses the extra height for the ad's text.
  */
 private class NativeBannerViews(
     val root: LinearLayout,
-    val thumbnail: FrameLayout,
-    private val isStation: Boolean,
-    private val density: Float,
     val icon: ImageView,
     val media: View,
     val favicon: ImageView,
@@ -271,18 +264,6 @@ private class NativeBannerViews(
     val callToAction: TextView,
     val warning: TextView,
 ) {
-    fun setMediaSized(mediaSized: Boolean) {
-        fun dp(value: Int) = (value * density).toInt()
-        thumbnail.layoutParams = (thumbnail.layoutParams as LinearLayout.LayoutParams).apply {
-            width = if (mediaSized) dp(120) else dp(74)
-            height = if (mediaSized) dp(120) else dp(66)
-            marginEnd = if (mediaSized) dp(12) else dp(8)
-        }
-        description.maxLines = if (mediaSized) 2 else 1
-        // News rows only have room for the ad text once the thumbnail makes the row taller.
-        if (!isStation && !mediaSized) description.visibility = View.GONE
-    }
-
     companion object {
         fun create(context: Context, style: NativeBannerStyle, media: View): NativeBannerViews {
             fun dp(value: Int) = TypedValue.applyDimension(
@@ -319,7 +300,7 @@ private class NativeBannerViews(
             thumbnail.addView(icon, FrameLayout.LayoutParams(MATCH, MATCH))
 
             val title = text(style.titleSizeSp, style.titleColor, bold = true, lines = if (isStation) 1 else 2)
-            val description = text(style.descriptionSizeSp, style.descriptionColor)
+            val description = text(style.descriptionSizeSp, style.descriptionColor, lines = 2)
             val sponsored = text(style.metaSizeSp, style.onAccent).apply {
                 background = GradientDrawable().apply {
                     cornerRadius = dp(4).toFloat()
@@ -357,10 +338,10 @@ private class NativeBannerViews(
                 setBackgroundColor(style.background)
                 setPadding(dp(16), 0, dp(12), 0)
                 minimumHeight = dp(82)
-                addView(thumbnail, LinearLayout.LayoutParams(dp(74), dp(66)).apply {
+                addView(thumbnail, LinearLayout.LayoutParams(dp(120), dp(120)).apply {
                     topMargin = dp(8)
                     bottomMargin = dp(8)
-                    marginEnd = dp(8)
+                    marginEnd = dp(12)
                 })
                 addView(texts, LinearLayout.LayoutParams(0, WRAP, 1f))
                 // Yandex requires every icon (the feedback/close control included) to be at least
@@ -372,7 +353,7 @@ private class NativeBannerViews(
                 })
             }
             return NativeBannerViews(
-                root, thumbnail, isStation, context.resources.displayMetrics.density, icon, media, favicon, feedback, title, description, sponsored, domain, age,
+                root, icon, media, favicon, feedback, title, description, sponsored, domain, age,
                 callToAction, warning,
             )
         }

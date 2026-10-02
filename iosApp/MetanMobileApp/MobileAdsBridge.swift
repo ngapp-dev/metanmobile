@@ -339,8 +339,8 @@ private extension UIView {
 /// The NativeBanner row, matching the app's NewsRow / StationRow: thumbnail on the left (the
 /// icon gets the rows' asymmetric-rounded image shape; media stays square-cornered so the creative
 /// and its video controls are never clipped), title (+ description) and a meta line with the "Ad"
-/// label, advertiser and call-to-action. With an icon it's a list row's size (82pt); showing media
-/// it grows to fit a 120x120pt thumbnail, the minimum media size.
+/// label, advertiser and call-to-action. The thumbnail is the ad's media at 120x120pt, the minimum
+/// media size the ad networks allow.
 @MainActor
 private enum NativeBannerRow {
     struct Built {
@@ -367,28 +367,29 @@ private enum NativeBannerRow {
         let media = GoogleMobileAds.MediaView()
         media.contentMode = .scaleAspectFill
         let parts = Parts()
-        let hasIcon = ad.icon?.image != nil
-        let height = layout(in: adView, parts: parts, media: media, style: style, mediaSized: !hasIcon, withFeedback: false)
+        let height = layout(in: adView, parts: parts, media: media, style: style, withFeedback: false)
 
         parts.title.text = ad.headline
         parts.description.text = ad.body
-        parts.description.isHidden = ad.body?.isEmpty ?? true || (!style.isStationLayout && hasIcon)
+        parts.description.isHidden = ad.body?.isEmpty ?? true
         parts.domain.text = ad.advertiser
         parts.sponsored.text = style.adLabel
         parts.callToAction.setTitle(ad.callToAction, for: .normal)
         parts.callToAction.isHidden = ad.callToAction == nil
         // The native ad view handles clicks itself.
         parts.callToAction.isUserInteractionEnabled = false
-        parts.icon.image = ad.icon?.image
-        parts.icon.isHidden = !hasIcon
-        media.isHidden = hasIcon
-        [parts.age, parts.warning, parts.favicon, parts.feedback].forEach { $0.isHidden = true }
+        // AdMob validates the registered MediaView: it must stay visible and at least 120x120pt,
+        // so the thumbnail is always the media and the icon goes to the meta line.
+        parts.icon.isHidden = true
+        parts.favicon.image = ad.icon?.image
+        parts.favicon.isHidden = ad.icon?.image == nil
+        [parts.age, parts.warning, parts.feedback].forEach { $0.isHidden = true }
 
         adView.headlineView = parts.title
         adView.bodyView = parts.description
         adView.advertiserView = parts.domain
         adView.callToActionView = parts.callToAction
-        adView.iconView = parts.icon
+        adView.iconView = parts.favicon
         adView.mediaView = media
         adView.nativeAd = ad
         return Built(view: adView, height: height)
@@ -398,8 +399,7 @@ private enum NativeBannerRow {
         let adView = YandexMobileAds.NativeAdView()
         let media = YandexMobileAds.NativeMediaView()
         let parts = Parts()
-        // Any Yandex ad may carry media, so the thumbnail always has media size.
-        let height = layout(in: adView, parts: parts, media: media, style: style, mediaSized: true, withFeedback: true)
+        let height = layout(in: adView, parts: parts, media: media, style: style, withFeedback: true)
 
         adView.titleLabel = parts.title
         adView.bodyLabel = parts.description
@@ -422,14 +422,12 @@ private enum NativeBannerRow {
         parts: Parts,
         media: UIView,
         style: NativeAdViewStyle,
-        mediaSized: Bool,
         withFeedback: Bool
     ) -> CGFloat {
         root.backgroundColor = UIColor(argb: style.background)
 
-        let thumbnailWidth: CGFloat = mediaSized ? 120 : 74
-        let thumbnailHeight: CGFloat = mediaSized ? 120 : 66
-        let rowHeight = thumbnailHeight + 16
+        let thumbnailSize: CGFloat = 120
+        let rowHeight = thumbnailSize + 16
 
         parts.thumbnail.translatesAutoresizingMaskIntoConstraints = false
         [media, parts.icon].forEach { child in
@@ -447,7 +445,7 @@ private enum NativeBannerRow {
         parts.title.numberOfLines = style.isStationLayout ? 1 : 2
         parts.description.font = .systemFont(ofSize: style.descriptionSize, weight: .medium)
         parts.description.textColor = UIColor(argb: style.descriptionColor)
-        parts.description.numberOfLines = mediaSized ? 2 : 1
+        parts.description.numberOfLines = 2
         parts.sponsored.font = .systemFont(ofSize: style.metaSize)
         parts.sponsored.textColor = UIColor(argb: style.onAccent)
         parts.sponsored.backgroundColor = UIColor(argb: style.accent)
@@ -478,12 +476,12 @@ private enum NativeBannerRow {
         let row = UIStackView(arrangedSubviews: rowViews)
         row.axis = .horizontal
         row.alignment = .center
-        row.spacing = mediaSized ? 12 : 8
+        row.spacing = 12
         root.embed(row, insets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 12))
 
         var constraints = [
-            parts.thumbnail.widthAnchor.constraint(equalToConstant: thumbnailWidth),
-            parts.thumbnail.heightAnchor.constraint(equalToConstant: thumbnailHeight),
+            parts.thumbnail.widthAnchor.constraint(equalToConstant: thumbnailSize),
+            parts.thumbnail.heightAnchor.constraint(equalToConstant: thumbnailSize),
             parts.favicon.widthAnchor.constraint(equalToConstant: 12),
             parts.favicon.heightAnchor.constraint(equalToConstant: 12),
         ]
