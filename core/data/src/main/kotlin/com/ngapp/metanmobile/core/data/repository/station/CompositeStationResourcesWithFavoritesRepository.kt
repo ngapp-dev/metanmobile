@@ -23,6 +23,7 @@ import com.ngapp.metanmobile.core.data.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.station.UserStationResource
 import com.ngapp.metanmobile.core.model.station.mapToUserStationResources
 import com.ngapp.metanmobile.core.model.userdata.SortingOrder
+import com.ngapp.metanmobile.core.model.userdata.StationSortingType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -53,7 +54,7 @@ class CompositeStationResourcesWithFavoritesRepository(
 
             val locationFlow = locationsRepository.getLocationResource()
 
-            val stationWithDistanceFlow = stationResourcesFlow.flatMapLatest { stationResources ->
+            stationResourcesFlow.flatMapLatest { stationResources ->
                 locationFlow.map { location ->
                     stationResources.mapToUserStationResources(userData).map { userStation ->
                         // null location = we don't know the user's position yet — leave
@@ -67,15 +68,26 @@ class CompositeStationResourcesWithFavoritesRepository(
                             )
                         }
                         userStation.copy(distanceBetween = distanceBetween)
-                    }
+                    }.sortedByConfig(sortingOrderQuery.sortingType, userData.stationSortingConfig.sortingOrder)
                 }
             }
+        }
+    }
 
-//            val sortedStationsFlow = when (sortingOrderQuery.sortingType) {
-//                StationSortingType.DISTANCE -> stationWithDistanceFlow.map { it.sortedBy { it.distanceBetween } }
-//                StationSortingType.STATION_NAME -> stationWithDistanceFlow.map { it.sortedBy { it.title } }
-//            }
-            stationWithDistanceFlow
+    /**
+     * The database already orders by name; distance depends on the user's position, so it is
+     * sorted here. Stations without a known distance go last, keeping their name order.
+     */
+    private fun List<UserStationResource>.sortedByConfig(
+        sortingType: StationSortingType,
+        sortingOrder: SortingOrder,
+    ): List<UserStationResource> = when (sortingType) {
+        StationSortingType.STATION_NAME -> this
+        StationSortingType.DISTANCE -> {
+            val (known, unknown) = partition { it.distanceBetween != null }
+            val byDistance = known.sortedBy { it.distanceBetween }
+            val ordered = if (sortingOrder == SortingOrder.DESC) byDistance.reversed() else byDistance
+            ordered + unknown
         }
     }
 

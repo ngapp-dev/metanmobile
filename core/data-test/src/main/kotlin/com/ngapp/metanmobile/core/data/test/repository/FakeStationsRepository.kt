@@ -90,16 +90,15 @@ internal class FakeStationsRepository constructor(
     }
 
     private fun List<StationResource>.applySorting(query: StationResourceQuery): List<StationResource> {
+        // Mirrors StationResourceDao: DISTANCE is sorted in memory, so the database orders by title.
         return when (query.sortingType) {
-            StationSortingType.STATION_NAME -> {
-                if (query.sortingOrder == SortingOrder.ASC) {
-                    this.sortedBy { it.title }
-                } else {
-                    this.sortedByDescending { it.title }
-                }
+            StationSortingType.STATION_NAME,
+            StationSortingType.DISTANCE,
+                -> if (query.sortingOrder == SortingOrder.ASC) {
+                this.sortedBy { it.title }
+            } else {
+                this.sortedByDescending { it.title }
             }
-
-            else -> this
         }
     }
 }

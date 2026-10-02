@@ -57,12 +57,12 @@ internal fun StationSortingConfig.toProto() = StationSortingConfigProto(
 )
 
 private fun StationsSortingTypeProto.toModel() = when (this) {
-    StationsSortingTypeProto.DISTANCE,
-    StationsSortingTypeProto.STATION_NAME,
-        -> StationSortingType.STATION_NAME
+    StationsSortingTypeProto.DISTANCE -> StationSortingType.DISTANCE
+    StationsSortingTypeProto.STATION_NAME -> StationSortingType.STATION_NAME
 }
 
 private fun StationSortingType.toProto() = when (this) {
+    StationSortingType.DISTANCE -> StationsSortingTypeProto.DISTANCE
     StationSortingType.STATION_NAME -> StationsSortingTypeProto.STATION_NAME
 }
 

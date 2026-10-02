@@ -454,7 +454,9 @@ private fun SearchField(
         value = searchText,
         onValueChange = onSearchTextChanged,
         singleLine = true,
-        textStyle = MMTypography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+        // Typography already carries the theme's text color; colorScheme.onBackground is the
+        // card/background color in this palette (see Theme.kt), so text drawn with it vanished.
+        textStyle = MMTypography.bodyLarge,
         cursorBrush = SolidColor(Blue),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = {

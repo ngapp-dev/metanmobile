@@ -139,6 +139,70 @@ class CompositeStationResourcesWithFavoritesRepositoryTest {
 
     // endregion
 
+    // region observeAll - distance sorting
+
+    @Test
+    fun `DISTANCE ASC puts the nearest station first`() = runTest {
+        userDataFlow.value = userData(sortingOrder = SortingOrder.ASC, sortingType = StationSortingType.DISTANCE)
+        stationsRepository.emit(listOf(station("far", lat = "12.0"), station("near", lat = "10.1"), station("mid", lat = "11.0")))
+        locationsRepository.emit(location(lat = 10.0, lon = 27.0))
+
+        val result = repository.observeAll(StationResourceQuery()).first()
+
+        assertEquals(listOf("near", "mid", "far"), result.map { it.code })
+    }
+
+    @Test
+    fun `DISTANCE DESC puts the farthest station first`() = runTest {
+        userDataFlow.value = userData(sortingOrder = SortingOrder.DESC, sortingType = StationSortingType.DISTANCE)
+        stationsRepository.emit(listOf(station("near", lat = "10.1"), station("far", lat = "12.0"), station("mid", lat = "11.0")))
+        locationsRepository.emit(location(lat = 10.0, lon = 27.0))
+
+        val result = repository.observeAll(StationResourceQuery()).first()
+
+        assertEquals(listOf("far", "mid", "near"), result.map { it.code })
+    }
+
+    @Test
+    fun `DISTANCE keeps the database order while the location is unknown`() = runTest {
+        userDataFlow.value = userData(sortingOrder = SortingOrder.ASC, sortingType = StationSortingType.DISTANCE)
+        stationsRepository.emit(listOf(station("b", lat = "12.0"), station("a", lat = "10.1")))
+        locationsRepository.emit(null)
+
+        val result = repository.observeAll(StationResourceQuery()).first()
+
+        assertEquals(listOf("b", "a"), result.map { it.code })
+    }
+
+    @Test
+    fun `STATION_NAME keeps the database order even when distances are known`() = runTest {
+        userDataFlow.value = userData(sortingOrder = SortingOrder.ASC, sortingType = StationSortingType.STATION_NAME)
+        stationsRepository.emit(listOf(station("far", lat = "12.0"), station("near", lat = "10.1")))
+        locationsRepository.emit(location(lat = 10.0, lon = 27.0))
+
+        val result = repository.observeAll(StationResourceQuery()).first()
+
+        assertEquals(listOf("far", "near"), result.map { it.code })
+    }
+
+    @Test
+    fun `an active subscriber sees the list re-sorted when the location changes`() = runTest {
+        userDataFlow.value = userData(sortingOrder = SortingOrder.ASC, sortingType = StationSortingType.DISTANCE)
+        stationsRepository.emit(listOf(station("north", lat = "12.0"), station("south", lat = "10.0")))
+        locationsRepository.emit(location(lat = 10.0, lon = 27.0))
+
+        repository.observeAll(StationResourceQuery()).test {
+            assertEquals(listOf("south", "north"), awaitItem().map { it.code })
+
+            locationsRepository.emit(location(lat = 12.0, lon = 27.0))
+
+            assertEquals(listOf("north", "south"), awaitItem().map { it.code })
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // endregion
+
     // region observeAll - reactivity
 
     @Test
