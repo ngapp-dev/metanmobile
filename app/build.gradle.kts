@@ -113,6 +113,8 @@ dependencies {
     implementation(projects.core.network)
     implementation(projects.core.networkClient)
     implementation(projects.sync.work)
+    implementation(projects.widget.core)
+    implementation(projects.widget.nearestStation)
 
     implementation(projects.feature.cabinet)
     implementation(projects.feature.favorites)

@@ -276,4 +276,31 @@
     <string name="core_ui_day_fri">Пятница</string>
     <string name="core_ui_day_sat">Суббота</string>
     <string name="core_ui_day_sun">Воскресенье</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_nearest_station_label">Цена и ближайшая станция</string>
+    <string name="widget_nearest_station_description">Цена метана и ближайшая к вам АГНКС</string>
+    <string name="widget_nearest_station_text_no_location">Откройте приложение, чтобы найти ближайшую станцию</string>
+    <string name="widget_text_no_data">Откройте приложение, чтобы загрузить данные</string>
+    <string name="widget_settings_button_save">Сохранить</string>
+    <string name="widget_nearest_station_settings_text_show">Показывать</string>
+    <string name="widget_nearest_station_settings_show_price">Цена</string>
+    <string name="widget_nearest_station_settings_show_station">Расстояние</string>
+    <string name="widget_settings_text_glass_tint">Оттенок стекла</string>
+    <string name="widget_settings_text_glass">Liquid glass</string>
+    <string name="widget_settings_text_glass_intensity">Сила оттенка</string>
+    <string name="widget_settings_color_black">Чёрный</string>
+    <string name="widget_settings_color_white">Белый</string>
+    <string name="widget_settings_color_blue">Синий</string>
+    <string name="widget_settings_color_auto">Авто (по теме)</string>
+    <string name="widget_settings_text_background">Фон</string>
+    <string name="widget_settings_text_tiles">Плитки</string>
+    <string name="widget_settings_text_color">Цвет</string>
+    <string name="widget_settings_text_opacity">Непрозрачность</string>
+    <string name="widget_nearest_station_settings_hint_resize">Растяните виджет — появятся обе плитки, сожмите — останется одна.</string>
+    <string name="widget_nearest_station_settings_show_both">Обе</string>
+    <string name="widget_settings_text_theme">Тема</string>
+    <string name="widget_settings_theme_system">Как в системе</string>
+    <string name="widget_settings_theme_light">Светлая</string>
+    <string name="widget_settings_theme_dark">Тёмная</string>
 </resources>

@@ -276,4 +276,31 @@
     <string name="core_ui_day_fri">Friday</string>
     <string name="core_ui_day_sat">Saturday</string>
     <string name="core_ui_day_sun">Sunday</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_nearest_station_label">Price and nearest station</string>
+    <string name="widget_nearest_station_description">CNG price and the CNG station nearest to you</string>
+    <string name="widget_nearest_station_text_no_location">Open the app to find the nearest station</string>
+    <string name="widget_text_no_data">Open the app to load the data</string>
+    <string name="widget_settings_button_save">Save</string>
+    <string name="widget_nearest_station_settings_text_show">Show</string>
+    <string name="widget_nearest_station_settings_show_price">Price</string>
+    <string name="widget_nearest_station_settings_show_station">Distance</string>
+    <string name="widget_settings_text_glass_tint">Glass tint</string>
+    <string name="widget_settings_text_glass">Liquid glass</string>
+    <string name="widget_settings_text_glass_intensity">Tint strength</string>
+    <string name="widget_settings_color_black">Black</string>
+    <string name="widget_settings_color_white">White</string>
+    <string name="widget_settings_color_blue">Blue</string>
+    <string name="widget_settings_color_auto">Auto (follows theme)</string>
+    <string name="widget_settings_text_background">Background</string>
+    <string name="widget_settings_text_tiles">Tiles</string>
+    <string name="widget_settings_text_color">Color</string>
+    <string name="widget_settings_text_opacity">Opacity</string>
+    <string name="widget_nearest_station_settings_hint_resize">Stretch the widget to show both tiles, shrink it to keep one.</string>
+    <string name="widget_nearest_station_settings_show_both">Both</string>
+    <string name="widget_settings_text_theme">Theme</string>
+    <string name="widget_settings_theme_system">System</string>
+    <string name="widget_settings_theme_light">Light</string>
+    <string name="widget_settings_theme_dark">Dark</string>
 </resources>

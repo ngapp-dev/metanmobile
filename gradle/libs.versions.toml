@@ -3,8 +3,8 @@ androidCompileSdk = "37"
 androidMinSdk = "24"
 androidTargetSdk = "36"
 versionMajor = "2"
-versionMinor = "3"
-versionPatch = "8"
+versionMinor = "4"
+versionPatch = "0"
 applicationId = "com.ngapp.metanmobile"
 
 accompanist = "0.37.3"
@@ -33,6 +33,7 @@ androidxTestRunner = "1.7.0-rc01"
 androidxTracing = "1.3.0"
 androidxUiAutomator = "2.3.0"
 androidxWork = "2.10.1"
+androidxGlance = "1.2.0"
 coil3 = "3.4.0"
 kyantBackdrop = "2.0.0"
 webview = "2.0.3"
@@ -124,6 +125,8 @@ androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiaut
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 androidx-work-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidxWork" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "androidxGlance" }
+androidx-glance-appwidget-testing = { group = "androidx.glance", name = "glance-appwidget-testing", version.ref = "androidxGlance" }
 kyant-backdrop = { module = "io.github.kyant0:backdrop", version.ref = "kyantBackdrop" }
 coil3-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
 coil3-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
