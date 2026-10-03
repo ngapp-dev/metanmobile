@@ -98,7 +98,9 @@ jobs:
 
   ios:
     name: iOS
-    runs-on: macos-latest
+    # Xcode 27 is only on the `xcode-27` preview image for now (actions/runner-images#14404);
+    # macos-latest tops out at Xcode 26.x. Switch back once macos-latest ships Xcode 27.
+    runs-on: xcode-27
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
