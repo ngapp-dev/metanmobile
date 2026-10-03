@@ -17,7 +17,10 @@
 
 package com.ngapp.metanmobile.sync.schedulers
 
+import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
+import com.ngapp.metanmobile.sync.logSyncFinished
+import com.ngapp.metanmobile.sync.logSyncStarted
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -53,13 +56,17 @@ private const val MIN_BACKGROUND_SYNC_INTERVAL_SECONDS = 15.0 * 60.0
  * after Koin starts.
  */
 @OptIn(ExperimentalForeignApi::class)
-fun registerBackgroundSync(dataSyncCoordinator: DataSyncCoordinator, scope: CoroutineScope) {
+fun registerBackgroundSync(
+    dataSyncCoordinator: DataSyncCoordinator,
+    analyticsHelper: AnalyticsHelper,
+    scope: CoroutineScope,
+) {
     BGTaskScheduler.sharedScheduler.registerForTaskWithIdentifier(
         identifier = BG_SYNC_TASK_IDENTIFIER,
         usingQueue = dispatch_get_main_queue(),
     ) { task ->
         @Suppress("UNCHECKED_CAST")
-        handleAppRefresh(task as BGAppRefreshTask, dataSyncCoordinator, scope)
+        handleAppRefresh(task as BGAppRefreshTask, dataSyncCoordinator, analyticsHelper, scope)
     }
     scheduleNextBackgroundSync()
 }
@@ -83,6 +90,7 @@ private fun scheduleNextBackgroundSync() {
 private fun handleAppRefresh(
     task: BGAppRefreshTask,
     dataSyncCoordinator: DataSyncCoordinator,
+    analyticsHelper: AnalyticsHelper,
     scope: CoroutineScope,
 ) {
     // Always queue the next run first — iOS only keeps one pending request per identifier, and if
@@ -90,7 +98,9 @@ private fun handleAppRefresh(
     scheduleNextBackgroundSync()
 
     val job: Job = scope.launch {
+        analyticsHelper.logSyncStarted()
         val success = runCatching { dataSyncCoordinator.sync() }.getOrDefault(false)
+        analyticsHelper.logSyncFinished(success)
         task.setTaskCompletedWithSuccess(success)
     }
     task.expirationHandler = {

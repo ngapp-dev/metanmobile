@@ -25,6 +25,8 @@ kotlin {
             // widget:core's WidgetReloader is implemented in Swift (WidgetCenter is Swift-only),
             // so it has to be visible in the framework header too.
             export(projects.widget.core)
+            // AnalyticsBridge is implemented in Swift (FirebaseAnalyticsBridge in MetanMobileApp.swift).
+            export(projects.core.analytics)
         }
     }
 
@@ -81,6 +83,7 @@ kotlin {
         iosMain.dependencies {
             implementation(projects.sync.work)
             api(projects.widget.core)
+            api(projects.core.analytics)
             implementation(projects.widget.nearestStation)
         }
     }

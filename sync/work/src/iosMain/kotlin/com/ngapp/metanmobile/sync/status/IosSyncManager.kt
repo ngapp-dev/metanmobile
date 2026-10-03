@@ -17,8 +17,11 @@
 
 package com.ngapp.metanmobile.sync.status
 
+import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
 import com.ngapp.metanmobile.core.domain.sync.SyncManager
+import com.ngapp.metanmobile.sync.logSyncFinished
+import com.ngapp.metanmobile.sync.logSyncStarted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -41,6 +44,7 @@ private const val RETRY_DELAY_MILLIS = 5_000L
  */
 class IosSyncManager(
     private val dataSyncCoordinator: DataSyncCoordinator,
+    private val analyticsHelper: AnalyticsHelper,
 ) : SyncManager {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val _isSyncing = MutableStateFlow(false)
@@ -59,7 +63,10 @@ class IosSyncManager(
             var succeeded = false
             var attempt = 0
             while (!succeeded && attempt < MAX_SYNC_ATTEMPTS) {
+                // Logged per attempt, like each run of Android's SyncWorker.
+                analyticsHelper.logSyncStarted()
                 succeeded = dataSyncCoordinator.sync()
+                analyticsHelper.logSyncFinished(succeeded)
                 attempt++
                 if (!succeeded && attempt < MAX_SYNC_ATTEMPTS) delay(RETRY_DELAY_MILLIS)
             }

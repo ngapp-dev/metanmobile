@@ -1,3 +1,5 @@
+import FirebaseAnalytics
+import FirebaseCore
 import SwiftUI
 import WidgetKit
 import MetanMobileComposeApp
@@ -5,9 +7,12 @@ import MetanMobileComposeApp
 @main
 struct MetanMobileApp: App {
     init() {
+        // Reads GoogleService-Info.plist; must run before anything logs an event.
+        FirebaseApp.configure()
         SharedKoinKt.doInitSharedKoin(
             nativeAdsBridge: MobileAdsBridge(),
-            widgetReloader: WidgetReloaderBridge()
+            widgetReloader: WidgetReloaderBridge(),
+            analyticsBridge: FirebaseAnalyticsBridge()
         )
     }
 
@@ -26,5 +31,14 @@ struct MetanMobileApp: App {
 final class WidgetReloaderBridge: WidgetReloader {
     func reloadAllWidgets() {
         WidgetCenter.shared.reloadAllTimelines()
+    }
+}
+
+/// Sends the shared Kotlin code's analytics events (screen views, opened stations, sync, ...) to
+/// Firebase Analytics, the same backend as Android: the Firebase iOS SDK has no Kotlin API (see
+/// core:analytics' AnalyticsBridge).
+final class FirebaseAnalyticsBridge: AnalyticsBridge {
+    func logEvent(name: String, parameters: [String: String]) {
+        Analytics.logEvent(name, parameters: parameters)
     }
 }

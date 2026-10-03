@@ -25,5 +25,5 @@ import org.koin.dsl.module
  *  a plain-coroutine mechanism instead of WorkManager. Depends on `syncDataModule` for the
  *  shared `com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator`. */
 val iosSyncModule = module {
-    single<SyncManager> { IosSyncManager(get()) }
+    single<SyncManager> { IosSyncManager(get(), get()) }
 }

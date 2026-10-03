@@ -3,7 +3,10 @@
 package com.ngapp.metanmobile.composeapp
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
+import com.ngapp.metanmobile.core.analytics.LocalAnalyticsHelper
 import com.ngapp.metanmobile.core.designsystem.theme.shouldUseDarkTheme
 import com.ngapp.metanmobile.core.domain.repository.user.UserDataRepository
 import com.ngapp.metanmobile.core.model.userdata.DarkThemeConfig
@@ -22,6 +25,9 @@ fun MetanMobileApp(
     // Constructing this via koinInject() is enough to kick off its init{} block (first-run
     // homeReorderableList seeding, etc.) — nothing here needs to read from it directly.
     mainViewModel: MainViewModel = koinInject(),
+    // Screen views and UI events read LocalAnalyticsHelper; without a provider they'd go to its
+    // no-op default.
+    analyticsHelper: AnalyticsHelper = koinInject(),
 ) {
     val userData = userDataRepository.userData.collectAsStateWithLifecycle(initialValue = null).value
     val darkThemeConfig = userData?.darkThemeConfig ?: DarkThemeConfig.FOLLOW_SYSTEM
@@ -29,13 +35,15 @@ fun MetanMobileApp(
         darkTheme = shouldUseDarkTheme(darkThemeConfig),
         followsSystem = darkThemeConfig == DarkThemeConfig.FOLLOW_SYSTEM,
     )
-    MetanMobileTheme(darkThemeConfig) {
-        PermissionsManager {
-            MetanMobileNavHost(
-                initialOnboarding = initialOnboarding,
-                appState = rememberMetanMobileAppState(),
-                onboardingViewModel = onboardingViewModel,
-            )
+    CompositionLocalProvider(LocalAnalyticsHelper provides analyticsHelper) {
+        MetanMobileTheme(darkThemeConfig) {
+            PermissionsManager {
+                MetanMobileNavHost(
+                    initialOnboarding = initialOnboarding,
+                    appState = rememberMetanMobileAppState(),
+                    onboardingViewModel = onboardingViewModel,
+                )
+            }
         }
     }
 }

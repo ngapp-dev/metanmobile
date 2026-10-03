@@ -34,13 +34,13 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.domain)
             implementation(projects.core.data)
+            implementation(projects.core.analytics)
             implementation(libs.koin.core)
         }
         androidMain.dependencies {
             implementation(libs.androidx.tracing.ktx)
             implementation(libs.androidx.work.ktx)
             implementation(libs.koin.android)
-            implementation(projects.core.analytics)
         }
         androidMain {
             kotlin.srcDir("src/androidMain/kotlin")
