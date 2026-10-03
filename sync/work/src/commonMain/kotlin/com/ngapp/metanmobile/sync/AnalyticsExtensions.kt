@@ -15,7 +15,7 @@
  *
  */
 
-package com.ngapp.metanmobile.sync.workers
+package com.ngapp.metanmobile.sync
 
 import com.ngapp.metanmobile.core.analytics.AnalyticsEvent
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper

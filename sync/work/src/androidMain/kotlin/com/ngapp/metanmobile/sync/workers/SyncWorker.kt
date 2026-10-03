@@ -32,6 +32,8 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkerParameters
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
 import com.ngapp.metanmobile.core.data.sync.DataSyncCoordinator
+import com.ngapp.metanmobile.sync.logSyncFinished
+import com.ngapp.metanmobile.sync.logSyncStarted
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 

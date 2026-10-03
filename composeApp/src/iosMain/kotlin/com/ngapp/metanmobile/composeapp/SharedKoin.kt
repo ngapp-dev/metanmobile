@@ -119,6 +119,7 @@ fun initSharedKoin(
     // right/only place for it.
     registerBackgroundSync(
         dataSyncCoordinator = koinApp.koin.get<DataSyncCoordinator>(),
+        analyticsHelper = koinApp.koin.get<AnalyticsHelper>(),
         scope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
     )
 }
