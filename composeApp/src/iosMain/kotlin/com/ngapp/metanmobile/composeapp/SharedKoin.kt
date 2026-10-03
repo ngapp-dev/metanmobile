@@ -1,7 +1,8 @@
 package com.ngapp.metanmobile.composeapp
 
+import com.ngapp.metanmobile.core.analytics.AnalyticsBridge
 import com.ngapp.metanmobile.core.analytics.AnalyticsHelper
-import com.ngapp.metanmobile.core.analytics.NoOpAnalyticsHelper
+import com.ngapp.metanmobile.core.analytics.BridgedAnalyticsHelper
 import com.ngapp.metanmobile.composeapp.di.mainModule
 import com.ngapp.metanmobile.core.data.di.locationDataModule
 import com.ngapp.metanmobile.core.data.di.syncDataModule
@@ -49,8 +50,14 @@ import com.ngapp.metanmobile.core.data.di.widgetDataModule
  *   resolved through Koin like everything else here.
  * @param widgetReloader Swift's WidgetCenter call (WidgetReloaderBridge.swift), used to redraw
  *   the home-screen widgets after their data in the App Group changed.
+ * @param analyticsBridge Swift's Firebase Analytics call (FirebaseAnalyticsBridge), behind the
+ *   same AnalyticsHelper the shared code logs events through on Android.
  */
-fun initSharedKoin(nativeAdsBridge: NativeAdsBridge, widgetReloader: WidgetReloader) {
+fun initSharedKoin(
+    nativeAdsBridge: NativeAdsBridge,
+    widgetReloader: WidgetReloader,
+    analyticsBridge: AnalyticsBridge,
+) {
     registerNativeAdsBridge(nativeAdsBridge)
     configureImageLoader()
     val koinApp = startKoin {
@@ -69,7 +76,7 @@ fun initSharedKoin(nativeAdsBridge: NativeAdsBridge, widgetReloader: WidgetReloa
                 githubBaseUrl = "https://api.github.com/",
             ),
             sharedNetworkModule(),
-            module { single<AnalyticsHelper> { NoOpAnalyticsHelper() } },
+            module { single<AnalyticsHelper> { BridgedAnalyticsHelper(analyticsBridge) } },
             userDataModule(),
             locationDataModule,
             // IosSyncManager drives the shared DataSyncCoordinator for foreground/launch-time

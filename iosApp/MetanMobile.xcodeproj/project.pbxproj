@@ -10,6 +10,8 @@
 		49CD5C84EB9425A9FEEE64AB /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */; };
 		60A1B8F8958CE4CF8F2CCBBE /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 6F9E297E26986DF1807E8564 /* GoogleMobileAds */; };
 		72B72A1852479A8B9A20444B /* MobileAdsBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2552AAA736136ED28D7BF3 /* MobileAdsBridge.swift */; };
+		9E7F136230707758009A4CE2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E7F136130707758009A4CE2 /* GoogleService-Info.plist */; };
+		9E7F1365307078C2009A4CE2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9E7F1364307078C2009A4CE2 /* FirebaseAnalytics */; };
 		9E8E73BA306FD3710026D467 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E8E73B9306FD3710026D467 /* WidgetKit.framework */; };
 		9E8E73BC306FD3710026D467 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E8E73BB306FD3710026D467 /* SwiftUI.framework */; };
 		9E8E73CD306FD3730026D467 /* MetanMobileWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9E8E73B7306FD3710026D467 /* MetanMobileWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -44,6 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E7F136130707758009A4CE2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9E8E73B7306FD3710026D467 /* MetanMobileWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MetanMobileWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E8E73B9306FD3710026D467 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9E8E73BB306FD3710026D467 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -107,6 +110,7 @@
 			files = (
 				60A1B8F8958CE4CF8F2CCBBE /* GoogleMobileAds in Frameworks */,
 				49CD5C84EB9425A9FEEE64AB /* GoogleUserMessagingPlatform in Frameworks */,
+				9E7F1365307078C2009A4CE2 /* FirebaseAnalytics in Frameworks */,
 				F4B7081A9D3C617E2B5A4E90 /* YandexMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -144,6 +148,7 @@
 				A10000130000000000000013 /* Assets.xcassets */,
 				A10000140000000000000014 /* Info.plist */,
 				EF2552AAA736136ED28D7BF3 /* MobileAdsBridge.swift */,
+				9E7F136130707758009A4CE2 /* GoogleService-Info.plist */,
 			);
 			path = MetanMobileApp;
 			sourceTree = "<group>";
@@ -226,6 +231,7 @@
 				6F9E297E26986DF1807E8564 /* GoogleMobileAds */,
 				EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */,
 				F4B7081B9D3C617E2B5A4E90 /* YandexMobileAds */,
+				9E7F1364307078C2009A4CE2 /* FirebaseAnalytics */,
 			);
 			productName = MetanMobile;
 			productReference = A10000100000000000000010 /* MetanMobile.app */;
@@ -266,6 +272,7 @@
 				30654CF30238879FD0E5C311 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				A0E339719C9E2725DB625895 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 				F4B7081C9D3C617E2B5A4E90 /* XCRemoteSwiftPackageReference "yandex-ads-sdk-ios" */,
+				9E7F136330707807009A4CE2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = A10000320000000000000032 /* Products */;
 			projectDirPath = "";
@@ -298,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000030000000000000003 /* Assets.xcassets in Resources */,
+				9E7F136230707758009A4CE2 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +827,14 @@
 				minimumVersion = 13.0.0;
 			};
 		};
+		9E7F136330707807009A4CE2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.19.2;
+			};
+		};
 		A0E339719C9E2725DB625895 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
@@ -842,6 +858,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30654CF30238879FD0E5C311 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		9E7F1364307078C2009A4CE2 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E7F136330707807009A4CE2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
 		EBA130AC801A4EF978A55FC3 /* GoogleUserMessagingPlatform */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -25,6 +25,9 @@ kotlin {
             implementation(libs.koin.core)
             implementation("org.jetbrains.compose.runtime:runtime:${libs.versions.composePlugin.get()}")
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         androidMain {
             kotlin.srcDir("src/main/kotlin")
             kotlin.exclude("com/ngapp/metanmobile/core/analytics/AnalyticsEvent.kt")
