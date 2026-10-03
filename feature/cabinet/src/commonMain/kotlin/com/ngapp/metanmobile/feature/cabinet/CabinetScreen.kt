@@ -19,6 +19,7 @@ import com.ngapp.metanmobile.SharedRes
 import com.ngapp.metanmobile.core.designsystem.component.MMCabinetTopAppBar
 import com.ngapp.metanmobile.core.designsystem.component.MMLinearWavyProgressIndicator
 import com.ngapp.metanmobile.core.designsystem.component.MMScaffold
+import com.ngapp.metanmobile.core.ui.TrackScreenViewEvent
 import com.ngapp.metanmobile.core.ui.animation.ErrorView
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetActions
 import com.ngapp.metanmobile.feature.cabinet.state.CabinetUiState
@@ -98,4 +99,5 @@ private fun CabinetScreen(
             }
         }
     }
+    TrackScreenViewEvent(screenName = "Cabinet")
 }
