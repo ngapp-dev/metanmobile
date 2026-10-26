@@ -45,18 +45,21 @@ import com.yandex.mobile.ads.common.ImpressionData
 import com.yandex.mobile.ads.common.YandexAds
 import java.util.Locale
 
-private const val RUSSIAN_COUNTRY_CODE = "RU"
+private val YANDEX_COUNTRY_CODES = setOf("RU", "BY")
 
 // MAIN_BANNER_AD_UNIT_ID is generated at build time from secrets.properties' MAIN_BANNER_AD_ID_KEY
 // (see core/ui/build.gradle.kts's generateAdsSecrets task) - falls back to Google's own public
 // test unit id if secrets.properties is missing. YANDEX_RU_BANNER_AD_UNIT_ID is generated from
 // the same file's YANDEX_RU_BANNER_AD_ID_KEY and falls back to Yandex's demo id.
 
-/** Renders exactly one banner network: Yandex in Russia, otherwise the existing AdMob banner. */
+/**
+ * Renders exactly one banner network: Yandex in Russia and Belarus, otherwise the existing AdMob
+ * banner.
+ */
 @Composable
 actual fun MainBannerAd() {
     val context = LocalContext.current
-    if (isRussianAudience(context)) {
+    if (isYandexAudience(context)) {
         YandexRuBannerAd(context)
     } else {
         AdMobBannerAd(context)
@@ -156,7 +159,8 @@ internal object YandexAdsInitialization {
     }
 }
 
-internal fun isRussianAudience(context: Context): Boolean = countryCode(context) == RUSSIAN_COUNTRY_CODE
+internal fun isYandexAudience(context: Context): Boolean =
+    countryCode(context) in YANDEX_COUNTRY_CODES
 
 private fun countryCode(context: Context): String {
     val networkCountry = runCatching {

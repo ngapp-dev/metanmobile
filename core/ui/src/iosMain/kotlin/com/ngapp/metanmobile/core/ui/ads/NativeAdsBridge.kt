@@ -44,9 +44,9 @@ interface NativeAdsBridge {
     fun makeBannerAdView(adUnitId: String, onAdLoadResult: (loaded: Boolean) -> Unit): UIView
 
     /**
-     * A NativeBanner row for [NativeBanner] (AdMob, or Yandex for Russian users), laid out like
-     * the surrounding list's rows per [style]. The loaded ad is cached per [slotKey] for the app's
-     * lifetime, so a lazy-list slot recreated on scroll doesn't request a new ad.
+     * A NativeBanner row for [NativeBanner] (AdMob, or Yandex for Russian and Belarusian users),
+     * laid out like the surrounding list's rows per [style]. The loaded ad is cached per [slotKey]
+     * for the app's lifetime, so a lazy-list slot recreated on scroll doesn't request a new ad.
      * [onAdLoadResult] reports the row's height in points once an ad is bound to the returned
      * view, and 0 on a failed/no-fill load - the view is only shown after a positive height.
      */
