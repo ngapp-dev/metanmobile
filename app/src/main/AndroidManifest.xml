@@ -28,6 +28,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Pulled in transitively via the VK Ads (myTarget) adapter -> myTracker -> Play Billing;
+         the app has no in-app purchases. -->
+    <uses-permission
+        android:name="com.android.vending.BILLING"
+        tools:node="remove" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 

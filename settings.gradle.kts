@@ -29,6 +29,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Mintegral SDK (Yandex mediation adapter dependency) is only published here.
+        maven("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea") {
+            content { includeGroup("com.mbridge.msdk.oversea") }
+        }
     }
 }
 

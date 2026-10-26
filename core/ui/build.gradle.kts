@@ -68,6 +68,11 @@ kotlin {
             implementation(libs.google.services.ads)
             implementation(libs.google.services.base)
             implementation(libs.yandex.mobile.ads)
+            // Mediation adapters for the Yandex ad units (VK Ads, Mintegral, BigoAds); networks are
+            // configured in the Yandex Advertising Network dashboard, no code changes needed.
+            implementation(libs.yandex.mobile.ads.mytarget)
+            implementation(libs.yandex.mobile.ads.mintegral)
+            implementation(libs.yandex.mobile.ads.bigoads)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.browser)
             implementation(libs.google.oss.licenses)
