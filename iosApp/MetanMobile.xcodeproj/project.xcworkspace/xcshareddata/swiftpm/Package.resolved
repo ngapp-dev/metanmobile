@@ -1,5 +1,5 @@
 {
-  "originHash" : "7ad01b0e93515c8d12467c3e93c80c937128d80a99cf53529231b3ab0134e4ce",
+  "originHash" : "92cf44840436cb13d0836bd53a87e29ca5383a25ded9eb575f1acaaa57033514",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "bbe8b69694d7873315fd3a4ad41efe043e1c07c5",
         "version" : "1.2024072200.0"
+      }
+    },
+    {
+      "identity" : "adsglobalpackage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bytedance/AdsGlobalPackage",
+      "state" : {
+        "revision" : "76cd4bf20e78f80672438954bbc608dff5193707",
+        "version" : "8.1.1-release.3"
       }
     },
     {
@@ -20,12 +29,48 @@
       }
     },
     {
+      "identity" : "applovin-max-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AppLovin/AppLovin-MAX-Swift-Package",
+      "state" : {
+        "revision" : "02544c3400d228cce5718e22f71f8d02787ba91e",
+        "version" : "13.6.4"
+      }
+    },
+    {
       "identity" : "appmetrica-sdk-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/appmetrica/appmetrica-sdk-ios",
       "state" : {
-        "revision" : "e12b7c757e27114a946f3521f0311de007d1e2a8",
-        "version" : "6.6.0"
+        "revision" : "b3bcce475028a17de8e43d4bf286d480514e9f10",
+        "version" : "6.7.1"
+      }
+    },
+    {
+      "identity" : "chartboost-monetization-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ChartBoost/chartboost-monetization-ios-sdk",
+      "state" : {
+        "revision" : "ebe94ac847ef9494c95e9c245b2d6525c1b048e4",
+        "version" : "9.13.0"
+      }
+    },
+    {
+      "identity" : "dtexchangesdk-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/inner-active/DTExchangeSDK-iOS-SPM",
+      "state" : {
+        "revision" : "aadb0c19b5c5a60a152811a7ada39f010a8f52e4",
+        "version" : "8.4.8"
+      }
+    },
+    {
+      "identity" : "fbaudiencenetwork",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/facebook/FBAudienceNetwork",
+      "state" : {
+        "revision" : "26100d29de1cdb6753d7c602391f6fc6d29f6507",
+        "version" : "6.22.0"
       }
     },
     {
@@ -92,6 +137,15 @@
       }
     },
     {
+      "identity" : "inmobisdk-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/InMobi/InMobiSDK-Swift-Package",
+      "state" : {
+        "revision" : "ba46fc5d865080b352d0002533e14a9298fcddbe",
+        "version" : "11.4.1"
+      }
+    },
+    {
       "identity" : "interop-ios-for-google-sdks",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/interop-ios-for-google-sdks.git",
@@ -119,6 +173,114 @@
       }
     },
     {
+      "identity" : "levelplay-admob-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-AdMob-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "0aa323461062af08f17d97453968863b12a74999",
+        "version" : "5.13.0"
+      }
+    },
+    {
+      "identity" : "levelplay-applovin-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-AppLovin-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "ba562fd11fbb94b09e153d777254b1222e48c70c",
+        "version" : "5.9.0"
+      }
+    },
+    {
+      "identity" : "levelplay-facebook-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-Facebook-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "07c1fd5f6ad1fc40265b86238c05da7a848fcbbf",
+        "version" : "5.4.0"
+      }
+    },
+    {
+      "identity" : "levelplay-fyber-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-Fyber-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "1ddafd25053e25c5fee112ae3231016543def42c",
+        "version" : "5.9.0"
+      }
+    },
+    {
+      "identity" : "levelplay-mytarget-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-MyTarget-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "51170f2ec4c005fa3a21a5d24bf13878a4d3e243",
+        "version" : "5.12.0"
+      }
+    },
+    {
+      "identity" : "levelplay-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-Swift-Package",
+      "state" : {
+        "revision" : "e712d4a50618d14bf75776d0161dc2366515ca2b",
+        "version" : "9.3.0"
+      }
+    },
+    {
+      "identity" : "levelplay-unityads-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-UnityAds-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "bf19c282ceec630d9b94f2a1fb0bfeaf322d7732",
+        "version" : "5.11.0"
+      }
+    },
+    {
+      "identity" : "levelplay-vungle-adapter-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/LevelPlay-Vungle-Adapter-Swift-Package",
+      "state" : {
+        "revision" : "40eafca72970a658d398dab4028fb8cb144e5fa3",
+        "version" : "5.11.0"
+      }
+    },
+    {
+      "identity" : "mintegraladsdk-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Mintegral-official/MintegralAdSDK-Swift-Package",
+      "state" : {
+        "revision" : "782a6565ef8fe16cc4d161801103dd06f9e01205",
+        "version" : "8.0.9"
+      }
+    },
+    {
+      "identity" : "moloco-sdk-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/moloco/moloco-sdk-ios-spm",
+      "state" : {
+        "revision" : "afd87a19a5339d4ba01d901c8232c3249ac0fbd6",
+        "version" : "4.9.1"
+      }
+    },
+    {
+      "identity" : "mytarget-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/myTargetSDK/mytarget-ios-spm",
+      "state" : {
+        "revision" : "d61c56e4f2e8535d48235156efc7ddafb40f368d",
+        "version" : "5.45.0"
+      }
+    },
+    {
+      "identity" : "mytracker-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/myTrackerSDK/mytracker-ios-spm.git",
+      "state" : {
+        "revision" : "bbd0468cfa1a3b93aeab8f8304ece39141e1aeba",
+        "version" : "3.4.2"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",
@@ -137,12 +299,21 @@
       }
     },
     {
+      "identity" : "startappsdk-swiftpackage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StartApp-SDK/StartAppSDK-SwiftPackage",
+      "state" : {
+        "revision" : "7969e0290c454e90520acff780d41c0c3c1e08b2",
+        "version" : "4.14.0"
+      }
+    },
+    {
       "identity" : "swift-package-manager-google-mobile-ads",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/swift-package-manager-google-mobile-ads.git",
       "state" : {
-        "revision" : "54efe6d39a7b41b84c1041f21c704a7e6a493d7a",
-        "version" : "13.9.0"
+        "revision" : "3b18c931f304a7688308409f182ff28d14f908e2",
+        "version" : "13.8.0"
       }
     },
     {
@@ -155,6 +326,15 @@
       }
     },
     {
+      "identity" : "swift-packages",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tapjoy/swift-packages",
+      "state" : {
+        "revision" : "29ff4b8963d940fc90c30425a16cdbaf7841c536",
+        "version" : "14.8.0"
+      }
+    },
+    {
       "identity" : "swift-protobuf",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf",
@@ -164,12 +344,48 @@
       }
     },
     {
+      "identity" : "unity-ad-quality-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ironsource-mobile/Unity-Ad-Quality-Swift-Package",
+      "state" : {
+        "revision" : "efff497b17657e81e8334084a4991f706d4407db",
+        "version" : "9.2.1"
+      }
+    },
+    {
+      "identity" : "unity-ads-swift-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Unity-Technologies/Unity-Ads-Swift-Package",
+      "state" : {
+        "revision" : "589ebfb7a28cc9171856ced7a9429d9770ec31a5",
+        "version" : "4.20.0"
+      }
+    },
+    {
+      "identity" : "vungleadssdk-swiftpackagemanager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Vungle/VungleAdsSDK-SwiftPackageManager",
+      "state" : {
+        "revision" : "9aa28fe48cc8b3e03dc21ec9163303f4ccbedc46",
+        "version" : "7.7.5"
+      }
+    },
+    {
       "identity" : "yandex-ads-sdk-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/yandexmobile/yandex-ads-sdk-ios.git",
       "state" : {
-        "revision" : "ce114c7e829f1ba0b3aa4aa49084e92ca798821a",
-        "version" : "8.5.0"
+        "revision" : "b8b8e0fe1fd8d7f920269b03c187be73b658e5e3",
+        "version" : "8.6.0"
+      }
+    },
+    {
+      "identity" : "yandex-ads-sdk-mediation-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/yandexmobile/yandex-ads-sdk-mediation-ios.git",
+      "state" : {
+        "revision" : "872d55cbd4374fbfb1514ec1d21fc90b39fa1db9",
+        "version" : "8.6.0"
       }
     }
   ],
