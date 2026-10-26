@@ -11,7 +11,7 @@ import MetanMobileComposeApp
 final class MobileAdsBridge: NSObject, NativeAdsBridge {
 
     func initializeMobileAdsSdk() {
-        if Self.isRussianAudience {
+        if Self.isYandexAudience {
             initializeYandexMobileAdsSdk()
         } else {
             MobileAds.shared.start(completionHandler: nil)
@@ -66,7 +66,7 @@ final class MobileAdsBridge: NSObject, NativeAdsBridge {
     private var pendingYandexInitializationHandlers: [() -> Void] = []
 
     func makeBannerAdView(adUnitId: String, onAdLoadResult: @escaping (KotlinBoolean) -> Void) -> UIView {
-        if Self.isRussianAudience {
+        if Self.isYandexAudience {
             return makeYandexBannerAdView(onAdLoadResult: onAdLoadResult)
         }
 
@@ -138,7 +138,7 @@ final class MobileAdsBridge: NSObject, NativeAdsBridge {
             DispatchQueue.main.async { onAdLoadResult(KotlinDouble(double: Double(height))) }
         }
 
-        if Self.isRussianAudience {
+        if Self.isYandexAudience {
             let show: (any YandexMobileAds.NativeAd) -> Void = { ad in
                 let row = MainActor.assumeIsolated { NativeBannerRow.yandex(ad: ad, style: style) }
                 container.embed(row.view)
@@ -229,8 +229,8 @@ final class MobileAdsBridge: NSObject, NativeAdsBridge {
             .first { $0.isKeyWindow }?.rootViewController
     }
 
-    private static var isRussianAudience: Bool {
-        Locale.current.region?.identifier.uppercased() == "RU"
+    private static var isYandexAudience: Bool {
+        ["RU", "BY"].contains(Locale.current.region?.identifier.uppercased() ?? "")
     }
 
     private static var nativeBannerAdUnitId: String {

@@ -88,7 +88,7 @@ internal actual fun PlatformNativeBanner(
         onAccent = White.toArgb(),
         adLabel = stringResource(SharedRes.strings.core_ui_ad_label),
     )
-    if (isRussianAudience(context)) {
+    if (isYandexAudience(context)) {
         YandexNativeBanner(slotKey, style, modifier)
     } else {
         AdMobNativeBanner(slotKey, style, modifier)
